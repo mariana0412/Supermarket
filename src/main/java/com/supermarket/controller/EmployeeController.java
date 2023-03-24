@@ -1,0 +1,97 @@
+package com.supermarket.controller;
+
+import com.supermarket.model.Employee;
+import com.supermarket.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@CrossOrigin(origins = "http://localhost:8081")
+@RestController
+@RequestMapping("/api")
+public class EmployeeController {
+
+    @Autowired
+    EmployeeRepository employeeRepository;
+
+    // it is possible too pass @RequestParam(required = false) String role
+    // (will be useful when implementing search of cashiers)
+    @GetMapping("/employees")
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        try {
+            List<Employee> employees = new ArrayList<>(employeeRepository.findAll());
+
+            if (employees.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+            return new ResponseEntity<>(employees, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/employees/{id}")
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") String id) {
+        Employee employee = employeeRepository.findById(id);
+
+        if (employee != null)
+            return new ResponseEntity<>(employee, HttpStatus.OK);
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/employees")
+    public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
+        System.out.println("New employee: " + employee.toString());
+        try {
+            employeeRepository.save(new Employee(employee.getId_employee(), employee.getEmpl_surname(),
+                    employee.getEmpl_name(), employee.getEmpl_patronymic(), employee.getEmpl_role(),
+                    employee.getSalary(), employee.getDate_of_birth(), employee.getDate_of_start(),
+                    employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code()));
+            return new ResponseEntity<>("Employee was created successfully.", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/employees/{id}")
+    public ResponseEntity<String> updateEmployee(@PathVariable("id") String id, @RequestBody Employee employee) {
+        Employee _employee = employeeRepository.findById(id);
+
+        if (_employee != null) {
+            _employee.setId_employee(id);
+            _employee.setEmpl_surname(employee.getEmpl_surname());
+            _employee.setEmpl_name(employee.getEmpl_name());
+            _employee.setEmpl_patronymic(employee.getEmpl_patronymic());
+            _employee.setEmpl_role(employee.getEmpl_role());
+            _employee.setSalary(employee.getSalary());
+            _employee.setDate_of_birth(employee.getDate_of_birth());
+            _employee.setDate_of_start(employee.getDate_of_start());
+            _employee.setPhone_number(employee.getPhone_number());
+            _employee.setCity(employee.getCity());
+            _employee.setStreet(employee.getStreet());
+            _employee.setZip_code(employee.getZip_code());
+            employeeRepository.update(_employee);
+            return new ResponseEntity<>("Employee was updated successfully.", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Cannot find Employee with id=" + id, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/employees/{id}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable("id") String id) {
+        try {
+            int result = employeeRepository.deleteById(id);
+            if (result == 0) {
+                return new ResponseEntity<>("Cannot find Employee with id=" + id, HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Employee was deleted successfully.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Cannot delete employee.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+}
