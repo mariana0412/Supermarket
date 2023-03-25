@@ -69,7 +69,7 @@ public class CustomerCardController {
             _customerCard.setStreet(customerCard.getStreet());
             _customerCard.setZip_code(customerCard.getZip_code());
             _customerCard.setPercent(customerCard.getPercent());
-            customerCardRepository.update(customerCard);
+            customerCardRepository.update(_customerCard);
             return new ResponseEntity<>("Customer Card was updated successfully.", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Cannot find Customer Card with id=" + id, HttpStatus.NOT_FOUND);
