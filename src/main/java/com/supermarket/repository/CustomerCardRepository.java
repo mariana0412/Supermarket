@@ -21,4 +21,7 @@ public interface CustomerCardRepository {
     /** get list of all the customers */
     List<CustomerCard> findAll();
 
+    /** get list of all the customers, sorted alphabetically by surname */
+    List<CustomerCard> findAllSorted();
+
 }

@@ -19,9 +19,13 @@ public class CustomerCardController {
     CustomerCardRepository customerCardRepository;
 
     @GetMapping("/customer-cards")
-    public ResponseEntity<List<CustomerCard>> getAllCustomerCards() {
+    public ResponseEntity<List<CustomerCard>> getAllCustomerCards(@RequestParam(required = false) boolean sorted) {
+        List<CustomerCard> customerCards;
         try {
-            List<CustomerCard> customerCards = new ArrayList<>(customerCardRepository.findAll());
+            if(sorted)
+                customerCards = new ArrayList<>(customerCardRepository.findAllSorted());
+            else
+                customerCards = new ArrayList<>(customerCardRepository.findAll());
 
             if (customerCards.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

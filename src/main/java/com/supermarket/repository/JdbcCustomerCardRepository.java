@@ -51,6 +51,13 @@ public class JdbcCustomerCardRepository implements CustomerCardRepository {
 
     @Override
     public List<CustomerCard> findAll() {
-        return jdbcTemplate.query("SELECT * from customer_card", BeanPropertyRowMapper.newInstance(CustomerCard.class));
+        return jdbcTemplate.query("SELECT * FROM customer_card", BeanPropertyRowMapper.newInstance(CustomerCard.class));
+    }
+
+    // 7. Get information about all regular customers, sorted by surname
+    @Override
+    public List<CustomerCard> findAllSorted() {
+        return jdbcTemplate.query("SELECT * FROM customer_card ORDER BY cust_surname",
+                BeanPropertyRowMapper.newInstance(CustomerCard.class));
     }
 }
