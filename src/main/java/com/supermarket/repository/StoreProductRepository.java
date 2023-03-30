@@ -19,4 +19,7 @@ public interface StoreProductRepository {
 
     /** get list of all the store products */
     List<StoreProduct> findAll();
+
+    /** get list of all the store products, sorted by number */
+    List<StoreProduct> findAllSorted();
 }

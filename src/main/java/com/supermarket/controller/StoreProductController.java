@@ -17,11 +17,13 @@ public class StoreProductController {
     StoreProductRepository storeProductRepository;
 
     @GetMapping("/store-products")
-    public ResponseEntity<List<StoreProduct>> getAllStoreProducts() {
-        System.out.println("HERE");
+    public ResponseEntity<List<StoreProduct>> getAllStoreProducts(@RequestParam(required = false) boolean sorted) {
+        List<StoreProduct> storeProducts;
         try {
-            List<StoreProduct> storeProducts= new ArrayList<>(storeProductRepository.findAll());
-            System.out.println(storeProducts);
+            if(sorted)
+                storeProducts = new ArrayList<>(storeProductRepository.findAllSorted());
+            else
+                storeProducts = new ArrayList<>(storeProductRepository.findAll());
 
             if (storeProducts.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
