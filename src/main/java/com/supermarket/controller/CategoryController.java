@@ -18,9 +18,13 @@ public class CategoryController {
     CategoryRepository categoryRepository;
 
     @GetMapping("/categories")
-    public ResponseEntity<List<Category>> getAllCategories() {
+    public ResponseEntity<List<Category>> getAllCategories(@RequestParam(required = false) boolean sorted) {
+        List<Category> categories;
         try {
-            List<Category> categories = new ArrayList<>(categoryRepository.findAll());
+            if(sorted)
+                categories = new ArrayList<>(categoryRepository.findAllSorted());
+            else
+                categories = new ArrayList<>(categoryRepository.findAll());
 
             if (categories.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

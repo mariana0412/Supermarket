@@ -19,4 +19,10 @@ public interface ProductRepository {
 
     /** get list of all the products */
     List<Product> findAll();
+
+    /** get list of all the products, sorted by name */
+    List<Product> findAllSorted();
+
+    /** get list of all the products from one category, sorted by name */
+    List<Product> findAllFromCatSorted(int catId);
 }

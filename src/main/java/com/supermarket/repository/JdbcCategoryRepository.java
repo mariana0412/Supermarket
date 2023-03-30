@@ -46,4 +46,11 @@ public class JdbcCategoryRepository implements CategoryRepository {
     public List<Category> findAll() {
         return jdbcTemplate.query("SELECT * from category", BeanPropertyRowMapper.newInstance(Category.class));
     }
+
+    // 8. Get information about all categories, sorted by name
+    @Override
+    public List<Category> findAllSorted() {
+        return jdbcTemplate.query("SELECT * from category ORDER BY category_name",
+                BeanPropertyRowMapper.newInstance(Category.class));
+    }
 }

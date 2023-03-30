@@ -18,4 +18,10 @@ public interface EmployeeRepository {
 
     /** get list of all the employees */
     List<Employee> findAll();
+
+    /** get list of all the employees, sorted alphabetically by surname */
+    List<Employee> findAllSorted();
+
+    /** get list of all the employees whose profession is a cashier, sorted alphabetically by surname */
+    List<Employee> findAllSortedCashiers();
 }

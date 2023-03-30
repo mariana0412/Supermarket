@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -17,11 +16,25 @@ public class StoreProductController {
     StoreProductRepository storeProductRepository;
 
     @GetMapping("/store-products")
-    public ResponseEntity<List<StoreProduct>> getAllStoreProducts() {
-        System.out.println("HERE");
+    public ResponseEntity<List<StoreProduct>> getAllStoreProducts(@RequestParam(required = false) boolean sortedByNum,
+                                                                  @RequestParam(required = false) boolean promSortedByNum,
+                                                                  @RequestParam(required = false) boolean promSortedByName,
+                                                                  @RequestParam(required = false) boolean notPromSortedByNum,
+                                                                  @RequestParam(required = false) boolean notPromSortedByName) {
+        List<StoreProduct> storeProducts;
         try {
-            List<StoreProduct> storeProducts= new ArrayList<>(storeProductRepository.findAll());
-            System.out.println(storeProducts);
+            if(sortedByNum)
+                storeProducts = storeProductRepository.findAllSortedByNum();
+            else if(promSortedByNum)
+                storeProducts = storeProductRepository.findAllPromSortedByNum();
+            else if(promSortedByName)
+                storeProducts = storeProductRepository.findAllPromSortedByName();
+            else if(notPromSortedByNum)
+                storeProducts = storeProductRepository.findAllNotPromSortedByNum();
+            else if(notPromSortedByName)
+                storeProducts = storeProductRepository.findAllNotPromSortedByName();
+            else
+                storeProducts = storeProductRepository.findAll();
 
             if (storeProducts.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -42,9 +55,18 @@ public class StoreProductController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping("/store-products-details/{id}")
+    public ResponseEntity<StoreProduct.StoreProductDetails> getStoreProductDetailsById(@PathVariable("id") String id) {
+        StoreProduct.StoreProductDetails storeProduct = storeProductRepository.findDetailsByUPC(id);
+
+        if (storeProduct != null)
+            return new ResponseEntity<>(storeProduct, HttpStatus.OK);
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @PostMapping("/store-products")
     public ResponseEntity<String> createStoreProduct(@RequestBody StoreProduct storeProduct) {
-        System.out.println(storeProduct);
         try {
             storeProductRepository.save(new StoreProduct(storeProduct.getUPC(), storeProduct.getUPC_prom(),
                     storeProduct.getId_product(), storeProduct.getSelling_price(), storeProduct.getProducts_number(),

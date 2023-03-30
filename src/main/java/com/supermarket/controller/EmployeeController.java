@@ -21,9 +21,16 @@ public class EmployeeController {
     // it is possible too pass @RequestParam(required = false) String role
     // (will be useful when implementing search of cashiers)
     @GetMapping("/employees")
-    public ResponseEntity<List<Employee>> getAllEmployees() {
+    public ResponseEntity<List<Employee>> getAllEmployees(@RequestParam(required = false) boolean sorted,
+                                                          @RequestParam(required = false) boolean cashier) {
+        List<Employee> employees;
         try {
-            List<Employee> employees = new ArrayList<>(employeeRepository.findAll());
+            if(sorted && cashier)
+                employees = new ArrayList<>(employeeRepository.findAllSortedCashiers());
+            else if(sorted)
+                employees = new ArrayList<>(employeeRepository.findAllSorted());
+            else
+                employees = new ArrayList<>(employeeRepository.findAll());
 
             if (employees.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
