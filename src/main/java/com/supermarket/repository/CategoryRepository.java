@@ -20,4 +20,7 @@ public interface CategoryRepository {
 
     /** get list of all the categories */
     List<Category> findAll();
+
+    /** get list of all the categories, sorted by name */
+    List<Category> findAllSorted();
 }
