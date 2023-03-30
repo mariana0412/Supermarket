@@ -18,9 +18,13 @@ public class ProductController {
     ProductRepository productRepository;
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) boolean sorted) {
+        List<Product> products;
         try {
-            List<Product> products = new ArrayList<>(productRepository.findAll());
+            if(sorted)
+                products = new ArrayList<>(productRepository.findAllSorted());
+            else
+                products = new ArrayList<>(productRepository.findAll());
 
             if (products.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

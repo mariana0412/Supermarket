@@ -19,4 +19,7 @@ public interface ProductRepository {
 
     /** get list of all the products */
     List<Product> findAll();
+
+    /** get list of all the products, sorted by name */
+    List<Product> findAllSorted();
 }
