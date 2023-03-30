@@ -20,6 +20,9 @@ public interface StoreProductRepository {
     /** get list of all the store products */
     List<StoreProduct> findAll();
 
+    /** get selling price, products number, product name and characteristics by UPC */
+    StoreProduct.StoreProductDetails findDetailsByUPC(String UPC);
+
     /** get list of all the store products, sorted by number */
     List<StoreProduct> findAllSortedByNum();
 

@@ -55,6 +55,16 @@ public class StoreProductController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping("/store-products-details/{id}")
+    public ResponseEntity<StoreProduct.StoreProductDetails> getStoreProductDetailsById(@PathVariable("id") String id) {
+        StoreProduct.StoreProductDetails storeProduct = storeProductRepository.findDetailsByUPC(id);
+
+        if (storeProduct != null)
+            return new ResponseEntity<>(storeProduct, HttpStatus.OK);
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @PostMapping("/store-products")
     public ResponseEntity<String> createStoreProduct(@RequestBody StoreProduct storeProduct) {
         try {

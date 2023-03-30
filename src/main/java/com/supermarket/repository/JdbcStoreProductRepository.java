@@ -36,7 +36,7 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
     @Override
     public StoreProduct findById(String id) {
         try {
-            return jdbcTemplate.queryForObject("SELECT * FROM store_product WHERE UPC=?",
+            return jdbcTemplate.queryForObject("SELECT * FROM store_product WHERE UPC=:ID",
                     BeanPropertyRowMapper.newInstance(StoreProduct.class), id);
         } catch (IncorrectResultSizeDataAccessException e) {
             return null;
@@ -58,6 +58,19 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
     public List<StoreProduct> findAllSortedByNum() {
         return jdbcTemplate.query("SELECT * FROM store_product ORDER BY products_number",
                 BeanPropertyRowMapper.newInstance(StoreProduct.class));
+    }
+
+    // 14. Get selling price, products number, product name and characteristics by UPC
+    @Override
+    public StoreProduct.StoreProductDetails findDetailsByUPC(String UPC) {
+        StringBuilder query = new StringBuilder();
+        query
+                .append("SELECT upc, selling_price, products_number, product_name, characteristics ")
+                .append("FROM store_product ")
+                .append("INNER JOIN product ON store_product.id_product=product.id_product ")
+                .append("WHERE UPC=?");
+        return jdbcTemplate.queryForObject(query.toString(),
+                BeanPropertyRowMapper.newInstance(StoreProduct.StoreProductDetails.class), UPC);
     }
 
     // 15. Get information about all promotional store products, sorted by number
