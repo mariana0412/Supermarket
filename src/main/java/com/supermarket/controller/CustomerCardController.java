@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:8081")
@@ -19,13 +18,16 @@ public class CustomerCardController {
     CustomerCardRepository customerCardRepository;
 
     @GetMapping("/customer-cards")
-    public ResponseEntity<List<CustomerCard>> getAllCustomerCards(@RequestParam(required = false) boolean sorted) {
+    public ResponseEntity<List<CustomerCard>> getAllCustomerCards(@RequestParam(required = false) boolean sorted,
+                                                                  @RequestParam(required = false) Integer salePercent) {
         List<CustomerCard> customerCards;
         try {
-            if(sorted)
-                customerCards = new ArrayList<>(customerCardRepository.findAllSorted());
+            if(salePercent != null)
+                customerCards = customerCardRepository.findAllWithTheSameSaleSorted(salePercent);
+            else if(sorted)
+                customerCards = customerCardRepository.findAllSorted();
             else
-                customerCards = new ArrayList<>(customerCardRepository.findAll());
+                customerCards = customerCardRepository.findAll();
 
             if (customerCards.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
