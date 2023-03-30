@@ -55,8 +55,40 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
 
     // 10. Get information about all store products, sorted by number
     @Override
-    public List<StoreProduct> findAllSorted() {
+    public List<StoreProduct> findAllSortedByNum() {
         return jdbcTemplate.query("SELECT * FROM store_product ORDER BY products_number",
+                BeanPropertyRowMapper.newInstance(StoreProduct.class));
+    }
+
+    // 15. Get information about all promotional store products, sorted by number
+    @Override
+    public List<StoreProduct> findAllPromSortedByNum() {
+        return jdbcTemplate.query("SELECT * FROM store_product WHERE promotional_product=true ORDER BY products_number",
+                BeanPropertyRowMapper.newInstance(StoreProduct.class));
+    }
+
+    // 15. Get information about all promotional store products, sorted by name
+    @Override
+    public List<StoreProduct> findAllPromSortedByName() {
+        return jdbcTemplate.query("SELECT * " +
+                        "FROM store_product INNER JOIN product ON store_product.id_product = product.id_product " +
+                        "WHERE promotional_product=true ORDER BY product_name",
+                BeanPropertyRowMapper.newInstance(StoreProduct.class));
+    }
+
+    // 16. Get information about all not promotional store products, sorted by number
+    @Override
+    public List<StoreProduct> findAllNotPromSortedByNum() {
+        return jdbcTemplate.query("SELECT * FROM store_product WHERE promotional_product=false ORDER BY products_number",
+                BeanPropertyRowMapper.newInstance(StoreProduct.class));
+    }
+
+    // 16. Get information about all not promotional store products, sorted by name
+    @Override
+    public List<StoreProduct> findAllNotPromSortedByName() {
+        return jdbcTemplate.query("SELECT * " +
+                        "FROM store_product INNER JOIN product ON store_product.id_product = product.id_product " +
+                        "WHERE promotional_product=false ORDER BY product_name",
                 BeanPropertyRowMapper.newInstance(StoreProduct.class));
     }
 }

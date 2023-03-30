@@ -21,5 +21,17 @@ public interface StoreProductRepository {
     List<StoreProduct> findAll();
 
     /** get list of all the store products, sorted by number */
-    List<StoreProduct> findAllSorted();
+    List<StoreProduct> findAllSortedByNum();
+
+    /** get list of all promotional store products, sorted by number */
+    List<StoreProduct> findAllPromSortedByNum();
+
+    /** get list of all promotional store products, sorted by name */
+    List<StoreProduct> findAllPromSortedByName();
+
+    /** get list of all not promotional store products, sorted by number */
+    List<StoreProduct> findAllNotPromSortedByNum();
+
+    /** get list of all not promotional store products, sorted by name */
+    List<StoreProduct> findAllNotPromSortedByName();
 }
