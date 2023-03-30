@@ -18,10 +18,13 @@ public class ProductController {
     ProductRepository productRepository;
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) boolean sorted) {
+    public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) boolean sorted,
+                                                        @RequestParam(required = false) Integer catId) {
         List<Product> products;
         try {
-            if(sorted)
+            if(catId != null)
+                products = new ArrayList<>(productRepository.findAllFromCatSorted(catId));
+            else if(sorted)
                 products = new ArrayList<>(productRepository.findAllSorted());
             else
                 products = new ArrayList<>(productRepository.findAll());
