@@ -22,8 +22,14 @@ public interface CheckRepository {
     List<Check> findAll();
 
     /** get list of all the checks for a certain period of time */
-    List<Check> findAllByTimePeriod(LocalDateTime startDate, LocalDateTime endDate);
+    List<Check> findAllByCashierAndTimePeriod(String cashierId, LocalDateTime startDate, LocalDateTime endDate);
 
     /** get list of all the checks for a certain period of time */
-    List<Check> findAllByCashierAndTimePeriod(String cashierId, LocalDateTime startDate, LocalDateTime endDate);
+    List<Check> findAllByTimePeriod(LocalDateTime startDate, LocalDateTime endDate);
+
+    /** calculates the total amount of goods sold from checks created by a certain cashier for a certain period of time */
+    double getTotalSumOfProductsSoldByCashierForTimePeriod(String cashierId, LocalDateTime startDate, LocalDateTime endDate);
+
+    /** calculates the total amount of goods sold from checks created by all cashiers for a certain period of time */
+    double getTotalSumOfProductsSoldForTimePeriod(LocalDateTime startDate, LocalDateTime endDate);
 }

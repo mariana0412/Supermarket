@@ -39,6 +39,23 @@ public class CheckController {
         }
     }
 
+    @GetMapping("/checks-sum")
+    public ResponseEntity<Double> getChecksSum(@RequestParam LocalDateTime startDate,
+                                               @RequestParam LocalDateTime endDate,
+                                               @RequestParam(required = false) String cashierId) {
+        double sum;
+        try {
+            if(cashierId != null)
+                sum = checkRepository.getTotalSumOfProductsSoldByCashierForTimePeriod(cashierId, startDate, endDate);
+            else
+                sum = checkRepository.getTotalSumOfProductsSoldForTimePeriod(startDate, endDate);
+
+            return new ResponseEntity<>(sum, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/checks/{id}")
     public ResponseEntity<Check> getCheckById(@PathVariable("id") String id) {
         Check check = checkRepository.findById(id);
