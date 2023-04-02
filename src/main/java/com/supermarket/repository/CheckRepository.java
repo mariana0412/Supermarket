@@ -2,6 +2,7 @@ package com.supermarket.repository;
 
 import com.supermarket.model.Check;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CheckRepository {
@@ -19,4 +20,10 @@ public interface CheckRepository {
 
     /** get list of all the checks */
     List<Check> findAll();
+
+    /** get list of all the checks for a certain period of time */
+    List<Check> findAllByTimePeriod(LocalDateTime startDate, LocalDateTime endDate);
+
+    /** get list of all the checks for a certain period of time */
+    List<Check> findAllByCashierAndTimePeriod(String cashierId, LocalDateTime startDate, LocalDateTime endDate);
 }

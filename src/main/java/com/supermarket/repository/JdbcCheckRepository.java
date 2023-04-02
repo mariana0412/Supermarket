@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -50,5 +51,17 @@ public class JdbcCheckRepository implements CheckRepository {
     @Override
     public List<Check> findAll() {
         return jdbcTemplate.query("SELECT * FROM receipt", BeanPropertyRowMapper.newInstance(Check.class));
+    }
+
+    @Override
+    public List<Check> findAllByTimePeriod(LocalDateTime startDate, LocalDateTime endDate) {
+        return jdbcTemplate.query("SELECT * FROM receipt WHERE print_date BETWEEN ? AND ?",
+                BeanPropertyRowMapper.newInstance(Check.class), startDate, endDate);
+    }
+
+    @Override
+    public List<Check> findAllByCashierAndTimePeriod(String cashierId, LocalDateTime startDate, LocalDateTime endDate) {
+        return jdbcTemplate.query("SELECT * FROM receipt WHERE id_employee=? AND print_date BETWEEN ? AND ?",
+                BeanPropertyRowMapper.newInstance(Check.class), cashierId, startDate, endDate);
     }
 }
