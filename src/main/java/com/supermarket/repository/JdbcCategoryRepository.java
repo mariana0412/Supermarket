@@ -53,4 +53,12 @@ public class JdbcCategoryRepository implements CategoryRepository {
         return jdbcTemplate.query("SELECT * from category ORDER BY category_name",
                 BeanPropertyRowMapper.newInstance(Category.class));
     }
+
+    @Override
+    public int getMaxId() {
+        String query = "SELECT MAX(category_number) FROM category";
+        Integer maxId = jdbcTemplate.queryForObject(query, Integer.class);
+        return (maxId != null) ? maxId : 0;
+
+    }
 }

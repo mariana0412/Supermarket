@@ -23,4 +23,6 @@ public interface CategoryRepository {
 
     /** get list of all the categories, sorted by name */
     List<Category> findAllSorted();
+
+    int getMaxId();
 }
