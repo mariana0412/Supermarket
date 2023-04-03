@@ -1,7 +1,7 @@
 package com.supermarket.controller;
 
 import com.supermarket.model.Employee;
-import com.supermarket.repository.EmployeeRepository;
+import com.supermarket.repository.EntityRepositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +26,9 @@ public class EmployeeController {
         List<Employee> employees;
         try {
             if(sorted && cashier)
-                employees = new ArrayList<>(employeeRepository.findAllSortedCashiers());
+                employees = new ArrayList<>(employeeRepository.findAllCashiersSortedBySurname());
             else if(sorted)
-                employees = new ArrayList<>(employeeRepository.findAllSorted());
+                employees = new ArrayList<>(employeeRepository.findAllSortedBySurname());
             else
                 employees = new ArrayList<>(employeeRepository.findAll());
 
@@ -91,10 +91,7 @@ public class EmployeeController {
     @DeleteMapping("/employees/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable("id") String id) {
         try {
-            int result = employeeRepository.deleteById(id);
-            if (result == 0) {
-                return new ResponseEntity<>("Cannot find Employee with id=" + id, HttpStatus.OK);
-            }
+            employeeRepository.deleteById(id);
             return new ResponseEntity<>("Employee was deleted successfully.", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Cannot delete employee.", HttpStatus.INTERNAL_SERVER_ERROR);

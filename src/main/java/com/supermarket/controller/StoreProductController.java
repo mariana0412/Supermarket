@@ -1,7 +1,7 @@
 package com.supermarket.controller;
 
 import com.supermarket.model.StoreProduct;
-import com.supermarket.repository.StoreProductRepository;
+import com.supermarket.repository.EntityRepositories.StoreProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,15 +24,15 @@ public class StoreProductController {
         List<StoreProduct> storeProducts;
         try {
             if(sortedByNum)
-                storeProducts = storeProductRepository.findAllSortedByNum();
+                storeProducts = storeProductRepository.findAllSortedByNumber();
             else if(promSortedByNum)
-                storeProducts = storeProductRepository.findAllPromSortedByNum();
+                storeProducts = storeProductRepository.findAllPromotionalSortedByNumber();
             else if(promSortedByName)
-                storeProducts = storeProductRepository.findAllPromSortedByName();
+                storeProducts = storeProductRepository.findAllPromotionalSortedByName();
             else if(notPromSortedByNum)
-                storeProducts = storeProductRepository.findAllNotPromSortedByNum();
+                storeProducts = storeProductRepository.findAllNotPromotionalSortedByNumber();
             else if(notPromSortedByName)
-                storeProducts = storeProductRepository.findAllNotPromSortedByName();
+                storeProducts = storeProductRepository.findAllNotPromotionalSortedByName();
             else
                 storeProducts = storeProductRepository.findAll();
 
@@ -98,10 +98,7 @@ public class StoreProductController {
     @DeleteMapping("/store-products/{id}")
     public ResponseEntity<String> deleteStoreProduct(@PathVariable("id") String id) {
         try {
-            int result = storeProductRepository.deleteById(id);
-            if (result == 0) {
-                return new ResponseEntity<>("Cannot find Store Product with id=" + id, HttpStatus.OK);
-            }
+            storeProductRepository.deleteById(id);
             return new ResponseEntity<>("Store Product was deleted successfully.", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Cannot delete Store Product.", HttpStatus.INTERNAL_SERVER_ERROR);

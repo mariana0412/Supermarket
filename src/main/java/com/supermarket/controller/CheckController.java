@@ -1,7 +1,7 @@
 package com.supermarket.controller;
 
 import com.supermarket.model.Check;
-import com.supermarket.repository.CheckRepository;
+import com.supermarket.repository.EntityRepositories.CheckRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +24,9 @@ public class CheckController {
         List<Check> checks;
         try {
             if(startDate != null && endDate != null && cashierId != null)
-                checks = checkRepository.findAllByCashierAndTimePeriod(cashierId, startDate, endDate);
+                checks = checkRepository.findAllPrintedByCashierWithinTimePeriod(cashierId, startDate, endDate);
             else if(startDate != null && endDate != null)
-                checks = checkRepository.findAllByTimePeriod(startDate, endDate);
+                checks = checkRepository.findAllPrintedWithinTimePeriod(startDate, endDate);
             else
                 checks = checkRepository.findAll();
 
@@ -98,11 +98,7 @@ public class CheckController {
     @DeleteMapping("/checks/{id}")
     public ResponseEntity<String> deleteCheck(@PathVariable("id") String id) {
         try {
-            System.out.println(id);
-            int result = checkRepository.deleteById(id);
-            if (result == 0) {
-                return new ResponseEntity<>("Cannot find Check with id=" + id, HttpStatus.OK);
-            }
+            checkRepository.deleteById(id);
             return new ResponseEntity<>("Check was deleted successfully.", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Cannot delete Check.", HttpStatus.INTERNAL_SERVER_ERROR);

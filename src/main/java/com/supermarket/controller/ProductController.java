@@ -1,7 +1,7 @@
 package com.supermarket.controller;
 
 import com.supermarket.model.Product;
-import com.supermarket.repository.ProductRepository;
+import com.supermarket.repository.EntityRepositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,9 @@ public class ProductController {
         List<Product> products;
         try {
             if(catId != null)
-                products = new ArrayList<>(productRepository.findAllFromCatSorted(catId));
+                products = new ArrayList<>(productRepository.findAllFromOneCategorySortedByName(catId));
             else if(sorted)
-                products = new ArrayList<>(productRepository.findAllSorted());
+                products = new ArrayList<>(productRepository.findAllSortedByName());
             else
                 products = new ArrayList<>(productRepository.findAll());
 
@@ -79,10 +79,7 @@ public class ProductController {
     @DeleteMapping("/products/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable("id") int id) {
         try {
-            int result = productRepository.deleteById(id);
-            if (result == 0) {
-                return new ResponseEntity<>("Cannot find Product with id=" + id, HttpStatus.OK);
-            }
+            productRepository.deleteById(id);
             return new ResponseEntity<>("Product was deleted successfully.", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Cannot delete Product.", HttpStatus.INTERNAL_SERVER_ERROR);

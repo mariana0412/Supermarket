@@ -1,7 +1,7 @@
 package com.supermarket.controller;
 
 import com.supermarket.model.CustomerCard;
-import com.supermarket.repository.CustomerCardRepository;
+import com.supermarket.repository.EntityRepositories.CustomerCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,9 @@ public class CustomerCardController {
         List<CustomerCard> customerCards;
         try {
             if(salePercent != null)
-                customerCards = customerCardRepository.findAllWithTheSameSaleSorted(salePercent);
+                customerCards = customerCardRepository.findAllWithCertainSaleSortedBySurname(salePercent);
             else if(sorted)
-                customerCards = customerCardRepository.findAllSorted();
+                customerCards = customerCardRepository.findAllSortedBySurname();
             else
                 customerCards = customerCardRepository.findAll();
 
@@ -85,10 +85,7 @@ public class CustomerCardController {
     @DeleteMapping("/customer-cards/{id}")
     public ResponseEntity<String> deleteCustomerCard(@PathVariable("id") String id) {
         try {
-            int result = customerCardRepository.deleteById(id);
-            if (result == 0) {
-                return new ResponseEntity<>("Cannot find Customer Card with id=" + id, HttpStatus.OK);
-            }
+            customerCardRepository.deleteById(id);
             return new ResponseEntity<>("Customer Card was deleted successfully.", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Cannot delete Customer Card.", HttpStatus.INTERNAL_SERVER_ERROR);
