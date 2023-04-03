@@ -1,10 +1,18 @@
 package com.supermarket.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Product {
+    @Getter @Setter
     private int id_product;
+    @Getter @Setter
     private int category_number;
+    @Getter @Setter
     private String product_name;
+    @Getter @Setter
     private String producer;
+    @Getter @Setter
     private String characteristics;
 
     public Product(int id_product, int category_number, String product_name, String producer, String characteristics) {
@@ -24,43 +32,15 @@ public class Product {
 
     public Product() {}
 
-    public int getId_product() {
-        return id_product;
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id_product=" + id_product +
+                ", category_number=" + category_number +
+                ", product_name='" + product_name + '\'' +
+                ", producer='" + producer + '\'' +
+                ", characteristics='" + characteristics + '\'' +
+                '}';
     }
 
-    public void setId_product(int id_product) {
-        this.id_product = id_product;
-    }
-
-    public int getCategory_number() {
-        return category_number;
-    }
-
-    public void setCategory_number(int category_number) {
-        this.category_number = category_number;
-    }
-
-    public String getProduct_name() {
-        return product_name;
-    }
-
-    public void setProduct_name(String product_name) {
-        this.product_name = product_name;
-    }
-
-    public String getProducer() {
-        return producer;
-    }
-
-    public void setProducer(String producer) {
-        this.producer = producer;
-    }
-
-    public String getCharacteristics() {
-        return characteristics;
-    }
-
-    public void setCharacteristics(String characteristics) {
-        this.characteristics = characteristics;
-    }
 }
