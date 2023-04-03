@@ -47,8 +47,9 @@ public class CategoryController {
 
     @PostMapping("/categories")
     public ResponseEntity<String> createCategory(@RequestBody Category category) {
+        int id = categoryRepository.getMaxId() + 1;
         try {
-            categoryRepository.save(new Category(category.getCategory_number(), category.getCategory_name()));
+            categoryRepository.save(new Category(id, category.getCategory_name()));
             return new ResponseEntity<>("Category was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -73,11 +74,13 @@ public class CategoryController {
     public ResponseEntity<String> deleteCategory(@PathVariable("id") int id) {
         try {
             int result = categoryRepository.deleteById(id);
-            if (result == 0) {
+            System.out.println(result);
+            if (result == 0)
                 return new ResponseEntity<>("Cannot find Category with id=" + id, HttpStatus.OK);
-            }
+
             return new ResponseEntity<>("Category was deleted successfully.", HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();   // log the exception
             return new ResponseEntity<>("Cannot delete Category.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:8081")
@@ -18,14 +18,39 @@ public class CheckController {
     CheckRepository checkRepository;
 
     @GetMapping("/checks")
-    public ResponseEntity<List<Check>> getAllChecks() {
+    public ResponseEntity<List<Check>> getAllChecks(@RequestParam(required = false) LocalDateTime startDate,
+                                                    @RequestParam(required = false) LocalDateTime endDate,
+                                                    @RequestParam(required = false) String cashierId) {
+        List<Check> checks;
         try {
-            List<Check> checks = new ArrayList<>(checkRepository.findAll());
+            if(startDate != null && endDate != null && cashierId != null)
+                checks = checkRepository.findAllByCashierAndTimePeriod(cashierId, startDate, endDate);
+            else if(startDate != null && endDate != null)
+                checks = checkRepository.findAllByTimePeriod(startDate, endDate);
+            else
+                checks = checkRepository.findAll();
 
             if (checks.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
             return new ResponseEntity<>(checks, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/checks-sum")
+    public ResponseEntity<Double> getChecksSum(@RequestParam LocalDateTime startDate,
+                                               @RequestParam LocalDateTime endDate,
+                                               @RequestParam(required = false) String cashierId) {
+        double sum;
+        try {
+            if(cashierId != null)
+                sum = checkRepository.getTotalSumOfProductsSoldByCashierForTimePeriod(cashierId, startDate, endDate);
+            else
+                sum = checkRepository.getTotalSumOfProductsSoldForTimePeriod(startDate, endDate);
+
+            return new ResponseEntity<>(sum, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
