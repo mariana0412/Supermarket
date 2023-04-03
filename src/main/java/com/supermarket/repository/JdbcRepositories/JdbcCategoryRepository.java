@@ -1,12 +1,12 @@
-package com.supermarket.repository;
+package com.supermarket.repository.JdbcRepositories;
 
 import com.supermarket.model.Category;
+import com.supermarket.repository.EntityRepositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -16,30 +16,31 @@ public class JdbcCategoryRepository implements CategoryRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public int save(Category category) {
-        return jdbcTemplate.update("INSERT INTO category (category_number, category_name) VALUES(?,?)",
+    public void save(Category category) {
+        jdbcTemplate.update("INSERT INTO category (category_number, category_name) VALUES(?,?)",
                 category.getCategory_number(), category.getCategory_name());
     }
 
     @Override
-    public int update(Category category) {
-        return jdbcTemplate.update("UPDATE category SET category_name=? WHERE category_number=?",
+    public void update(Category category) {
+        jdbcTemplate.update("UPDATE category SET category_name=? WHERE category_number=?",
                 category.getCategory_name(), category.getCategory_number());
     }
 
     @Override
-    public Category findById(int id) {
+    public Category findById(Integer id) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM category WHERE category_number=?",
                     BeanPropertyRowMapper.newInstance(Category.class), id);
         } catch (IncorrectResultSizeDataAccessException e) {
+            e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public int deleteById(int id) {
-        return jdbcTemplate.update("DELETE FROM category WHERE category_number=?", id);
+    public void deleteById(Integer id) {
+        jdbcTemplate.update("DELETE FROM category WHERE category_number=?", id);
     }
 
     @Override
@@ -49,7 +50,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
 
     // 8. Get information about all categories, sorted by name
     @Override
-    public List<Category> findAllSorted() {
+    public List<Category> findAllSortedByName() {
         return jdbcTemplate.query("SELECT * from category ORDER BY category_name",
                 BeanPropertyRowMapper.newInstance(Category.class));
     }

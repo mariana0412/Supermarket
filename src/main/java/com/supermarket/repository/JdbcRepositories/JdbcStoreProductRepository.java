@@ -1,5 +1,6 @@
-package com.supermarket.repository;
+package com.supermarket.repository.JdbcRepositories;
 
+import com.supermarket.repository.EntityRepositories.StoreProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -18,16 +19,17 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public int save(StoreProduct storeProduct) {
-        return jdbcTemplate.update("INSERT INTO store_product (UPC, UPC_prom, id_product, selling_price, " +
+    public void save(StoreProduct storeProduct) {
+        jdbcTemplate.update("INSERT INTO store_product (UPC, UPC_prom, id_product, selling_price, " +
                         "products_number, promotional_product) VALUES(?,?,?,?,?,?)",
                 storeProduct.getUPC(), storeProduct.getUPC_prom(), storeProduct.getId_product(),
-                storeProduct.getSelling_price(), storeProduct.getProducts_number(), storeProduct.isPromotional_product());
+                storeProduct.getSelling_price(), storeProduct.getProducts_number(),
+                storeProduct.isPromotional_product());
     }
 
     @Override
-    public int update(StoreProduct storeProduct) {
-        return jdbcTemplate.update("UPDATE store_product SET UPC_prom=?, id_product=?, selling_price=?, " +
+    public void update(StoreProduct storeProduct) {
+        jdbcTemplate.update("UPDATE store_product SET UPC_prom=?, id_product=?, selling_price=?, " +
                         "products_number=?, promotional_product=? WHERE UPC=?",
                 storeProduct.getUPC_prom(), storeProduct.getId_product(), storeProduct.getSelling_price(),
                 storeProduct.getProducts_number(), storeProduct.isPromotional_product(), storeProduct.getUPC());
@@ -36,7 +38,7 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
     @Override
     public StoreProduct findById(String id) {
         try {
-            return jdbcTemplate.queryForObject("SELECT * FROM store_product WHERE UPC=:ID",
+            return jdbcTemplate.queryForObject("SELECT * FROM store_product WHERE UPC=?",
                     BeanPropertyRowMapper.newInstance(StoreProduct.class), id);
         } catch (IncorrectResultSizeDataAccessException e) {
             return null;
@@ -44,8 +46,8 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
     }
 
     @Override
-    public int deleteById(String id) {
-        return jdbcTemplate.update("DELETE FROM store_product WHERE UPC=?", id);
+    public void deleteById(String id) {
+        jdbcTemplate.update("DELETE FROM store_product WHERE UPC=?", id);
     }
 
     @Override
@@ -55,7 +57,7 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
 
     // 10. Get information about all store products, sorted by number
     @Override
-    public List<StoreProduct> findAllSortedByNum() {
+    public List<StoreProduct> findAllSortedByNumber() {
         return jdbcTemplate.query("SELECT * FROM store_product ORDER BY products_number",
                 BeanPropertyRowMapper.newInstance(StoreProduct.class));
     }
@@ -74,7 +76,7 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
 
     // 15. Get information about all promotional store products, sorted by number
     @Override
-    public List<StoreProduct> findAllPromSortedByNum() {
+    public List<StoreProduct> findAllPromotionalSortedByNumber() {
         String query =
                 "SELECT * " +
                 "FROM store_product " +
@@ -85,7 +87,7 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
 
     // 15. Get information about all promotional store products, sorted by name
     @Override
-    public List<StoreProduct> findAllPromSortedByName() {
+    public List<StoreProduct> findAllPromotionalSortedByName() {
         String query =
                 "SELECT * " +
                 "FROM store_product " +
@@ -97,7 +99,7 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
 
     // 16. Get information about all not promotional store products, sorted by number
     @Override
-    public List<StoreProduct> findAllNotPromSortedByNum() {
+    public List<StoreProduct> findAllNotPromotionalSortedByNumber() {
         String query =
                 "SELECT * " +
                 "FROM store_product " +
@@ -108,7 +110,7 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
 
     // 16. Get information about all not promotional store products, sorted by name
     @Override
-    public List<StoreProduct> findAllNotPromSortedByName() {
+    public List<StoreProduct> findAllNotPromotionalSortedByName() {
         String query =
                 "SELECT * " +
                 "FROM store_product " +
