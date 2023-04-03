@@ -1,7 +1,7 @@
 package com.supermarket.controller;
 
 import com.supermarket.model.Category;
-import com.supermarket.repository.CategoryRepository;
+import com.supermarket.repository.EntityRepositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class CategoryController {
         List<Category> categories;
         try {
             if(sorted)
-                categories = new ArrayList<>(categoryRepository.findAllSorted());
+                categories = new ArrayList<>(categoryRepository.findAllSortedByName());
             else
                 categories = new ArrayList<>(categoryRepository.findAll());
 
@@ -73,11 +73,7 @@ public class CategoryController {
     @DeleteMapping("/categories/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable("id") int id) {
         try {
-            int result = categoryRepository.deleteById(id);
-            System.out.println(result);
-            if (result == 0)
-                return new ResponseEntity<>("Cannot find Category with id=" + id, HttpStatus.OK);
-
+            categoryRepository.deleteById(id);
             return new ResponseEntity<>("Category was deleted successfully.", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();   // log the exception

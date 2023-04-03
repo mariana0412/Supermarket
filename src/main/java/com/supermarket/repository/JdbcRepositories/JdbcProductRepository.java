@@ -1,5 +1,6 @@
-package com.supermarket.repository;
+package com.supermarket.repository.JdbcRepositories;
 
+import com.supermarket.repository.EntityRepositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -17,23 +18,23 @@ public class JdbcProductRepository implements ProductRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public int save(Product product) {
-        return jdbcTemplate.update("INSERT INTO product (id_product, category_number, product_name, producer, " +
+    public void save(Product product) {
+        jdbcTemplate.update("INSERT INTO product (id_product, category_number, product_name, producer, " +
                         "characteristics) VALUES(?,?,?,?,?)",
                 product.getId_product(), product.getCategory_number(), product.getProduct_name(), product.getProducer(),
                 product.getCharacteristics());
     }
 
     @Override
-    public int update(Product product) {
-        return jdbcTemplate.update("UPDATE product SET category_number=?, product_name=?, producer=?, characteristics=? " +
+    public void update(Product product) {
+        jdbcTemplate.update("UPDATE product SET category_number=?, product_name=?, producer=?, characteristics=? " +
                         "WHERE id_product=?",
                 product.getCategory_number(), product.getProduct_name(), product.getProducer(),
                 product.getCharacteristics(), product.getId_product());
     }
 
     @Override
-    public Product findById(int id) {
+    public Product findById(Integer id) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM product WHERE id_product=?",
                     BeanPropertyRowMapper.newInstance(Product.class), id);
@@ -43,8 +44,8 @@ public class JdbcProductRepository implements ProductRepository {
     }
 
     @Override
-    public int deleteById(int id) {
-        return jdbcTemplate.update("DELETE FROM product WHERE id_product=?", id);
+    public void deleteById(Integer id) {
+        jdbcTemplate.update("DELETE FROM product WHERE id_product=?", id);
     }
 
     @Override
@@ -54,13 +55,13 @@ public class JdbcProductRepository implements ProductRepository {
 
     // 9. Get information about all products, sorted by name
     @Override
-    public List<Product> findAllSorted() {
+    public List<Product> findAllSortedByName() {
         return jdbcTemplate.query("SELECT * FROM product ORDER BY product_name", BeanPropertyRowMapper.newInstance(Product.class));
     }
 
     // 13. Get information about all products from one category, sorted by name
     @Override
-    public List<Product> findAllFromCatSorted(int catId) {
+    public List<Product> findAllFromOneCategorySortedByName(int catId) {
         return jdbcTemplate.query("SELECT * FROM product WHERE category_number=? ORDER BY product_name",
                 BeanPropertyRowMapper.newInstance(Product.class), catId);
     }

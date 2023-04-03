@@ -1,11 +1,11 @@
-package com.supermarket.repository;
+package com.supermarket.repository.JdbcRepositories;
 
+import com.supermarket.repository.EntityRepositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import com.supermarket.model.Employee;
 
 import java.util.List;
@@ -16,22 +16,25 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public int save(Employee employee) {
-        return jdbcTemplate.update("INSERT INTO employee (id_employee, empl_surname, empl_name, empl_patronymic, " +
+    public void save(Employee employee) {
+        jdbcTemplate.update("INSERT INTO employee (id_employee, empl_surname, empl_name, empl_patronymic, " +
                         "empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code) " +
                         "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
-                employee.getId_employee(), employee.getEmpl_surname(), employee.getEmpl_name(), employee.getEmpl_patronymic(),
-                employee.getEmpl_role(), employee.getSalary(), employee.getDate_of_birth(), employee.getDate_of_start(),
-                employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code());
+                employee.getId_employee(), employee.getEmpl_surname(), employee.getEmpl_name(),
+                employee.getEmpl_patronymic(), employee.getEmpl_role(), employee.getSalary(),
+                employee.getDate_of_birth(), employee.getDate_of_start(), employee.getPhone_number(),
+                employee.getCity(), employee.getStreet(), employee.getZip_code());
     }
 
     @Override
-    public int update(Employee employee) {
-        return jdbcTemplate.update("UPDATE employee SET empl_surname=?, empl_name=?, empl_patronymic=?, empl_role=?, " +
-                "salary=?, date_of_birth=?, date_of_start=?, phone_number=?, city=?, street=?, zip_code=? WHERE id_employee=?",
+    public void update(Employee employee) {
+        jdbcTemplate.update("UPDATE employee SET empl_surname=?, empl_name=?, empl_patronymic=?, empl_role=?, " +
+                "salary=?, date_of_birth=?, date_of_start=?, phone_number=?, city=?, street=?, zip_code=? " +
+                        "WHERE id_employee=?",
                 employee.getEmpl_surname(), employee.getEmpl_name(), employee.getEmpl_patronymic(),
                 employee.getEmpl_role(), employee.getSalary(), employee.getDate_of_birth(), employee.getDate_of_start(),
-                employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code(), employee.getId_employee());
+                employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code(),
+                employee.getId_employee());
     }
 
     @Override
@@ -45,8 +48,8 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
     }
 
     @Override
-    public int deleteById(String id) {
-        return jdbcTemplate.update("DELETE FROM employee WHERE id_employee=?", id);
+    public void deleteById(String id) {
+        jdbcTemplate.update("DELETE FROM employee WHERE id_employee=?", id);
     }
 
     @Override
@@ -56,14 +59,14 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
 
     // 5. Get information about all employees, sorted by surname
     @Override
-    public List<Employee> findAllSorted() {
+    public List<Employee> findAllSortedBySurname() {
         return jdbcTemplate.query("SELECT * FROM employee ORDER BY empl_surname",
                 BeanPropertyRowMapper.newInstance(Employee.class));
     }
 
     // 6. Get information about all cashier employees, sorted by surname
     @Override
-    public List<Employee> findAllSortedCashiers() {
+    public List<Employee> findAllCashiersSortedBySurname() {
         return jdbcTemplate.query("SELECT * FROM employee WHERE empl_role = 'Cashier' ORDER BY empl_surname",
                 BeanPropertyRowMapper.newInstance(Employee.class));
     }
