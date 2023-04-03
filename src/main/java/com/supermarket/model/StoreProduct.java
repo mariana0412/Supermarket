@@ -84,45 +84,17 @@ public class StoreProduct {
 
         StoreProductDetails() {}
 
-        public String getUPC() {
-            return UPC;
+        @Override
+        public String toString() {
+            return "StoreProductDetails{" +
+                    "UPC='" + UPC + '\'' +
+                    ", selling_price=" + selling_price +
+                    ", products_number=" + products_number +
+                    ", product_name='" + product_name + '\'' +
+                    ", characteristics='" + characteristics + '\'' +
+                    '}';
         }
 
-        public void setUPC(String UPC) {
-            this.UPC = UPC;
-        }
-
-        public double getSelling_price() {
-            return selling_price;
-        }
-
-        public void setSelling_price(double selling_price) {
-            this.selling_price = selling_price;
-        }
-
-        public int getProducts_number() {
-            return products_number;
-        }
-
-        public void setProducts_number(int products_number) {
-            this.products_number = products_number;
-        }
-
-        public String getProduct_name() {
-            return product_name;
-        }
-
-        public void setProduct_name(String product_name) {
-            this.product_name = product_name;
-        }
-
-        public String getCharacteristics() {
-            return characteristics;
-        }
-
-        public void setCharacteristics(String characteristics) {
-            this.characteristics = characteristics;
-        }
     }
 
 }
