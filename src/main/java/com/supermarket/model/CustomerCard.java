@@ -1,15 +1,26 @@
 package com.supermarket.model;
 
-public class CustomerCard {
-    private String card_number;
-    private String cust_surname;
-    private String cust_name;
-    private String cust_patronymic;
-    private String phone_number;
-    private String city;
+import lombok.Getter;
+import lombok.Setter;
 
+public class CustomerCard {
+    @Getter @Setter
+    private String card_number;
+    @Getter @Setter
+    private String cust_surname;
+    @Getter @Setter
+    private String cust_name;
+    @Getter @Setter
+    private String cust_patronymic;
+    @Getter @Setter
+    private String phone_number;
+    @Getter @Setter
+    private String city;
+    @Getter @Setter
     private String street;
+    @Getter @Setter
     private String zip_code;
+    @Getter @Setter
     private int percent;
 
     public CustomerCard(String card_number, String cust_surname, String cust_name, String cust_patronymic, String phone_number, String city, String street, String zip_code, int percent) {

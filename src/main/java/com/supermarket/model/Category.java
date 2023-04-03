@@ -1,7 +1,14 @@
 package com.supermarket.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Category {
+    @Getter
+    @Setter
     private int category_number;
+    @Getter
+    @Setter
     private String category_name;
 
     public Category(int category_number, String category_name) {
