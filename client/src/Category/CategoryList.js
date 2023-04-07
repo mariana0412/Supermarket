@@ -6,19 +6,15 @@ import { Link } from 'react-router-dom';
 const CategoryList = () => {
 
     const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [sorted, setSorted] = useState(false);
 
     useEffect(() => {
-        setLoading(true);
-
         const url = sorted ? "api/categories?sorted=true" : "api/categories";
 
         fetch(url)
             .then(response => response.json())
             .then(data => {
                 setCategories(data);
-                setLoading(false);
             })
     }, [sorted]);
 
@@ -36,10 +32,6 @@ const CategoryList = () => {
         }).catch((error) => {
             console.log(error); // log any errors that occur
         });
-    }
-
-    if (loading) {
-        return <p>Loading...</p>;
     }
 
     const categoryList = categories.map(category => {

@@ -6,17 +6,14 @@ import { Link } from 'react-router-dom';
 const EmployeeList = () => {
 
     const [employees, setEmployees] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [isSorted, setIsSorted] = useState(false);
 
     useEffect(() => {
-        setLoading(true);
 
         fetch(`api/employees?sorted=${isSorted}`)
             .then(response => response.json())
             .then(data => {
                 setEmployees(data);
-                setLoading(false);
             })
     }, [isSorted]);
 
@@ -38,10 +35,6 @@ const EmployeeList = () => {
 
     const toggleSort = () => {
         setIsSorted(!isSorted);
-    }
-
-    if (loading) {
-        return <p>Loading...</p>;
     }
 
     const employeeList = employees.map(employee => {
