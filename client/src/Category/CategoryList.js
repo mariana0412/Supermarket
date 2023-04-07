@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { Button, ButtonGroup, Container, Table } from 'reactstrap';
-import AppNavbar from './AppNavbar';
+import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 
 const CategoryList = () => {
 
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [sorted, setSorted] = useState(false);
 
     useEffect(() => {
         setLoading(true);
 
-        fetch('api/categories')
+        const url = sorted ? "api/categories?sorted=true" : "api/categories";
+
+        fetch(url)
             .then(response => response.json())
             .then(data => {
                 setCategories(data);
                 setLoading(false);
             })
-    }, []);
+    }, [sorted]);
 
     const remove = async (id) => {
         await fetch(`/api/categories/${id}`, {
@@ -57,6 +60,9 @@ const CategoryList = () => {
             <Container fluid>
                 <div className="float-end">
                     <Button color="success" tag={Link} to="/categories/new">Add Category</Button>
+                    <Button color="primary" onClick={() => setSorted(!sorted)}>
+                        {sorted ? "Unsort" : "Sort by Name"}
+                    </Button>
                 </div>
                 <h3>Product Categories</h3>
                 <Table className="mt-4">
