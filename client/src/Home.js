@@ -10,6 +10,7 @@ const Home = () => {
             <AppNavbar/>
             <Container fluid>
                 <Button color="link"><Link to="/categories">Manage Categories</Link></Button>
+                <Button color="link"><Link to="/employees">Manage Employees</Link></Button>
             </Container>
         </div>
     );
