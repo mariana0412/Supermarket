@@ -54,10 +54,10 @@ public class EmployeeController {
     @PostMapping("/employees")
     public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
         try {
-            employeeRepository.save(new Employee(employee.getId_employee(), employee.getEmpl_surname(),
-                    employee.getEmpl_name(), employee.getEmpl_patronymic(), employee.getEmpl_role(),
-                    employee.getSalary(), employee.getDate_of_birth(), employee.getDate_of_start(),
-                    employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code()));
+            employeeRepository.save(new Employee(employee.getEmpl_surname(), employee.getEmpl_name(),
+                    employee.getEmpl_patronymic(), employee.getEmpl_role(), employee.getSalary(),
+                    employee.getDate_of_birth(), employee.getDate_of_start(), employee.getPhone_number(),
+                    employee.getCity(), employee.getStreet(), employee.getZip_code()));
             return new ResponseEntity<>("Employee was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
