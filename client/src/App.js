@@ -2,8 +2,8 @@ import React from 'react';
 import './App.css';
 import Home from './Home';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import CategoryList from "./CategoryList";
-import CategoryEdit from './CategoryEdit';
+import CategoryList from "./Category/CategoryList";
+import CategoryEdit from './Category/CategoryEdit';
 
 const App = () => {
   return (
