@@ -37,6 +37,7 @@ public class ProductController {
 
             return new ResponseEntity<>(products, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -58,6 +59,7 @@ public class ProductController {
                     product.getProducer(), product.getCharacteristics()));
             return new ResponseEntity<>("Product was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

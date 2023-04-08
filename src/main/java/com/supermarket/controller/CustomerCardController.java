@@ -36,6 +36,7 @@ public class CustomerCardController {
 
             return new ResponseEntity<>(customerCards, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -59,6 +60,7 @@ public class CustomerCardController {
                     customerCard.getPercent()));
             return new ResponseEntity<>("Customer Card was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -85,7 +87,7 @@ public class CustomerCardController {
     }
 
     @DeleteMapping("/customer-cards/{id}")
-    public ResponseEntity<String> deleteCustomerCard(@PathVariable("id") String id) {
+    public ResponseEntity<Map<String, Object>> deleteCustomerCard(@PathVariable("id") String id) {
         try {
             customerCardRepository.deleteById(id);
             return ResponseEntity.ok(Map.of(

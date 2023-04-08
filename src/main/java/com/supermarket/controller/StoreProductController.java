@@ -44,6 +44,7 @@ public class StoreProductController {
 
             return new ResponseEntity<>(storeProducts, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -76,6 +77,7 @@ public class StoreProductController {
                     storeProduct.isPromotional_product()));
             return new ResponseEntity<>("Store Product was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

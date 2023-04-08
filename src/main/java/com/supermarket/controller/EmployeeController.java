@@ -39,6 +39,7 @@ public class EmployeeController {
 
             return new ResponseEntity<>(employees, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -62,6 +63,7 @@ public class EmployeeController {
                     employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code()));
             return new ResponseEntity<>("Employee was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

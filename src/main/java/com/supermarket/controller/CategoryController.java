@@ -33,6 +33,7 @@ public class CategoryController {
 
             return new ResponseEntity<>(categories, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -54,6 +55,7 @@ public class CategoryController {
             categoryRepository.save(new Category(id, category.getCategory_name()));
             return new ResponseEntity<>("Category was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
