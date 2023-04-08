@@ -33,6 +33,7 @@ public class CategoryController {
 
             return new ResponseEntity<>(categories, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -54,6 +55,7 @@ public class CategoryController {
             categoryRepository.save(new Category(id, category.getCategory_name()));
             return new ResponseEntity<>("Category was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -81,14 +83,14 @@ public class CategoryController {
                     "message", "Category was deleted successfully."
             ));
         } catch (DataIntegrityViolationException e) {
-            e.printStackTrace();     // log the exception
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of(
                             "status", "error",
                             "message", "Cannot delete category because it has associated products."
                     ));
         } catch (Exception e) {
-            e.printStackTrace();     // log the exception
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of(
                             "status", "error",
@@ -96,4 +98,5 @@ public class CategoryController {
                     ));
         }
     }
+
 }

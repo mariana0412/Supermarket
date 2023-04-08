@@ -39,6 +39,7 @@ public class EmployeeController {
 
             return new ResponseEntity<>(employees, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -56,12 +57,13 @@ public class EmployeeController {
     @PostMapping("/employees")
     public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
         try {
-            employeeRepository.save(new Employee(employee.getEmpl_surname(), employee.getEmpl_name(),
-                    employee.getEmpl_patronymic(), employee.getEmpl_role(), employee.getSalary(),
-                    employee.getDate_of_birth(), employee.getDate_of_start(), employee.getPhone_number(),
-                    employee.getCity(), employee.getStreet(), employee.getZip_code()));
+            employeeRepository.save(new Employee(employee.getId_employee(), employee.getEmpl_surname(),
+                    employee.getEmpl_name(), employee.getEmpl_patronymic(), employee.getEmpl_role(),
+                    employee.getSalary(), employee.getDate_of_birth(), employee.getDate_of_start(),
+                    employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code()));
             return new ResponseEntity<>("Employee was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -99,14 +101,14 @@ public class EmployeeController {
                     "message", "Employee was deleted successfully."
             ));
         } catch (DataIntegrityViolationException e) {
-            e.printStackTrace();     // log the exception
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of(
                             "status", "error",
                             "message", "Cannot delete employee because they have associated checks."
                     ));
         } catch (Exception e) {
-            e.printStackTrace();     // log the exception
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of(
                             "status", "error",
@@ -114,4 +116,5 @@ public class EmployeeController {
                     ));
         }
     }
+
 }
