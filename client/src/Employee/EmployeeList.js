@@ -92,19 +92,21 @@ const EmployeeList = () => {
 
     return (
         <div>
-            <AppNavbar />
+            <AppNavbar/>
             <Container fluid>
                 <h3>Employees List</h3>
 
-                    <Button className="float-end" style={{ marginRight: '20px' }} color="success" tag={Link} to="/employees/new">Add Employee</Button>
-                    <Dropdown  className="float-right" isOpen={dropdownOpen} toggle={toggleDropdown}>
-                        <DropdownToggle caret>Sort by surname</DropdownToggle>
-                        <DropdownMenu>
-                            <DropdownItem onClick={toggleSort}>All employees</DropdownItem>
-                            <DropdownItem onClick={toggleCashierSort}>Cashiers</DropdownItem>
-                            <DropdownItem onClick={unsortEmployees}>Unsort all employees</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
+                <Dropdown  className="float-right" isOpen={dropdownOpen} toggle={toggleDropdown}>
+                    <DropdownToggle caret>Sort by surname</DropdownToggle>
+                    <DropdownMenu>
+                        <DropdownItem onClick={toggleSort}>All employees</DropdownItem>
+                        <DropdownItem onClick={toggleCashierSort}>Cashiers</DropdownItem>
+                        <DropdownItem onClick={unsortEmployees}>Unsort all employees</DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
+
+                <Button className="float-end" style={{ marginRight: '20px' }} color="success" tag={Link}
+                        to="/employees/new">Add Employee</Button>
 
                 <Table className="mt-4">
                     <thead>
