@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, ButtonGroup, Container, Table } from 'reactstrap';
+import { Button, ButtonGroup, Container, Table, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 
@@ -7,15 +7,24 @@ const EmployeeList = () => {
 
     const [employees, setEmployees] = useState([]);
     const [isSorted, setIsSorted] = useState(false);
+    const [isCashierSorted, setIsCashierSorted] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     useEffect(() => {
+        let url = 'api/employees';
+        if (isSorted) {
+            url += '?sorted=true';
+        }
+        if (isCashierSorted) {
+            url += isSorted ? '&cashier=true' : '?cashier=true';
+        }
 
-        fetch(`api/employees?sorted=${isSorted}`)
+        fetch(url)
             .then(response => response.json())
             .then(data => {
                 setEmployees(data);
             })
-    }, [isSorted]);
+    }, [isSorted, isCashierSorted]);
 
     const remove = async (id) => {
         try {
@@ -41,7 +50,22 @@ const EmployeeList = () => {
     }
 
     const toggleSort = () => {
-        setIsSorted(!isSorted);
+        setIsSorted(true);
+        setIsCashierSorted(false);
+    }
+
+    const toggleCashierSort = () => {
+        setIsCashierSorted(true);
+        setIsSorted(true);
+    }
+
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    }
+
+    const unsortEmployees = () => {
+        setIsSorted(false);
+        setIsCashierSorted(false);
     }
 
     const employeeList = employees.map(employee => {
@@ -68,13 +92,20 @@ const EmployeeList = () => {
 
     return (
         <div>
-            <AppNavbar/>
+            <AppNavbar />
             <Container fluid>
-                <div className="float-end">
-                    <Button color="success" tag={Link} to="/employees/new">Add Employee</Button>
-                    <Button color="secondary" onClick={toggleSort}>{isSorted ? 'Unsort' : 'Sort by Name'}</Button>
-                </div>
-                <h3>Employee List</h3>
+                <h3>Employees List</h3>
+
+                    <Button className="float-end" style={{ marginRight: '20px' }} color="success" tag={Link} to="/employees/new">Add Employee</Button>
+                    <Dropdown  className="float-right" isOpen={dropdownOpen} toggle={toggleDropdown}>
+                        <DropdownToggle caret>Sort by surname</DropdownToggle>
+                        <DropdownMenu>
+                            <DropdownItem onClick={toggleSort}>All employees</DropdownItem>
+                            <DropdownItem onClick={toggleCashierSort}>Cashiers</DropdownItem>
+                            <DropdownItem onClick={unsortEmployees}>Unsort all employees</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+
                 <Table className="mt-4">
                     <thead>
                     <tr>
@@ -89,7 +120,7 @@ const EmployeeList = () => {
                         <th>City</th>
                         <th>Street</th>
                         <th>Zip Code</th>
-                        <th>Actions</th>
+                        <th width="10%">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
