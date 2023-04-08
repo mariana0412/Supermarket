@@ -50,8 +50,15 @@ const CategoryEdit = () => {
                 <Form onSubmit={handleSubmit}>
                     <FormGroup>
                         <Label for="category_name">Category Name</Label>
-                        <Input type="text" name="category_name" id="category_name" value={category.category_name || ''}
-                               onChange={handleChange} autoComplete="category_name"/>
+                        <Input
+                            type="text"
+                            name="category_name"
+                            id="category_name"
+                            required
+                            value={category.category_name || ''}
+                            onChange={handleChange}
+                            autoComplete="category_name"
+                        />
                     </FormGroup>
 
                     <FormGroup>

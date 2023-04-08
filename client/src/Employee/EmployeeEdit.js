@@ -59,13 +59,13 @@ const EmployeeEdit = () => {
             <Form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label for="empl_surname">Surname</Label>
-                    <Input type="text" name="empl_surname" id="empl_surname" value={employee.empl_surname || ''}
+                    <Input type="text" name="empl_surname" id="empl_surname" required value={employee.empl_surname || ''}
                            onChange={handleChange} autoComplete="empl_surname"/>
                 </FormGroup>
 
                 <FormGroup>
                     <Label for="empl_name">Name</Label>
-                    <Input type="text" name="empl_name" id="empl_name" value={employee.empl_name || ''}
+                    <Input type="text" name="empl_name" id="empl_name" required value={employee.empl_name || ''}
                            onChange={handleChange} autoComplete="empl_name"/>
                 </FormGroup>
 
@@ -77,45 +77,45 @@ const EmployeeEdit = () => {
 
                 <FormGroup>
                     <Label for="empl_role">Role</Label>
-                    <Input type="text" name="empl_role" id="empl_role" value={employee.empl_role || ''}
+                    <Input type="text" name="empl_role" id="empl_role" required value={employee.empl_role || ''}
                            onChange={handleChange} autoComplete="empl_role"/>
                 </FormGroup>
 
                 <FormGroup>
                     <Label for="salary">Salary</Label>
-                    <Input type="number" name="salary" id="salary" value={employee.salary || ''}
+                    <Input type="number" name="salary" id="salary"   required value={employee.salary || ''}
                            onChange={handleChange} autoComplete="salary"/>
                 </FormGroup>
 
                 <FormGroup>
                     <Label for="date_of_birth">Date of Birth</Label>
-                    <Input type="date" name="date_of_birth" id="date_of_birth" value={employee.date_of_birth || ''}
+                    <Input type="date" name="date_of_birth" id="date_of_birth" required value={employee.date_of_birth || ''}
                            onChange={handleChange} autoComplete="date_of_birth"/>
                 </FormGroup>
 
                 <FormGroup>
                     <Label for="date_of_start">Date of Start</Label>
-                    <Input type="date" name="date_of_start" id="date_of_start" value={employee.date_of_start || ''} onChange={handleChange} autoComplete="date_of_start"/>
+                    <Input type="date" name="date_of_start" id="date_of_start" required value={employee.date_of_start || ''} onChange={handleChange} autoComplete="date_of_start"/>
                 </FormGroup>
 
                 <FormGroup>
                     <Label for="phone_number">Phone Number</Label>
-                    <Input type="tel" name="phone_number" id="phone_number" value={employee.phone_number || ''} onChange={handleChange} autoComplete="phone_number"/>
+                    <Input type="tel" name="phone_number" id="phone_number" required value={employee.phone_number || ''} onChange={handleChange} autoComplete="phone_number"/>
                 </FormGroup>
 
                 <FormGroup>
                     <Label for="city">City</Label>
-                    <Input type="text" name="city" id="city" value={employee.city || ''} onChange={handleChange} autoComplete="city"/>
+                    <Input type="text" name="city" id="city" required value={employee.city || ''} onChange={handleChange} autoComplete="city"/>
                 </FormGroup>
 
                 <FormGroup>
                     <Label for="street">Street</Label>
-                    <Input type="text" name="street" id="street" value={employee.street || ''} onChange={handleChange} autoComplete="street"/>
+                    <Input type="text" name="street" id="street" required value={employee.street || ''} onChange={handleChange} autoComplete="street"/>
                 </FormGroup>
 
                 <FormGroup>
                     <Label for="zip_code">Zip Code</Label>
-                    <Input type="text" name="zip_code" id="zip_code" value={employee.zip_code || ''} onChange={handleChange} autoComplete="zip_code"/>
+                    <Input type="text" name="zip_code" id="zip_code" required value={employee.zip_code || ''} onChange={handleChange} autoComplete="zip_code"/>
                 </FormGroup>
 
                 <FormGroup>
