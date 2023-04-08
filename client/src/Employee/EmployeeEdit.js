@@ -77,8 +77,17 @@ const EmployeeEdit = () => {
 
                 <FormGroup>
                     <Label for="empl_role">Role</Label>
-                    <Input type="text" name="empl_role" id="empl_role" required value={employee.empl_role || ''}
-                           onChange={handleChange} autoComplete="empl_role"/>
+                    <Input
+                        type="select"
+                        name="empl_role"
+                        id="empl_role"
+                        required value={employee.empl_role || ''}
+                        onChange={handleChange}
+                        autoComplete="empl_role">
+                        <option value="">Select Role</option>
+                        <option value="Cashier">Cashier</option>
+                        <option value="Manager">Manager</option>
+                    </Input>
                 </FormGroup>
 
                 <FormGroup>
