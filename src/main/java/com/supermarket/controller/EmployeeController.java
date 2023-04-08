@@ -3,12 +3,14 @@ package com.supermarket.controller;
 import com.supermarket.model.Employee;
 import com.supermarket.repository.EntityRepositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -89,12 +91,28 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/employees/{id}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable("id") String id) {
+    public ResponseEntity<Map<String, Object>> deleteEmployee(@PathVariable("id") String id) {
         try {
             employeeRepository.deleteById(id);
-            return new ResponseEntity<>("Employee was deleted successfully.", HttpStatus.OK);
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Employee was deleted successfully."
+            ));
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of(
+                            "status", "error",
+                            "message", "Cannot delete employee because they have associated checks."
+                    ));
         } catch (Exception e) {
-            return new ResponseEntity<>("Cannot delete employee.", HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "status", "error",
+                            "message", "An error occurred while deleting the employee."
+                    ));
         }
     }
+
 }
