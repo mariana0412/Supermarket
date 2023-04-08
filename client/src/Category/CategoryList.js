@@ -19,19 +19,26 @@ const CategoryList = () => {
     }, [sorted]);
 
     const remove = async (id) => {
-        await fetch(`/api/categories/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+        try {
+            const response = await fetch(`/api/categories/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                let updatedCategories = [...categories].filter(i => i.category_number !== id);
+                setCategories(updatedCategories);
+            } else {
+                alert(data.message); // display error message to user
             }
-        }).then((response) => {
-            console.log(response); // log the response to see if there are any errors
-            let updatedCategories = [...categories].filter(i => i.category_number !== id);
-            setCategories(updatedCategories);
-        }).catch((error) => {
+        } catch (error) {
             console.log(error); // log any errors that occur
-        });
+        }
     }
 
     const categoryList = categories.map(category => {
