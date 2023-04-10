@@ -70,14 +70,15 @@ const CustomerCardList = () => {
         <div>
             <AppNavbar/>
             <Container fluid>
-                <h3>Customer Cards List</h3>
-
                 <div className="float-end">
                     <Button color="success" tag={Link} to="/customer-cards/new">Add Customer Card</Button>
                     <Button color="primary" onClick={() => setSorted(!sorted)}>
                         {sorted ? "Unsort" : "Sort by Surname"}
                     </Button>
+                    <Button onClick={() => window.print()}>Print</Button>
                 </div>
+
+                <h3>Customer Cards List</h3>
 
                 <Table className="mt-4">
                     <thead>

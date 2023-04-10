@@ -84,7 +84,6 @@ const EmployeeList = () => {
             <AppNavbar/>
             <Container fluid>
                 <h3>Employees List</h3>
-
                 <Dropdown className="float-right" isOpen={dropdownOpen} toggle={toggleDropdown}>
                     <DropdownToggle caret>Sort by surname</DropdownToggle>
                     <DropdownMenu>
@@ -93,8 +92,10 @@ const EmployeeList = () => {
                     </DropdownMenu>
                 </Dropdown>
 
+                <Button className="float-end" onClick={() => window.print()}>Print</Button>
                 <Button className="float-end" style={{ marginRight: '20px' }} color="success" tag={Link}
                         to="/employees/new">Add Employee</Button>
+
 
                 <Table className="mt-4">
                     <thead>

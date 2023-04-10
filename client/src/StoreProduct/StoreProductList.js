@@ -95,8 +95,10 @@ const StoreProductList = () => {
         <div>
             <AppNavbar/>
             <Container fluid>
+
                 <div className="float-end">
                     <Button color="success" tag={Link} to="/store-products/new">Add Store Product</Button>
+                    <Button onClick={() => window.print()}>Print</Button>
                 </div>
                 <h3>Store Product List</h3>
 

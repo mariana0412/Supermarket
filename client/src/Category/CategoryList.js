@@ -62,6 +62,7 @@ const CategoryList = () => {
                     <Button color="primary" onClick={() => setSorted(!sorted)}>
                         {sorted ? "Unsort" : "Sort by Name"}
                     </Button>
+                    <Button onClick={() => window.print()}>Print</Button>
                 </div>
                 <h3>Product Categories</h3>
                 <Table className="mt-4">
