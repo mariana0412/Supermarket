@@ -8,4 +8,5 @@ import java.util.List;
 public interface ProductRepository extends CrudRepository<Product, Integer> {
     List<Product> findAllSortedByName();
     List<Product> findAllFromOneCategorySortedByName(int categoryId);
+    int getMaxId();
 }

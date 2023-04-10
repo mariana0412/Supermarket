@@ -6,16 +6,23 @@ import CategoryList from "./Category/CategoryList";
 import CategoryEdit from './Category/CategoryEdit';
 import EmployeeList from "./Employee/EmployeeList";
 import EmployeeEdit from "./Employee/EmployeeEdit";
+import ProductList from "./Product/ProductList";
+import ProductEdit from "./Product/ProductEdit";
 
 const App = () => {
   return (
       <Router>
         <Routes>
             <Route exact path="/" element={<Home/>}/>
+
             <Route path='/categories' exact={true} element={<CategoryList/>}/>
             <Route path='/categories/:id' element={<CategoryEdit/>}/>
+
             <Route path='/employees' exact={true} element={<EmployeeList/>}/>
             <Route path='/employees/:id' element={<EmployeeEdit/>}/>
+
+            <Route path='/products' exact={true} element={<ProductList/>}/>
+            <Route path='/products/:id' exact={true} element={<ProductEdit/>}/>
         </Routes>
       </Router>
   )

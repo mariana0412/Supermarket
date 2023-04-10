@@ -54,8 +54,9 @@ public class ProductController {
 
     @PostMapping("/products")
     public ResponseEntity<String> createProduct(@RequestBody Product product) {
+        int id = productRepository.getMaxId() + 1;
         try {
-            productRepository.save(new Product(product.getId_product(), product.getCategory_number(), product.getProduct_name(),
+            productRepository.save(new Product(id, product.getCategory_number(), product.getProduct_name(),
                     product.getProducer(), product.getCharacteristics()));
             return new ResponseEntity<>("Product was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {

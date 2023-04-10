@@ -65,4 +65,11 @@ public class JdbcProductRepository implements ProductRepository {
         return jdbcTemplate.query("SELECT * FROM product WHERE category_number=? ORDER BY product_name",
                 BeanPropertyRowMapper.newInstance(Product.class), catId);
     }
+
+    @Override
+    public int getMaxId() {
+        String query = "SELECT MAX(id_product) FROM product";
+        Integer maxId = jdbcTemplate.queryForObject(query, Integer.class);
+        return (maxId != null) ? maxId : 0;
+    }
 }

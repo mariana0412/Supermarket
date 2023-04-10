@@ -48,6 +48,9 @@ const Home = () => {
                 <Button color="link">
                     <Link to="/employees">Manage Employees</Link>
                 </Button>
+                <Button color="link">
+                    <Link to="/products">Manage Products</Link>
+                </Button>
             </Container>
         </div>
     );
