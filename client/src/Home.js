@@ -51,12 +51,18 @@ const Home = () => {
                 </Button>
 
                 <Button color="link">
+                    <Link to="/customer-cards">Manage Customer Cards</Link>
+                </Button>
+
+                <Button color="link">
                     <Link to="/products">Manage Products</Link>
                 </Button>
 
                 <Button color="link">
-                    <Link to="/customer-cards">Manage Customer Cards</Link>
+                    <Link to="/store-products">Manage Store Products</Link>
                 </Button>
+
+
             </Container>
         </div>
     );

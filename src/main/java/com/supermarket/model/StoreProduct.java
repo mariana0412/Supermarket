@@ -3,6 +3,8 @@ package com.supermarket.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 public class StoreProduct {
     @Getter @Setter
     private String UPC;
@@ -26,15 +28,10 @@ public class StoreProduct {
         this.promotional_product = promotional_product;
     }
 
-    public StoreProduct(String UPC, int id_product, double selling_price, int products_number, boolean promotional_product) {
-        this.UPC = UPC;
-        this.id_product = id_product;
-        this.selling_price = selling_price;
-        this.products_number = products_number;
-        this.promotional_product = promotional_product;
-    }
-
-    public StoreProduct(int id_product, double selling_price, int products_number, boolean promotional_product) {
+    public StoreProduct(String UPC_prom, int id_product, double selling_price, int products_number, boolean promotional_product) {
+        UUID uuid = UUID.randomUUID();
+        this.UPC = uuid.toString().substring(0, 10);
+        this.UPC_prom = UPC_prom;
         this.id_product = id_product;
         this.selling_price = selling_price;
         this.products_number = products_number;

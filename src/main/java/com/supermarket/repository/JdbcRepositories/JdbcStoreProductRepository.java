@@ -119,4 +119,30 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
                 "ORDER BY product_name";
         return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(StoreProduct.class));
     }
+
+    @Override
+    public StoreProduct findPromotional(int productId) {
+        String query =
+                "SELECT * " +
+                "FROM store_product " +
+                "WHERE id_product=? AND promotional_product=true";
+        try {
+            return jdbcTemplate.queryForObject(query, BeanPropertyRowMapper.newInstance(StoreProduct.class), productId);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public StoreProduct findNotPromotional(int productId) {
+        String query =
+                "SELECT * " +
+                        "FROM store_product " +
+                        "WHERE id_product=? AND promotional_product=false";
+        try {
+            return jdbcTemplate.queryForObject(query, BeanPropertyRowMapper.newInstance(StoreProduct.class), productId);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return null;
+        }
+    }
 }

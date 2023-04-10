@@ -10,6 +10,8 @@ import ProductList from "./Product/ProductList";
 import ProductEdit from "./Product/ProductEdit";
 import CustomerCardList from "./CustomerCard/CustomerCardList";
 import CustomerCardEdit from "./CustomerCard/CustomerCardEdit";
+import StoreProductList from "./StoreProduct/StoreProductList";
+import StoreProductEdit from "./StoreProduct/StoreProductEdit";
 
 const App = () => {
   return (
@@ -23,11 +25,14 @@ const App = () => {
             <Route path='/employees' exact={true} element={<EmployeeList/>}/>
             <Route path='/employees/:id' element={<EmployeeEdit/>}/>
 
+            <Route path='/customer-cards' exact={true} element={<CustomerCardList/>}/>
+            <Route path='/customer-cards/:id' exact={true} element={<CustomerCardEdit/>}/>
+
             <Route path='/products' exact={true} element={<ProductList/>}/>
             <Route path='/products/:id' exact={true} element={<ProductEdit/>}/>
 
-            <Route path='/customer-cards' exact={true} element={<CustomerCardList/>}/>
-            <Route path='/customer-cards/:id' exact={true} element={<CustomerCardEdit/>}/>
+            <Route path='/store-products' exact={true} element={<StoreProductList/>}/>
+            <Route path='/store-products/:id' exact={true} element={<StoreProductEdit/>}/>
         </Routes>
       </Router>
   )
