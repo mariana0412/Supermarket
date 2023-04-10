@@ -6,25 +6,22 @@ import { Link } from 'react-router-dom';
 const EmployeeList = () => {
 
     const [employees, setEmployees] = useState([]);
-    const [isSorted, setIsSorted] = useState(false);
-    const [isCashierSorted, setIsCashierSorted] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [sortOption, setSortOption] = useState(null);
 
     useEffect(() => {
         let url = 'api/employees';
-        if (isSorted) {
+        if (sortOption === 'allSorted')
             url += '?sorted=true';
-        }
-        if (isCashierSorted) {
-            url += isSorted ? '&cashier=true' : '?cashier=true';
-        }
+        else if (sortOption === 'cashiersSorted')
+            url += '?sorted=true&cashier=true';
 
         fetch(url)
             .then(response => response.json())
             .then(data => {
                 setEmployees(data);
             })
-    }, [isSorted, isCashierSorted]);
+    }, [sortOption]);
 
     const remove = async (id) => {
         try {
@@ -42,30 +39,22 @@ const EmployeeList = () => {
                 let updatedEmployees = [...employees].filter(i => i.id_employee !== id);
                 setEmployees(updatedEmployees);
             } else {
-                alert(data.message); // display error message to user
+                alert(data.message);
             }
         } catch (error) {
-            console.log(error); // log any errors that occur
+            console.log(error);
         }
     }
 
-    const toggleSort = () => {
-        setIsSorted(true);
-        setIsCashierSorted(false);
-    }
-
-    const toggleCashierSort = () => {
-        setIsCashierSorted(true);
-        setIsSorted(true);
+    const toggleSort = (option) => {
+        if (sortOption === option)
+            setSortOption(null);
+        else
+            setSortOption(option);
     }
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
-    }
-
-    const unsortEmployees = () => {
-        setIsSorted(false);
-        setIsCashierSorted(false);
     }
 
     const employeeList = employees.map(employee => {
@@ -96,12 +85,11 @@ const EmployeeList = () => {
             <Container fluid>
                 <h3>Employees List</h3>
 
-                <Dropdown  className="float-right" isOpen={dropdownOpen} toggle={toggleDropdown}>
+                <Dropdown className="float-right" isOpen={dropdownOpen} toggle={toggleDropdown}>
                     <DropdownToggle caret>Sort by surname</DropdownToggle>
                     <DropdownMenu>
-                        <DropdownItem onClick={toggleSort}>All employees</DropdownItem>
-                        <DropdownItem onClick={toggleCashierSort}>Cashiers</DropdownItem>
-                        <DropdownItem onClick={unsortEmployees}>Unsort all employees</DropdownItem>
+                        <DropdownItem onClick={() => toggleSort('allSorted')}>all employees</DropdownItem>
+                        <DropdownItem onClick={() => toggleSort('cashiersSorted')}>cashiers</DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
 
