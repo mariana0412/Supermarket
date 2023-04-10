@@ -45,11 +45,17 @@ const Home = () => {
                 <Button color="link">
                     <Link to="/categories">Manage Categories</Link>
                 </Button>
+
                 <Button color="link">
                     <Link to="/employees">Manage Employees</Link>
                 </Button>
+
                 <Button color="link">
                     <Link to="/products">Manage Products</Link>
+                </Button>
+
+                <Button color="link">
+                    <Link to="/customer-cards">Manage Customer Cards</Link>
                 </Button>
             </Container>
         </div>

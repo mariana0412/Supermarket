@@ -8,6 +8,8 @@ import EmployeeList from "./Employee/EmployeeList";
 import EmployeeEdit from "./Employee/EmployeeEdit";
 import ProductList from "./Product/ProductList";
 import ProductEdit from "./Product/ProductEdit";
+import CustomerCardList from "./CustomerCard/CustomerCardList";
+import CustomerCardEdit from "./CustomerCard/CustomerCardEdit";
 
 const App = () => {
   return (
@@ -23,6 +25,9 @@ const App = () => {
 
             <Route path='/products' exact={true} element={<ProductList/>}/>
             <Route path='/products/:id' exact={true} element={<ProductEdit/>}/>
+
+            <Route path='/customer-cards' exact={true} element={<CustomerCardList/>}/>
+            <Route path='/customer-cards/:id' exact={true} element={<CustomerCardEdit/>}/>
         </Routes>
       </Router>
   )
