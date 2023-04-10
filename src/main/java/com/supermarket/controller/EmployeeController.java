@@ -57,7 +57,7 @@ public class EmployeeController {
     @PostMapping("/employees")
     public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
         try {
-            employeeRepository.save(new Employee(employee.getId_employee(), employee.getEmpl_surname(),
+            employeeRepository.save(new Employee(employee.getEmpl_surname(),
                     employee.getEmpl_name(), employee.getEmpl_patronymic(), employee.getEmpl_role(),
                     employee.getSalary(), employee.getDate_of_birth(), employee.getDate_of_start(),
                     employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code()));
