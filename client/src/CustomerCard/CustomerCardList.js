@@ -75,7 +75,7 @@ const CustomerCardList = () => {
                 <div className="float-end">
                     <Button color="success" tag={Link} to="/customer-cards/new">Add Customer Card</Button>
                     <Button color="primary" onClick={() => setSorted(!sorted)}>
-                        {sorted ? "Unsort" : "Sort by Name"}
+                        {sorted ? "Unsort" : "Sort by Surname"}
                     </Button>
                 </div>
 
