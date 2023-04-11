@@ -149,11 +149,15 @@ const StoreProductList = () => {
                 </div>
 
                 <div className="float-end">
-                    <Button className="buttonWithMargins" color="success" tag={Link} to="/store-products/new">Add Store Product</Button>
-                    <Button className="buttonWithMargins" onClick={() => window.print()}>Print</Button>
+                    <Button className="buttonWithMargins" color="success" tag={Link} to="/store-products/new">
+                        Add Store Product
+                    </Button>
+                    <Button className="buttonWithMargins" onClick={() => window.print()}>
+                        Print
+                    </Button>
                 </div>
 
-                <Dropdown  className="float-right" isOpen={dropdownOpen} toggle={toggleDropdown}>
+                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
                     <DropdownToggle caret>Sort</DropdownToggle>
                     <DropdownMenu>
                         <DropdownItem onClick={() => toggleSort('num')}>all by number</DropdownItem>

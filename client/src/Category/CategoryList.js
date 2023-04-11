@@ -57,14 +57,20 @@ const CategoryList = () => {
         <div>
             <AppNavbar/>
             <Container fluid>
+                <h3>Product Categories</h3>
+
                 <div className="float-end">
-                    <Button color="success" tag={Link} to="/categories/new">Add Category</Button>
-                    <Button color="primary" onClick={() => setSorted(!sorted)}>
+                    <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
                         {sorted ? "Unsort" : "Sort by Name"}
                     </Button>
-                    <Button onClick={() => window.print()}>Print</Button>
+                    <Button className="buttonWithMargins" color="success" tag={Link} to="/categories/new">
+                        Add Category
+                    </Button>
+                    <Button className="buttonWithMargins" onClick={() => window.print()}>
+                        Print
+                    </Button>
                 </div>
-                <h3>Product Categories</h3>
+
                 <Table className="mt-4">
                     <thead>
                     <tr>

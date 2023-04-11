@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {Button, ButtonGroup, Container, FormGroup, Input, Table} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
+import '../App.css';
 
 const ProductList = () => {
 
@@ -85,24 +86,28 @@ const ProductList = () => {
             <Container fluid>
                 <h3>Product List</h3>
 
+                <div className="float-end">
+                    <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
+                        {sorted ? "Unsort" : "Sort by Name"}
+                    </Button>
+                    <Button className="buttonWithMargins" color="success" tag={Link} to="/products/new">
+                        Add Product
+                    </Button>
+                    <Button className="buttonWithMargins" onClick={() => window.print()}>
+                        Print
+                    </Button>
+                </div>
+
                 <FormGroup>
                     <Input style={{width: '200px'}}
-                        type="select"
-                        name="category_number"
-                        id="category_number"
-                        onChange={handleChange}>
+                           type="select"
+                           name="category_number"
+                           id="category_number"
+                           onChange={handleChange}>
                         <option value="">Select Category</option>
                         {categoryOptions}
                     </Input>
                 </FormGroup>
-
-                <div className="float-end">
-                    <Button color="success" tag={Link} to="/products/new">Add Product</Button>
-                    <Button color="primary" onClick={() => setSorted(!sorted)}>
-                        {sorted ? "Unsort" : "Sort by Name"}
-                    </Button>
-                    <Button onClick={() => window.print()}>Print</Button>
-                </div>
 
                 <Table className="mt-4">
                     <thead>
