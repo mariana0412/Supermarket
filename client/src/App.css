@@ -82,3 +82,13 @@ h1 {
 .home-buttons > * {
   margin: 0 0.5rem;
 }
+
+.search-container {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.search-container > *:not(:last-child) {
+  margin-right: 10px;
+}
