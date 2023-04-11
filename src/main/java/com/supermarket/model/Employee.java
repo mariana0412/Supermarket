@@ -82,4 +82,25 @@ public class Employee {
                 ", zip_code='" + zip_code + '\'' +
                 '}';
     }
+
+    public static class EmployeeContactInfo {
+        @Getter @Setter
+        private String phone_number;
+        @Getter @Setter
+        private String city;
+        @Getter @Setter
+        private String street;
+        @Getter @Setter
+        private String zip_code;
+
+        public EmployeeContactInfo(String phone_number, String city, String street, String zip_code) {
+            this.phone_number = phone_number;
+            this.city = city;
+            this.street = street;
+            this.zip_code = zip_code;
+        }
+
+        EmployeeContactInfo() {}
+    }
+
 }
