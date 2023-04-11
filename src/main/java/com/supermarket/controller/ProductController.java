@@ -22,11 +22,11 @@ public class ProductController {
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) boolean sorted,
-                                                        @RequestParam(required = false) Integer catId) {
+                                                        @RequestParam(required = false) Integer categoryId) {
         List<Product> products;
         try {
-            if(catId != null)
-                products = new ArrayList<>(productRepository.findAllFromOneCategorySortedByName(catId));
+            if(categoryId != null)
+                products = new ArrayList<>(productRepository.findAllFromOneCategorySortedByName(categoryId));
             else if(sorted)
                 products = new ArrayList<>(productRepository.findAllSortedByName());
             else

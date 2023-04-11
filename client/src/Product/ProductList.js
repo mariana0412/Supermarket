@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, ButtonGroup, Container, Table } from 'reactstrap';
+import {Button, ButtonGroup, Container, FormGroup, Input, Table} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 
@@ -7,16 +7,28 @@ const ProductList = () => {
 
     const [products, setProducts] = useState([]);
     const [sorted, setSorted] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
 
     useEffect(() => {
-        const url = sorted ? "api/products?sorted=true" : "api/products";
+        let url = `api/products`;
+        if(sorted)
+            url += `?sorted=true`;
+        else if(selectedCategory)
+            url += `?categoryId=` + selectedCategory;
 
         fetch(url)
             .then(response => response.json())
             .then(data => {
                 setProducts(data);
-            })
-    }, [sorted]);
+            });
+
+        fetch(`/api/categories`)
+            .then(response => response.json())
+            .then(data => {
+                setCategories(data);
+            });
+    }, [sorted, selectedCategory]);
 
     const remove = async (id) => {
         try {
@@ -34,17 +46,17 @@ const ProductList = () => {
                 let updatedProducts = [...products].filter(i => i.id_product !== id);
                 setProducts(updatedProducts);
             } else {
-                alert(data.message); // display error message to user
+                alert(data.message);
             }
         } catch (error) {
-            console.log(error); // log any errors that occur
+            console.log(error);
         }
     }
 
     const productList = products.map(product => {
         return <tr key={product.id_product}>
             <td style={{whiteSpace: 'nowrap'}}>{product.product_name}</td>
-            <td>{product.category_number}</td>
+            <td>{product.category_number} - {categories.find(cat => cat.category_number === product.category_number)?.category_name}</td>
             <td>{product.characteristics}</td>
             <td>
                 <ButtonGroup>
@@ -55,10 +67,35 @@ const ProductList = () => {
         </tr>
     });
 
+    const categoryOptions = categories.map((category) => {
+        return (
+            <option key={category.category_number} value={category.category_number}>
+                {category.category_name}
+            </option>
+        );
+    });
+
+    const handleChange = (event) => {
+        setSelectedCategory(event.target.value);
+    }
+
     return (
         <div>
             <AppNavbar/>
             <Container fluid>
+                <h3>Product List</h3>
+
+                <FormGroup>
+                    <Input style={{width: '200px'}}
+                        type="select"
+                        name="category_number"
+                        id="category_number"
+                        onChange={handleChange}>
+                        <option value="">Select Category</option>
+                        {categoryOptions}
+                    </Input>
+                </FormGroup>
+
                 <div className="float-end">
                     <Button color="success" tag={Link} to="/products/new">Add Product</Button>
                     <Button color="primary" onClick={() => setSorted(!sorted)}>
@@ -66,7 +103,7 @@ const ProductList = () => {
                     </Button>
                     <Button onClick={() => window.print()}>Print</Button>
                 </div>
-                <h3>Product List</h3>
+
                 <Table className="mt-4">
                     <thead>
                     <tr>
