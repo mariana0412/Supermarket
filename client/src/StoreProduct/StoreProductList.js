@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import {Button, ButtonGroup, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Table} from 'reactstrap';
+import {
+    Button,
+    ButtonGroup,
+    Container,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Input, Modal, ModalBody, ModalFooter, ModalHeader,
+    Table
+} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
+import '../App.css';
 import { Link } from 'react-router-dom';
 
 const StoreProductList = () => {
@@ -9,6 +20,9 @@ const StoreProductList = () => {
     const [products, setProducts] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [sortOption, setSortOption] = useState(null);
+    const [searchUPC, setSearchUPC] = useState('');
+    const [modal, setModal] = useState(false);
+    const [productDetails, setProductDetails] = useState(null);
 
     useEffect(() => {
         fetch(`/api/products`)
@@ -75,8 +89,34 @@ const StoreProductList = () => {
         setDropdownOpen(!dropdownOpen);
     }
 
+    const handleSearchInputChange = (event) => {
+        setSearchUPC(event.target.value);
+    }
+
+    const toggleModal = () => {
+        setModal(!modal);
+        if(modal)
+            setSearchUPC('');
+    };
+
+    const showContactInfo = async () => {
+        try {
+            const response = await fetch(`/api/store-products-details/${searchUPC}`);
+            if (response.status === 404) {
+                alert('There is no store product with such UPC.');
+            } else {
+                const data = await response.json();
+                setProductDetails(data);
+                toggleModal();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const storeProductList = storeProducts.map(storeProduct => {
         return <tr key={storeProduct.upc}>
+            <td>{storeProduct.upc}</td>
             <td style={{whiteSpace: 'nowrap'}}>{storeProduct.upc_prom ? storeProduct.upc_prom : 'missing'}</td>
             <td>{storeProduct.id_product} - {products.find(p => p.id_product === storeProduct.id_product)?.product_name}</td>
             <td>{storeProduct.selling_price}</td>
@@ -95,12 +135,23 @@ const StoreProductList = () => {
         <div>
             <AppNavbar/>
             <Container fluid>
+                <h3>Store Product List</h3>
+
+                <div className='search-container'>
+                    <Input
+                        style={{width: '200px' }}
+                        type="text"
+                        placeholder="Find more info by UPC" 
+                        value={searchUPC}
+                        onChange={handleSearchInputChange}
+                    />
+                    <Button color="primary" onClick={() => showContactInfo()}>Search</Button>
+                </div>
 
                 <div className="float-end">
-                    <Button color="success" tag={Link} to="/store-products/new">Add Store Product</Button>
-                    <Button onClick={() => window.print()}>Print</Button>
+                    <Button className="buttonWithMargins" color="success" tag={Link} to="/store-products/new">Add Store Product</Button>
+                    <Button className="buttonWithMargins" onClick={() => window.print()}>Print</Button>
                 </div>
-                <h3>Store Product List</h3>
 
                 <Dropdown  className="float-right" isOpen={dropdownOpen} toggle={toggleDropdown}>
                     <DropdownToggle caret>Sort</DropdownToggle>
@@ -116,7 +167,8 @@ const StoreProductList = () => {
                 <Table className="mt-4">
                     <thead>
                     <tr>
-                        <th>Promotional store product ID</th>
+                        <th>UPC</th>
+                        <th>Promotional product UPC</th>
                         <th>Product ID</th>
                         <th>Selling Price</th>
                         <th>Products number</th>
@@ -128,6 +180,23 @@ const StoreProductList = () => {
                     {storeProductList}
                     </tbody>
                 </Table>
+
+                <Modal isOpen={modal} toggle={toggleModal}>
+                    <ModalHeader toggle={toggleModal}>Store Product Details</ModalHeader>
+                    <ModalBody>
+                        {productDetails && (
+                            <>
+                                <p>Name: {productDetails?.product_name}</p>
+                                <p>Characteristics: {productDetails?.characteristics}</p>
+                                <p>Products number: {productDetails?.products_number}</p>
+                                <p>Selling price: {productDetails?.selling_price}</p>
+                            </>
+                        )}
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={toggleModal}>Close</Button>
+                    </ModalFooter>
+                </Modal>
             </Container>
         </div>
     );

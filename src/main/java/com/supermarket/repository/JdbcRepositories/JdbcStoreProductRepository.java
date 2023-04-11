@@ -70,8 +70,12 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
                 "FROM store_product " +
                 "INNER JOIN product ON store_product.id_product=product.id_product " +
                 "WHERE UPC=?";
-        return jdbcTemplate.queryForObject(query,
-                BeanPropertyRowMapper.newInstance(StoreProduct.StoreProductDetails.class), UPC);
+        try {
+            return jdbcTemplate.queryForObject(query,
+                    BeanPropertyRowMapper.newInstance(StoreProduct.StoreProductDetails.class), UPC);
+        } catch (IncorrectResultSizeDataAccessException e) {
+                return null;
+        }
     }
 
     // 15. Get information about all promotional store products, sorted by number
