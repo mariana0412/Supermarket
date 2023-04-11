@@ -162,7 +162,7 @@ const EmployeeList = () => {
                         {contactInfo && (
                             <>
                                 <p>Phone Number: {contactInfo?.phone_number}</p>
-                                <p>City: {contactInfo?.city}, {contactInfo?.street}, {contactInfo?.zip_code}</p>
+                                <p>City: {contactInfo?.city}</p>
                                 <p>Street: {contactInfo?.street}</p>
                                 <p>Zip-code: {contactInfo?.zip_code}</p>
                             </>
