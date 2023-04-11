@@ -92,3 +92,7 @@ h1 {
 .search-container > *:not(:last-child) {
   margin-right: 10px;
 }
+
+.buttonWithMargins {
+  margin: 10px;
+}
