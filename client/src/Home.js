@@ -62,6 +62,9 @@ const Home = () => {
                     <Link to="/store-products">Manage Store Products</Link>
                 </Button>
 
+                <Button color="link">
+                    <Link to="/checks">Manage Checks</Link>
+                </Button>
 
             </Container>
         </div>

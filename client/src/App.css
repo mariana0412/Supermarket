@@ -97,3 +97,10 @@ h1 {
 .buttonWithMargins {
   margin: 10px;
 }
+
+.checks-filter {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid black;
+  width: 400px;
+}
