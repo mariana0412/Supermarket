@@ -38,4 +38,21 @@ public class Sale {
                 '}';
     }
 
+    public static class ProductNameNumberPrice {
+        @Getter @Setter
+        private String product_name;
+        @Getter @Setter
+        private int product_number;
+        @Getter @Setter
+        private double selling_price;
+
+        public ProductNameNumberPrice(String product_name, int product_number, double selling_price) {
+            this.product_name = product_name;
+            this.product_number = product_number;
+            this.selling_price = selling_price;
+        }
+
+        ProductNameNumberPrice() {}
+    }
+
 }
