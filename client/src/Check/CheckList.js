@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import {Button, ButtonGroup, Container, FormGroup, Input, Label, Table} from 'reactstrap';
+import {Button, Container, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Table} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import '../App.css';
+import Check from "./Check";
 
 const CheckList = () => {
 
     const [checks, setChecks] = useState([]);
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [cashiers, setCashiers] = useState([]);
     const [selectedCashier, setSelectedCashier] = useState(null);
     const [showEmpty, setShowEmpty] = useState(false);
-    const [totalSum, setTotalSum] = useState(0);
+    const [totalSum, setTotalSum] = useState(null);
+    const [modal, setModal] = useState(false);
+    const [purchasedProducts, setPurchasedProducts] = useState(null);
 
     useEffect(() => {
         let url = `api/checks`;
-        if(startDate && endDate && selectedCashier)
-            url += `?cashierId=${selectedCashier}&startDate=${startDate}&endDate=${endDate}`
-        else if(startDate && endDate)
-            url += `?startDate=${startDate}&endDate=${endDate}`
+        if(startDate && endDate && selectedCashier) {
+            url += `?cashierId=${selectedCashier}&startDate=${startDate}&endDate=${endDate}`;
+            showTotalSum();
+        }
+        else if(startDate && endDate) {
+            url += `?startDate=${startDate}&endDate=${endDate}`;
+            showTotalSum();
+        }
 
         fetch(url)
             .then(response => {
@@ -30,11 +37,9 @@ const CheckList = () => {
             .then(data => {
                 if (data) {
                     setChecks(data);
-                    setTotalSum(data.reduce((accumulator, object) => accumulator + object.sum_total, 0))
                     setShowEmpty(data.length === 0);
                 } else {
                     setChecks([]);
-                    setTotalSum(0);
                     setShowEmpty(true);
                 }
             })
@@ -74,40 +79,59 @@ const CheckList = () => {
         }
     }
 
-    const checksList = checks.map(check => {
-        return <tr key={check.check_number}>
-            <td>{check.check_number}</td>
-            <td>{check.id_employee}</td>
-            <td>{check.card_number}</td>
-            <td>{check.print_date}</td>
-            <td>{check.sum_total}</td>
-            <td>{check.vat}</td>
-            <td>
-                <ButtonGroup>
-                    <Button size="sm" color="danger" onClick={() => remove(check.check_number)}>Delete</Button>
-                </ButtonGroup>
-            </td>
-        </tr>
-    });
+    const checksList = ({ checks, remove, showPurchasedProducts }) => checks.map(check => (
+            <Check
+                check={check}
+                remove={remove}
+                showPurchasedProducts={showPurchasedProducts}
+            />
+        ));
 
-    const cashierOptions = cashiers.map((cashier) => {
-        return (
+    const cashierOptions = cashiers.map((cashier) =>
             <option key={cashier.id_employee} value={cashier.id_employee}>
                 {cashier.id_employee} - {cashier.empl_surname} {cashier.empl_name} {cashier.empl_patronymic}
             </option>
-        );
-    });
+    );
 
     const handleStartDate = event => setStartDate(event.target.value);
     const handleEndDate = event => setEndDate(event.target.value);
     const handleCashier = event => setSelectedCashier(event.target.value);
+    const toggleModal = () => setModal(!modal);
+
+    const showPurchasedProducts = async (checkNumber) => {
+        try {
+            const response = await fetch(`/api/sales?checkNumber=${checkNumber}`);
+            if (response.status === 204) {
+                alert('There is no products in this check.');
+            } else {
+                const data = await response.json();
+                console.log(data);
+                setPurchasedProducts(data);
+                toggleModal();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const showTotalSum = async () => {
+        try {
+            let url = `/api/checks-sum?startDate=${startDate}&endDate=${endDate}`;
+            if(selectedCashier)
+                url += `&cashierId=${selectedCashier}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            setTotalSum(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <div>
             <AppNavbar/>
             <Container fluid>
                 <h3>Checks List</h3>
-                <Label> Total sum: {totalSum}</Label>
 
                 <div className="checks-filter">
                     <FormGroup>
@@ -146,13 +170,11 @@ const CheckList = () => {
                             {cashierOptions}
                         </Input>
                     </FormGroup>
+
+                    {totalSum && <>Total sum: ${totalSum}</>}
                 </div>
 
-                <div className="float-end">
-                    <Button className="buttonWithMargins" onClick={() => window.print()}>
-                        Print
-                    </Button>
-                </div>
+                <Button className="float-end buttonWithMargins" onClick={() => window.print()}>Print</Button>
 
                 {showEmpty ?
                     <div className="text-center">
@@ -172,10 +194,28 @@ const CheckList = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {checksList}
+                    {checksList ({ checks, remove, showPurchasedProducts })}
                     </tbody>
                 </Table>
                 }
+
+                <Modal isOpen={modal} toggle={toggleModal} >
+                    <ModalHeader toggle={toggleModal}>Purchased Products</ModalHeader>
+                    <ModalBody>
+                        {purchasedProducts && (purchasedProducts.map(p =>
+                            <>
+                                <p>Name: {p?.product_name}</p>
+                                <p>Products number: {p?.product_number}</p>
+                                <p>Selling price: {p?.selling_price}</p>
+                                <br></br>
+                            </>
+                            )
+                        )}
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={toggleModal}>Close</Button>
+                    </ModalFooter>
+                </Modal>
             </Container>
         </div>
     );
