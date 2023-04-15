@@ -24,10 +24,39 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/authenticate")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+                .anyRequest().permitAll() // TODO: finish permits on frontend
+                /*.requestMatchers("/api/auth/**").permitAll()
+
+                .requestMatchers(HttpMethod.POST,
+                        "/api/categories",
+                        "/api/products",
+                        "/api/store-products",
+                        "/api/employees",
+                        "/api/customer-cards")
+                .hasRole("MANAGER")
+
+                .requestMatchers(HttpMethod.POST, "/api/checks").hasRole("CASHIER")
+
+                .requestMatchers(HttpMethod.PUT,
+                        "/api/categories/**",
+                        "/api/products/**",
+                        "/api/store-products/**",
+                        "/api/employees/**")
+                .hasRole("MANAGER")
+
+                .requestMatchers(HttpMethod.DELETE,
+                        "/api/categories/**",
+                        "/api/products/**",
+                        "/api/store-products/**",
+                        "/api/employees/**",
+                        "/api/customer-cards/**",
+                        "/api/checks/**")
+                .hasRole("MANAGER")
+
+*/
+
+
+                //.anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

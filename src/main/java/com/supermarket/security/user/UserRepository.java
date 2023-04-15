@@ -1,8 +1,9 @@
 package com.supermarket.security.user;
 
-import java.util.Optional;
+import com.supermarket.model.Employee;
 
 public interface UserRepository {
-    Optional<User> findByPhoneNumber(String phoneNumber);
+    User findByPhoneNumber(String phoneNumber);
     void save(User user);
+    Employee findEmployeeByPhoneNumber(String phoneNumber);
 }

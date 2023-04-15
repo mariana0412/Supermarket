@@ -20,7 +20,6 @@ public class JwtService {
     private static final String SECRET_KEY = "6251655368566D597133743677397A24432646294A404E635266556A576E5A72";
 
     public String extractUsername(String token) {
-        System.out.println("HEREEEEEEE: " + extractClaim(token, Claims::getSubject));
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -61,7 +60,6 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        System.out.println("TOKEN: " + token);
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignInKey())
