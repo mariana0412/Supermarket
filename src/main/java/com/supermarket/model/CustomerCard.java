@@ -59,7 +59,7 @@ public class CustomerCard {
                 ", cust_surname='" + cust_surname + '\'' +
                 ", cust_name='" + cust_name + '\'' +
                 ", cust_patronymic='" + cust_patronymic + '\'' +
-                ", phone_number='" + phone_number + '\'' +
+                ", email='" + phone_number + '\'' +
                 ", city='" + city + '\'' +
                 ", street='" + street + '\'' +
                 ", zip_code='" + zip_code + '\'' +
