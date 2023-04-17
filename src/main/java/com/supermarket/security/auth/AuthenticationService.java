@@ -20,11 +20,11 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
 
-    public AuthenticationResponse register(AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponse> register(AuthenticationRequest request) {
         String phoneNumber = request.getPhone_number();
         Employee employee = userRepository.findEmployeeByPhoneNumber(phoneNumber);
         if(employee == null)
-            return (AuthenticationResponse) ResponseEntity.notFound();
+            return ResponseEntity.noContent().build();
 
         UserRole newUserRole;
         String employeeRoleForComparison = employee.getEmpl_role();
@@ -42,9 +42,9 @@ public class AuthenticationService {
                 .build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
+        return ResponseEntity.ok(AuthenticationResponse.builder()
                 .token(jwtToken)
-                .build();
+                .build());
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
