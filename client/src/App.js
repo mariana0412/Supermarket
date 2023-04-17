@@ -22,6 +22,9 @@ const App = () => {
         <Routes>
             <Route exact path="/" element={<Home/>}/>
 
+            <Route exact path="/login" element={<Login/>}/>
+            <Route exact path="/register" element={<Register/>}/>
+
             <Route path='/categories' exact={true} element={<CategoryList/>}/>
             <Route path='/categories/:id' element={<CategoryEdit/>}/>
 
