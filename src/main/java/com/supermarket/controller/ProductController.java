@@ -48,6 +48,16 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping("products/name/{name}")
+    public ResponseEntity<List<Product>> getProductByName(@PathVariable("name") String name) {
+        List<Product> productList = productRepository.findByName(name);
+
+        if (productList != null)
+            return new ResponseEntity<>(productList, HttpStatus.OK);
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @PostMapping("/products")
     public ResponseEntity<String> createProduct(@RequestBody Product product) {
         try {

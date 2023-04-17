@@ -9,6 +9,7 @@ public interface StoreProductRepository extends CrudRepository<StoreProduct, Str
     // get selling price, products number, product name and characteristics
     StoreProduct.StoreProductDetails findDetailsByUPC(String UPC);
     List<StoreProduct> findAllSortedByNumber();
+    List<StoreProduct> findAllSortedByName();
     List<StoreProduct> findAllPromotionalSortedByNumber();
     List<StoreProduct> findAllPromotionalSortedByName();
     List<StoreProduct> findAllNotPromotionalSortedByNumber();

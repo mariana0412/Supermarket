@@ -11,7 +11,6 @@ import com.supermarket.model.StoreProduct;
 
 import java.util.List;
 
-
 @Repository
 public class JdbcStoreProductRepository implements StoreProductRepository {
 
@@ -59,6 +58,13 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
     @Override
     public List<StoreProduct> findAllSortedByNumber() {
         return jdbcTemplate.query("SELECT * FROM store_product ORDER BY products_number",
+                BeanPropertyRowMapper.newInstance(StoreProduct.class));
+    }
+
+    // 2. Get information about all store products, sorted by name
+    @Override
+    public List<StoreProduct> findAllSortedByName() {
+        return jdbcTemplate.query("SELECT * FROM store_product ORDER BY product_name",
                 BeanPropertyRowMapper.newInstance(StoreProduct.class));
     }
 
