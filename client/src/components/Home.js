@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './App.css';
+import '../App.css';
 import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap';
@@ -42,6 +42,14 @@ const Home = () => {
             </header>
 
             <Container fluid>
+                <Button color="link">
+                    <Link to="/login">Login</Link>
+                </Button>
+
+                <Button color="link">
+                    <Link to="/register">Register</Link>
+                </Button>
+
                 <Button color="link">
                     <Link to="/categories">Manage Categories</Link>
                 </Button>

@@ -4,7 +4,7 @@ import {Button, ButtonGroup, Container, Table, Dropdown, DropdownToggle, Dropdow
 } from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
-import '../App.css';
+import '../../App.css';
 
 const EmployeeList = () => {
 

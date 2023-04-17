@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {Button, ButtonGroup, Container, Input, Table} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
-import '../App.css';
+import '../../App.css';
 
 const CustomerCardList = () => {
 

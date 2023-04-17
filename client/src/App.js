@@ -1,18 +1,20 @@
 import React from 'react';
 import './App.css';
-import Home from './Home';
+import Home from './components/Home';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import CategoryList from "./Category/CategoryList";
-import CategoryEdit from './Category/CategoryEdit';
-import EmployeeList from "./Employee/EmployeeList";
-import EmployeeEdit from "./Employee/EmployeeEdit";
-import ProductList from "./Product/ProductList";
-import ProductEdit from "./Product/ProductEdit";
-import CustomerCardList from "./CustomerCard/CustomerCardList";
-import CustomerCardEdit from "./CustomerCard/CustomerCardEdit";
-import StoreProductList from "./StoreProduct/StoreProductList";
-import StoreProductEdit from "./StoreProduct/StoreProductEdit";
-import CheckList from "./Check/CheckList";
+import CategoryList from "./components/Category/CategoryList";
+import CategoryEdit from './components/Category/CategoryEdit';
+import EmployeeList from "./components/Employee/EmployeeList";
+import EmployeeEdit from "./components/Employee/EmployeeEdit";
+import ProductList from "./components/Product/ProductList";
+import ProductEdit from "./components/Product/ProductEdit";
+import CustomerCardList from "./components/CustomerCard/CustomerCardList";
+import CustomerCardEdit from "./components/CustomerCard/CustomerCardEdit";
+import StoreProductList from "./components/StoreProduct/StoreProductList";
+import StoreProductEdit from "./components/StoreProduct/StoreProductEdit";
+import CheckList from "./components/Check/CheckList";
+import Login from "./components/Auth/Login";
+import Register from "./components/Auth/Register";
 
 const App = () => {
   return (

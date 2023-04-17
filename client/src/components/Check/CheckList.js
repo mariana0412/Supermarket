@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {Button, Container, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Table} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
-import '../App.css';
+import '../../App.css';
 import Check from "./Check";
 
 const CheckList = () => {
