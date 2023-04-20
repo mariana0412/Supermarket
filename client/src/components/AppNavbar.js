@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import {Button, Collapse, Nav, Navbar, NavbarBrand, NavbarToggler} from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 const AppNavbar = () => {
@@ -12,9 +12,29 @@ const AppNavbar = () => {
             <NavbarToggler onClick={() => { setIsOpen(!isOpen) }}/>
             <Collapse isOpen={isOpen} navbar>
                 <Nav className="justify-content-end" style={{width: "100%"}} navbar>
-                    <NavItem>
-                        <NavLink href="https://github.com/mariana0412/Supermarket">GitHub</NavLink>
-                    </NavItem>
+                    <Button color="link">
+                        <Link to="/categories">Categories</Link>
+                    </Button>
+
+                    <Button color="link">
+                        <Link to="/employees">Employees</Link>
+                    </Button>
+
+                    <Button color="link">
+                        <Link to="/customer-cards">Customer Cards</Link>
+                    </Button>
+
+                    <Button color="link">
+                        <Link to="/products">Products</Link>
+                    </Button>
+
+                    <Button color="link">
+                        <Link to="/store-products">Store Products</Link>
+                    </Button>
+
+                    <Button color="link">
+                        <Link to="/checks">Checks</Link>
+                    </Button>
                 </Nav>
             </Collapse>
         </Navbar>

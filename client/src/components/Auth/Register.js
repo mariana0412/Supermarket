@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Container, Form, FormGroup, Label, Input } from 'reactstrap';
 import AppNavbar from "../AppNavbar";
+import {useNavigate} from "react-router-dom";
 
 
 function RegisterPage() {
+    const navigate = useNavigate();
     const [phoneNumber, setPhoneNumber] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,6 +29,7 @@ function RegisterPage() {
                 } else if (response.status === 200) {
                     alert("You have registered successfully");
                 }
+                navigate('/login');
             })
             .catch((error) => {
                 console.error(error);

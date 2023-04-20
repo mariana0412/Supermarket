@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import { Container, Form, FormGroup, Label, Input, Button } from "reactstrap";
 import AppNavbar from "../AppNavbar";
+import useAuth from '../../hooks/useAuth.js';
+import jwt_decode from 'jwt-decode';
+import {useNavigate} from "react-router-dom";
 
 function LoginPage() {
+    const {setAuth} = useAuth();
+    const navigate = useNavigate();
     const [phoneNumber, setPhoneNumber] = useState("");
     const [password, setPassword] = useState("");
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            const decodedToken = jwt_decode(token);
+            const role = decodedToken.role;
+            setAuth({ role, accessToken: token });
+        }
+    }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -18,10 +32,16 @@ function LoginPage() {
             .then((response) => {
                 if (response.data && response.data.token) {
                     localStorage.setItem('token', response.data.token);
+
+                    const accessToken = response?.data?.token;
+                    const role = jwt_decode(accessToken).role;
+                    setAuth({ role, accessToken});
+
+                    console.log(role);
                     console.log('token: ' + response.data.token)
-                    // redirect to the dashboard or home page
+
+                    navigate('/');
                 } else {
-                    // handle error if response is missing data or token
                     console.error('Invalid API response:', response);
                 }
             })
