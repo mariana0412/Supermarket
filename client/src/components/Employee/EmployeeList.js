@@ -132,7 +132,7 @@ const EmployeeList = () => {
                         </DropdownMenu>
                     </Dropdown>
                 }
-                { auth?.role === "CASHIER"
+                { auth?.role === "MANAGER"
                     &&
                     <Button className="float-end" onClick={() => window.print()}>
                         Print

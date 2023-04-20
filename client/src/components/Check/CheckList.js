@@ -180,7 +180,7 @@ const CheckList = () => {
                     </div>
                 }
 
-                { auth?.role === "CASHIER"
+                { auth?.role === "MANAGER"
                     &&
                     <Button className="float-end buttonWithMargins" onClick={() => window.print()}>
                         Print

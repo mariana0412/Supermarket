@@ -119,7 +119,7 @@ const CustomerCardList = () => {
                                 Add Customer Card
                             </Button>
                         }
-                        { auth?.role === "CASHIER"
+                        { auth?.role === "MANAGER"
                             &&
                             <Button className="buttonWithMargins" onClick={() => window.print()}>
                                 Print

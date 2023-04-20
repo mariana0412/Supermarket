@@ -163,7 +163,7 @@ const StoreProductList = () => {
                             Add Store Product
                         </Button>
                     }
-                    { auth?.role === "CASHIER"
+                    { auth?.role === "MANAGER"
                         &&
                         <Button className="buttonWithMargins" onClick={() => window.print()}>
                             Print
