@@ -54,10 +54,27 @@ public class EmployeeController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+   @GetMapping("/employees/contact-info")
+    public ResponseEntity<List<Employee.EmployeeContactInfo>> getEmployeeContactInfoBySurname(@RequestParam("surname")
+                                                                                                 String surname) {
+        List<Employee.EmployeeContactInfo> employeeContactInfos;
+        try {
+            employeeContactInfos = new ArrayList<>(employeeRepository.findContactInfoBySurname(surname));
+
+            if (employeeContactInfos.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+            return new ResponseEntity<>(employeeContactInfos, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/employees")
     public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
         try {
-            employeeRepository.save(new Employee(employee.getId_employee(), employee.getEmpl_surname(),
+            employeeRepository.save(new Employee(employee.getEmpl_surname(),
                     employee.getEmpl_name(), employee.getEmpl_patronymic(), employee.getEmpl_role(),
                     employee.getSalary(), employee.getDate_of_birth(), employee.getDate_of_start(),
                     employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code()));

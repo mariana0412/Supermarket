@@ -13,4 +13,6 @@ public interface StoreProductRepository extends CrudRepository<StoreProduct, Str
     List<StoreProduct> findAllPromotionalSortedByName();
     List<StoreProduct> findAllNotPromotionalSortedByNumber();
     List<StoreProduct> findAllNotPromotionalSortedByName();
+    StoreProduct findPromotional(int productId);
+    StoreProduct findNotPromotional(int productId);
 }

@@ -71,15 +71,35 @@ public class StoreProductController {
 
     @PostMapping("/store-products")
     public ResponseEntity<String> createStoreProduct(@RequestBody StoreProduct storeProduct) {
+        String UPC_prom = null;
+        if(!storeProduct.isPromotional_product())
+            UPC_prom = findPromotionalStoreProductUPC(storeProduct.getId_product());
+
         try {
-            storeProductRepository.save(new StoreProduct(storeProduct.getUPC(), storeProduct.getUPC_prom(),
-                    storeProduct.getId_product(), storeProduct.getSelling_price(), storeProduct.getProducts_number(),
+            storeProductRepository.save(new StoreProduct(UPC_prom, storeProduct.getId_product(),
+                    storeProduct.getSelling_price(), storeProduct.getProducts_number(),
                     storeProduct.isPromotional_product()));
+            // TODO: update UPC_prom in not promotional store product correctly
+            /*if(storeProduct.isPromotional_product()) {
+                String UPC = storeProduct.getUPC();
+                StoreProduct notPromotionalStoreProduct = storeProductRepository.findNotPromotional(storeProduct.getId_product());
+                if(notPromotionalStoreProduct != null) {
+                    notPromotionalStoreProduct.setUPC_prom(UPC);
+                    storeProductRepository.update(notPromotionalStoreProduct);
+                }
+            }*/
             return new ResponseEntity<>("Store Product was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private String findPromotionalStoreProductUPC(int productId) {
+        StoreProduct promotionalStoreProduct = storeProductRepository.findPromotional(productId);
+        if(promotionalStoreProduct != null)
+            return promotionalStoreProduct.getUPC();
+        return null;
     }
 
     @PutMapping("/store-products/{id}")

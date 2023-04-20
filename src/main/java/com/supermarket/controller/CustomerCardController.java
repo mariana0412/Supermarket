@@ -54,7 +54,7 @@ public class CustomerCardController {
     @PostMapping("/customer-cards")
     public ResponseEntity<String> createCustomerCard(@RequestBody CustomerCard customerCard) {
         try {
-            customerCardRepository.save(new CustomerCard(customerCard.getCard_number(), customerCard.getCust_surname(),
+            customerCardRepository.save(new CustomerCard(customerCard.getCust_surname(),
                     customerCard.getCust_name(), customerCard.getCust_patronymic(), customerCard.getPhone_number(),
                     customerCard.getCity(), customerCard.getStreet(), customerCard.getZip_code(),
                     customerCard.getPercent()));

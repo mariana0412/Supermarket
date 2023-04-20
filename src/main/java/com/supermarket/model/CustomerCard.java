@@ -3,6 +3,8 @@ package com.supermarket.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 public class CustomerCard {
     @Getter @Setter
     private String card_number;
@@ -36,6 +38,8 @@ public class CustomerCard {
     }
 
     public CustomerCard(String cust_surname, String cust_name, String cust_patronymic, String phone_number, String city, String street, String zip_code, int percent) {
+        UUID uuid = UUID.randomUUID();
+        this.card_number = uuid.toString().substring(0, 10);
         this.cust_surname = cust_surname;
         this.cust_name = cust_name;
         this.cust_patronymic = cust_patronymic;
@@ -55,7 +59,7 @@ public class CustomerCard {
                 ", cust_surname='" + cust_surname + '\'' +
                 ", cust_name='" + cust_name + '\'' +
                 ", cust_patronymic='" + cust_patronymic + '\'' +
-                ", phone_number='" + phone_number + '\'' +
+                ", email='" + phone_number + '\'' +
                 ", city='" + city + '\'' +
                 ", street='" + street + '\'' +
                 ", zip_code='" + zip_code + '\'' +
