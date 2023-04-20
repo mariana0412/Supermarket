@@ -3,6 +3,7 @@ import {Button, ButtonGroup, Container, Input, Table} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 import '../../App.css';
+import useAuth from "../../hooks/useAuth";
 
 const CustomerCardList = () => {
 
@@ -10,6 +11,7 @@ const CustomerCardList = () => {
     const [sorted, setSorted] = useState(false);
     const [salePercent, setSalePercent] = useState(false);
     const [showEmpty, setShowEmpty] = useState(false);
+    const {auth} = useAuth();
 
     useEffect(() => {
         let url = 'api/customer-cards';
@@ -81,8 +83,16 @@ const CustomerCardList = () => {
                     <td>{customerCard.percent}</td>
                     <td>
                         <ButtonGroup>
-                            <Button size="sm" color="primary" tag={Link} to={"/customer-cards/" + customerCard.card_number}>Edit</Button>
-                            <Button size="sm" color="danger" onClick={() => remove(customerCard.card_number)}>Delete</Button>
+                            <Button size="sm" color="primary" tag={Link}
+                                    to={"/customer-cards/" + customerCard.card_number}>
+                                Edit
+                            </Button>
+
+                            { auth?.role === "MANAGER" &&
+                                <Button size="sm" color="danger" onClick={() => remove(customerCard.card_number)}>
+                                    Delete
+                                </Button>
+                            }
                         </ButtonGroup>
                     </td>
                 </tr>
@@ -95,29 +105,39 @@ const CustomerCardList = () => {
             <AppNavbar/>
             <Container fluid>
                 <h3>Customer Cards List</h3>
-
                 <div>
                     <div className="float-end">
-                        <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
-                            {sorted ? "Unsort" : "Sort by Surname"}
-                        </Button>
-                        <Button className="buttonWithMargins" color="success" tag={Link} to="/customer-cards/new">
-                            Add Customer Card
-                        </Button>
-                        <Button className="buttonWithMargins" onClick={() => window.print()}>
-                            Print
-                        </Button>
+                        { auth?.role === "MANAGER"
+                            &&
+                            <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
+                                {sorted ? "Unsort" : "Sort by Surname"}
+                            </Button>
+                        }
+                        { auth?.role === "MANAGER"
+                            &&
+                            <Button className="buttonWithMargins" color="success" tag={Link} to="/customer-cards/new">
+                                Add Customer Card
+                            </Button>
+                        }
+                        { auth?.role === "CASHIER"
+                            &&
+                            <Button className="buttonWithMargins" onClick={() => window.print()}>
+                                Print
+                            </Button>
+                        }
                     </div>
-
-                    <div className='search-container'>
-                        <Input
-                            style={{width: '200px' }}
-                            type="number"
-                            placeholder="Enter sale percent"
-                            value={salePercent}
-                            onChange={handleSalePercentChange}
-                        />
-                    </div>
+                    { auth?.role === "MANAGER"
+                        &&
+                        <div className='search-container'>
+                            <Input
+                                style={{width: '200px' }}
+                                type="number"
+                                placeholder="Enter sale percent"
+                                value={salePercent}
+                                onChange={handleSalePercentChange}
+                            />
+                        </div>
+                    }
                 </div>
 
                 {showEmpty ?

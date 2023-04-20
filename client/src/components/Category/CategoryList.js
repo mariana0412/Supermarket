@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Button, ButtonGroup, Container, Table } from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
+import useAuth from "../../hooks/useAuth";
 
 const CategoryList = () => {
 
     const [categories, setCategories] = useState([]);
     const [sorted, setSorted] = useState(false);
+    const {auth} = useAuth();
 
     useEffect(() => {
         const url = sorted ? "api/categories?sorted=true" : "api/categories";
@@ -44,12 +46,15 @@ const CategoryList = () => {
     const categoryList = categories.map(category => {
         return <tr key={category.category_number}>
             <td style={{whiteSpace: 'nowrap'}}>{category.category_name}</td>
-            <td>
-                <ButtonGroup>
-                    <Button size="sm" color="primary" tag={Link} to={"/categories/" + category.category_number}>Edit</Button>
-                    <Button size="sm" color="danger" onClick={() => remove(category.category_number)}>Delete</Button>
-                </ButtonGroup>
-            </td>
+            { auth?.role === "MANAGER"
+                &&
+                <td>
+                    <ButtonGroup>
+                        <Button size="sm" color="primary" tag={Link} to={"/categories/" + category.category_number}>Edit</Button>
+                        <Button size="sm" color="danger" onClick={() => remove(category.category_number)}>Delete</Button>
+                    </ButtonGroup>
+                </td>
+            }
         </tr>
     });
 
@@ -60,22 +65,31 @@ const CategoryList = () => {
                 <h3>Product Categories</h3>
 
                 <div className="float-end">
-                    <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
-                        {sorted ? "Unsort" : "Sort by Name"}
-                    </Button>
-                    <Button className="buttonWithMargins" color="success" tag={Link} to="/categories/new">
-                        Add Category
-                    </Button>
-                    <Button className="buttonWithMargins" onClick={() => window.print()}>
-                        Print
-                    </Button>
+                    { auth?.role === "MANAGER"
+                        &&
+                        <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
+                            {sorted ? "Unsort" : "Sort by Name"}
+                        </Button>
+                    }
+                    { auth?.role === "MANAGER"
+                        &&
+                        <Button className="buttonWithMargins" color="success" tag={Link} to="/categories/new">
+                            Add Category
+                        </Button>
+                    }
+                    { auth?.role === "CASHIER"
+                        &&
+                        <Button className="buttonWithMargins" onClick={() => window.print()}>
+                            Print
+                        </Button>
+                    }
                 </div>
 
                 <Table className="mt-4">
                     <thead>
                     <tr>
-                        <th width="80%">Name</th>
-                        <th width="20%">Actions</th>
+                        <th>Name</th>
+                        { auth?.role === "MANAGER" && <th>Actions</th> }
                     </tr>
                     </thead>
                     <tbody>

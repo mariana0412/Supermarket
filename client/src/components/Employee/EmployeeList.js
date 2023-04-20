@@ -5,6 +5,7 @@ import {Button, ButtonGroup, Container, Table, Dropdown, DropdownToggle, Dropdow
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 import '../../App.css';
+import useAuth from "../../hooks/useAuth";
 
 const EmployeeList = () => {
 
@@ -14,7 +15,7 @@ const EmployeeList = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [modal, setModal] = useState(false);
     const [sortOption, setSortOption] = useState(null);
-
+    const {auth} = useAuth();
 
     useEffect(() => {
         let url = 'api/employees';
@@ -103,12 +104,16 @@ const EmployeeList = () => {
             <td style={{whiteSpace: 'nowrap'}}>{employee.city}</td>
             <td style={{whiteSpace: 'nowrap'}}>{employee.street}</td>
             <td style={{whiteSpace: 'nowrap'}}>{employee.zip_code}</td>
-            <td>
-                <ButtonGroup>
-                    <Button size="sm" color="primary" tag={Link} to={"/employees/" + employee.id_employee}>Edit</Button>
-                    <Button size="sm" color="danger" onClick={() => remove(employee.id_employee)}>Delete</Button>
-                </ButtonGroup>
-            </td>
+            {
+                auth?.role === "MANAGER"
+                &&
+                <td>
+                    <ButtonGroup>
+                        <Button size="sm" color="primary" tag={Link} to={"/employees/" + employee.id_employee}>Edit</Button>
+                        <Button size="sm" color="danger" onClick={() => remove(employee.id_employee)}>Delete</Button>
+                    </ButtonGroup>
+                </td>
+            }
         </tr>
     });
 
@@ -117,21 +122,35 @@ const EmployeeList = () => {
             <AppNavbar/>
             <Container fluid>
                 <h3>Employees List</h3>
-                <Dropdown className="float-right" isOpen={dropdownOpen} toggle={toggleDropdown}>
-                    <DropdownToggle caret>Sort by surname</DropdownToggle>
-                    <DropdownMenu>
-                        <DropdownItem onClick={() => toggleSort('allSorted')}>all employees</DropdownItem>
-                        <DropdownItem onClick={() => toggleSort('cashiersSorted')}>cashiers</DropdownItem>
-                    </DropdownMenu>
-                </Dropdown>
-
-                <Button className="float-end" onClick={() => window.print()}>Print</Button>
-                <Button className="float-end" style={{ marginRight: '20px' }} color="success" tag={Link}
-                        to="/employees/new">Add Employee</Button>
-                <div className='search-container'>
-                    <Input style={{width: '200px' }} type="text" placeholder="Search by Surname" value={searchSurname} onChange={handleSearchInputChange} />
-                    <Button color="primary" onClick={() => showContactInfo()}>Search</Button>
-                </div>
+                { auth?.role === "MANAGER"
+                    &&
+                    <Dropdown className="float-right" isOpen={dropdownOpen} toggle={toggleDropdown}>
+                        <DropdownToggle caret>Sort by surname</DropdownToggle>
+                        <DropdownMenu>
+                            <DropdownItem onClick={() => toggleSort('allSorted')}>all employees</DropdownItem>
+                            <DropdownItem onClick={() => toggleSort('cashiersSorted')}>cashiers</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                }
+                { auth?.role === "CASHIER"
+                    &&
+                    <Button className="float-end" onClick={() => window.print()}>
+                        Print
+                    </Button>
+                }
+                { auth?.role === "MANAGER"
+                    &&
+                    <Button className="float-end" style={{ marginRight: '20px' }} color="success" tag={Link} to="/employees/new">
+                        Add Employee
+                    </Button>
+                }
+                { auth?.role === "MANAGER"
+                    &&
+                    <div className='search-container'>
+                        <Input style={{width: '200px' }} type="text" placeholder="Search by Surname" value={searchSurname} onChange={handleSearchInputChange} />
+                        <Button color="primary" onClick={() => showContactInfo()}>Search</Button>
+                    </div>
+                }
 
 
                 <Table className="mt-4">
@@ -148,7 +167,7 @@ const EmployeeList = () => {
                         <th>City</th>
                         <th>Street</th>
                         <th>Zip Code</th>
-                        <th width="10%">Actions</th>
+                        { auth?.role === "MANAGER" && <th width="10%">Actions</th> }
                     </tr>
                     </thead>
                     <tbody>

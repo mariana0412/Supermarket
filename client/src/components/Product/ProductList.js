@@ -3,6 +3,7 @@ import {Button, ButtonGroup, Container, FormGroup, Input, Table} from 'reactstra
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 import '../../App.css';
+import useAuth from "../../hooks/useAuth";
 
 const ProductList = () => {
 
@@ -10,6 +11,7 @@ const ProductList = () => {
     const [sorted, setSorted] = useState(false);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const {auth} = useAuth();
 
     useEffect(() => {
         let url = `api/products`;
@@ -59,12 +61,15 @@ const ProductList = () => {
             <td style={{whiteSpace: 'nowrap'}}>{product.product_name}</td>
             <td>{product.category_number} - {categories.find(cat => cat.category_number === product.category_number)?.category_name}</td>
             <td>{product.characteristics}</td>
-            <td>
-                <ButtonGroup>
-                    <Button size="sm" color="primary" tag={Link} to={"/products/" + product.id_product}>Edit</Button>
-                    <Button size="sm" color="danger" onClick={() => remove(product.id_product)}>Delete</Button>
-                </ButtonGroup>
-            </td>
+            { auth?.role === "MANAGER"
+                &&
+                <td>
+                    <ButtonGroup>
+                        <Button size="sm" color="primary" tag={Link} to={"/products/" + product.id_product}>Edit</Button>
+                        <Button size="sm" color="danger" onClick={() => remove(product.id_product)}>Delete</Button>
+                    </ButtonGroup>
+                </td>
+            }
         </tr>
     });
 
@@ -87,27 +92,39 @@ const ProductList = () => {
                 <h3>Product List</h3>
 
                 <div className="float-end">
-                    <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
-                        {sorted ? "Unsort" : "Sort by Name"}
-                    </Button>
-                    <Button className="buttonWithMargins" color="success" tag={Link} to="/products/new">
-                        Add Product
-                    </Button>
-                    <Button className="buttonWithMargins" onClick={() => window.print()}>
-                        Print
-                    </Button>
+                    { auth?.role === "MANAGER"
+                        &&
+                        <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
+                            {sorted ? "Unsort" : "Sort by Name"}
+                        </Button>
+                    }
+                    { auth?.role === "MANAGER"
+                        &&
+                        <Button className="buttonWithMargins" color="success" tag={Link} to="/products/new">
+                            Add Product
+                        </Button>
+                    }
+                    { auth?.role === "CASHIER"
+                        &&
+                        <Button className="buttonWithMargins" onClick={() => window.print()}>
+                            Print
+                        </Button>
+                    }
                 </div>
 
-                <FormGroup>
-                    <Input style={{width: '200px'}}
-                           type="select"
-                           name="category_number"
-                           id="category_number"
-                           onChange={handleChange}>
-                        <option value="">Select Category</option>
-                        {categoryOptions}
-                    </Input>
-                </FormGroup>
+                { auth?.role === "MANAGER"
+                    &&
+                    <FormGroup>
+                        <Input style={{width: '200px'}}
+                               type="select"
+                               name="category_number"
+                               id="category_number"
+                               onChange={handleChange}>
+                            <option value="">Select Category</option>
+                            {categoryOptions}
+                        </Input>
+                    </FormGroup>
+                }
 
                 <Table className="mt-4">
                     <thead>
@@ -115,7 +132,7 @@ const ProductList = () => {
                         <th width="40%">Name</th>
                         <th width="20%">Category</th>
                         <th width="30%">Characteristics</th>
-                        <th width="10%">Actions</th>
+                        { auth?.role === "MANAGER" && <th width="10%">Actions</th> }
                     </tr>
                     </thead>
                     <tbody>

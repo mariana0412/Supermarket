@@ -3,6 +3,7 @@ import {Button, Container, FormGroup, Input, Label, Modal, ModalBody, ModalFoote
 import AppNavbar from '../AppNavbar';
 import '../../App.css';
 import Check from "./Check";
+import useAuth from "../../hooks/useAuth";
 
 const CheckList = () => {
 
@@ -15,6 +16,7 @@ const CheckList = () => {
     const [totalSum, setTotalSum] = useState(null);
     const [modal, setModal] = useState(false);
     const [purchasedProducts, setPurchasedProducts] = useState(null);
+    const {auth} = useAuth();
 
     useEffect(() => {
         let url = `api/checks`;
@@ -81,6 +83,7 @@ const CheckList = () => {
 
     const checksList = ({ checks, remove, showPurchasedProducts }) => checks.map(check => (
             <Check
+                auth={auth}
                 check={check}
                 remove={remove}
                 showPurchasedProducts={showPurchasedProducts}
@@ -133,48 +136,56 @@ const CheckList = () => {
             <Container fluid>
                 <h3>Checks List</h3>
 
-                <div className="checks-filter">
-                    <FormGroup>
-                        <Label for="startDate">Start date and time: </Label>
-                        <Input
-                            style={{ display: 'inline-block', width: '200px'}}
-                            type="datetime-local"
-                            name="startDate"
-                            id="startDate"
-                            value={startDate}
-                            required
-                            onChange={handleStartDate}
-                        />
-                    </FormGroup>
+                { auth?.role === "MANAGER"
+                    &&
+                    <div className="checks-filter">
+                        <FormGroup>
+                            <Label for="startDate">Start date and time: </Label>
+                            <Input
+                                style={{ display: 'inline-block', width: '200px'}}
+                                type="datetime-local"
+                                name="startDate"
+                                id="startDate"
+                                value={startDate}
+                                required
+                                onChange={handleStartDate}
+                            />
+                        </FormGroup>
 
-                    <FormGroup>
-                        <Label for="endDate">End date and time: </Label>
-                        <Input
-                            style={{ display: 'inline-block', width: '200px'}}
-                            type="datetime-local"
-                            name="endDate"
-                            id="endDate"
-                            value={endDate}
-                            required
-                            onChange={handleEndDate}
-                        />
-                    </FormGroup>
+                        <FormGroup>
+                            <Label for="endDate">End date and time: </Label>
+                            <Input
+                                style={{ display: 'inline-block', width: '200px'}}
+                                type="datetime-local"
+                                name="endDate"
+                                id="endDate"
+                                value={endDate}
+                                required
+                                onChange={handleEndDate}
+                            />
+                        </FormGroup>
 
-                    <FormGroup>
-                        <Input style={{width: '200px'}}
-                               type="select"
-                               name="id_employee"
-                               id="id_employee"
-                               onChange={handleCashier}>
-                            <option value="">Select Cashier</option>
-                            {cashierOptions}
-                        </Input>
-                    </FormGroup>
+                        <FormGroup>
+                            <Input style={{width: '200px'}}
+                                   type="select"
+                                   name="id_employee"
+                                   id="id_employee"
+                                   onChange={handleCashier}>
+                                <option value="">Select Cashier</option>
+                                {cashierOptions}
+                            </Input>
+                        </FormGroup>
 
-                    {totalSum && <>Total sum: ${totalSum}</>}
-                </div>
+                        {totalSum && <>Total sum: ${totalSum}</>}
+                    </div>
+                }
 
-                <Button className="float-end buttonWithMargins" onClick={() => window.print()}>Print</Button>
+                { auth?.role === "CASHIER"
+                    &&
+                    <Button className="float-end buttonWithMargins" onClick={() => window.print()}>
+                        Print
+                    </Button>
+                }
 
                 {showEmpty ?
                     <div className="text-center">

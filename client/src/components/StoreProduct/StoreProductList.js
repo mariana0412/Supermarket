@@ -13,6 +13,7 @@ import {
 import AppNavbar from '../AppNavbar';
 import '../../App.css';
 import { Link } from 'react-router-dom';
+import useAuth from "../../hooks/useAuth";
 
 const StoreProductList = () => {
 
@@ -23,6 +24,7 @@ const StoreProductList = () => {
     const [searchUPC, setSearchUPC] = useState('');
     const [modal, setModal] = useState(false);
     const [productDetails, setProductDetails] = useState(null);
+    const {auth} = useAuth();
 
     useEffect(() => {
         fetch(`/api/products`)
@@ -122,12 +124,15 @@ const StoreProductList = () => {
             <td>{storeProduct.selling_price}</td>
             <td>{storeProduct.products_number} </td>
             <td>{storeProduct.promotional_product.toString()}</td>
-            <td>
-                <ButtonGroup>
-                    <Button size="sm" color="primary" tag={Link} to={"/store-products/" + storeProduct.upc}>Edit</Button>
-                    <Button size="sm" color="danger" onClick={() => remove(storeProduct.upc)}>Delete</Button>
-                </ButtonGroup>
-            </td>
+            { auth?.role === "MANAGER"
+                &&
+                <td>
+                    <ButtonGroup>
+                        <Button size="sm" color="primary" tag={Link} to={"/store-products/" + storeProduct.upc}>Edit</Button>
+                        <Button size="sm" color="danger" onClick={() => remove(storeProduct.upc)}>Delete</Button>
+                    </ButtonGroup>
+                </td>
+            }
         </tr>
     });
 
@@ -137,36 +142,48 @@ const StoreProductList = () => {
             <Container fluid>
                 <h3>Store Product List</h3>
 
-                <div className='search-container'>
-                    <Input
-                        style={{width: '200px' }}
-                        type="text"
-                        placeholder="Find more info by UPC" 
-                        value={searchUPC}
-                        onChange={handleSearchInputChange}
-                    />
-                    <Button color="primary" onClick={() => showContactInfo()}>Search</Button>
-                </div>
+                { auth?.role === "MANAGER"
+                    &&
+                    <div className='search-container'>
+                        <Input
+                            style={{width: '200px' }}
+                            type="text"
+                            placeholder="Find more info by UPC"
+                            value={searchUPC}
+                            onChange={handleSearchInputChange}
+                        />
+                        <Button color="primary" onClick={() => showContactInfo()}>Search</Button>
+                    </div>
+                }
 
                 <div className="float-end">
-                    <Button className="buttonWithMargins" color="success" tag={Link} to="/store-products/new">
-                        Add Store Product
-                    </Button>
-                    <Button className="buttonWithMargins" onClick={() => window.print()}>
-                        Print
-                    </Button>
+                    { auth?.role === "MANAGER"
+                        &&
+                        <Button className="buttonWithMargins" color="success" tag={Link} to="/store-products/new">
+                            Add Store Product
+                        </Button>
+                    }
+                    { auth?.role === "CASHIER"
+                        &&
+                        <Button className="buttonWithMargins" onClick={() => window.print()}>
+                            Print
+                        </Button>
+                    }
                 </div>
 
-                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
-                    <DropdownToggle caret>Sort</DropdownToggle>
-                    <DropdownMenu>
-                        <DropdownItem onClick={() => toggleSort('num')}>all by number</DropdownItem>
-                        <DropdownItem onClick={() => toggleSort('promNum')}>promotional by number</DropdownItem>
-                        <DropdownItem onClick={() => toggleSort('promName')}>promotional by name</DropdownItem>
-                        <DropdownItem onClick={() => toggleSort('notPromNum')}>not promotional by number</DropdownItem>
-                        <DropdownItem onClick={() => toggleSort('notPromName')}>not promotional by name</DropdownItem>
-                    </DropdownMenu>
-                </Dropdown>
+                { auth?.role === "MANAGER"
+                    &&
+                    <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                        <DropdownToggle caret>Sort</DropdownToggle>
+                        <DropdownMenu>
+                            <DropdownItem onClick={() => toggleSort('num')}>all by number</DropdownItem>
+                            <DropdownItem onClick={() => toggleSort('promNum')}>promotional by number</DropdownItem>
+                            <DropdownItem onClick={() => toggleSort('promName')}>promotional by name</DropdownItem>
+                            <DropdownItem onClick={() => toggleSort('notPromNum')}>not promotional by number</DropdownItem>
+                            <DropdownItem onClick={() => toggleSort('notPromName')}>not promotional by name</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                }
 
                 <Table className="mt-4">
                     <thead>
@@ -177,7 +194,7 @@ const StoreProductList = () => {
                         <th>Selling Price</th>
                         <th>Products number</th>
                         <th>Is promotional?</th>
-                        <th width="10%">Actions</th>
+                        { auth?.role === "MANAGER" && <th width="10%">Actions</th>}
                     </tr>
                     </thead>
                     <tbody>
