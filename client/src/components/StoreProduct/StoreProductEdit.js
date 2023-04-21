@@ -45,7 +45,7 @@ const StoreProductEdit = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        await fetch(`/api/store-products${storeProduct.upc ? `/${storeProduct.upc}` : ''}`, {
+        const response = await fetch(`/api/store-products${storeProduct.upc ? `/${storeProduct.upc}` : ''}`, {
             method: (storeProduct.upc) ? 'PUT' : 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -53,8 +53,14 @@ const StoreProductEdit = () => {
             },
             body: JSON.stringify(storeProduct)
         });
-        setStoreProduct(initialFormState);
-        navigate('/store-products');
+
+        if (response.status === 409) {
+            const message = await response.text();
+            alert(message);
+        } else {
+            setStoreProduct(initialFormState);
+            navigate('/store-products');
+        }
     };
 
     const productsOptions = products.map((product) => {
