@@ -19,13 +19,16 @@ public class ProductController {
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) boolean sorted,
-                                                        @RequestParam(required = false) Integer catId) {
+                                                        @RequestParam(required = false) Integer catId,
+                                                        @RequestParam(required = false) String name) {
         List<Product> products;
         try {
             if(catId != null)
                 products = new ArrayList<>(productRepository.findAllFromOneCategorySortedByName(catId));
             else if(sorted)
                 products = new ArrayList<>(productRepository.findAllSortedByName());
+            else if(name != null)
+                products = productRepository.findByName(name);
             else
                 products = new ArrayList<>(productRepository.findAll());
 
@@ -44,16 +47,6 @@ public class ProductController {
 
         if (product != null)
             return new ResponseEntity<>(product, HttpStatus.OK);
-
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @GetMapping("products/name/{name}")
-    public ResponseEntity<List<Product>> getProductByName(@PathVariable("name") String name) {
-        List<Product> productList = productRepository.findByName(name);
-
-        if (productList != null)
-            return new ResponseEntity<>(productList, HttpStatus.OK);
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
