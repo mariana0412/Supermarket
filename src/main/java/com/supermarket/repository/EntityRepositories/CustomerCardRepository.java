@@ -7,4 +7,5 @@ import java.util.List;
 public interface CustomerCardRepository extends CrudRepository<CustomerCard, String> {
     List<CustomerCard> findAllSortedBySurname();
     List<CustomerCard> findAllWithCertainSaleSortedBySurname(double salePercent);
+    List<CustomerCard> findBySurname(String surname);
 }

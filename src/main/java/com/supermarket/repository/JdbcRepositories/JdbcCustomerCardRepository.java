@@ -67,4 +67,16 @@ public class JdbcCustomerCardRepository implements CustomerCardRepository {
         return jdbcTemplate.query("SELECT * FROM customer_card WHERE percent=? ORDER BY cust_surname",
                 BeanPropertyRowMapper.newInstance(CustomerCard.class), salePercent);
     }
+
+    // C6. Find customers by surname
+    @Override
+    public List<CustomerCard> findBySurname(String surname) {
+        try {
+            return jdbcTemplate.query("SELECT * FROM customer_card WHERE cust_surname=?",
+                    BeanPropertyRowMapper.newInstance(CustomerCard.class), surname);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
