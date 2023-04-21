@@ -61,10 +61,14 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
                 BeanPropertyRowMapper.newInstance(StoreProduct.class));
     }
 
-    // 2. Get information about all store products, sorted by name
+    // C2. Get information about all store products, sorted by name
     @Override
     public List<StoreProduct> findAllSortedByName() {
-        return jdbcTemplate.query("SELECT * FROM store_product ORDER BY product_name",
+        String query = "SELECT * " +
+                "FROM store_product " +
+                "JOIN product ON product.id_product = store_product.id_product " +
+                "ORDER BY product_name";
+        return jdbcTemplate.query(query,
                 BeanPropertyRowMapper.newInstance(StoreProduct.class));
     }
 
