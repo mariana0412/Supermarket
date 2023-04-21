@@ -54,14 +54,14 @@ public class JdbcCustomerCardRepository implements CustomerCardRepository {
                 BeanPropertyRowMapper.newInstance(CustomerCard.class));
     }
 
-    // 7. Get information about all regular customers, sorted by surname
+    // M7. Get information about all regular customers, sorted by surname
     @Override
     public List<CustomerCard> findAllSortedBySurname() {
         return jdbcTemplate.query("SELECT * FROM customer_card ORDER BY cust_surname",
                 BeanPropertyRowMapper.newInstance(CustomerCard.class));
     }
 
-    // 12. Get information about all regular customers with certain percent of sale, sorted by surname
+    // M12. Get information about all regular customers with certain percent of sale, sorted by surname
     @Override
     public List<CustomerCard> findAllWithCertainSaleSortedBySurname(double salePercent) {
         return jdbcTemplate.query("SELECT * FROM customer_card WHERE percent=? ORDER BY cust_surname",

@@ -54,26 +54,27 @@ public class JdbcProductRepository implements ProductRepository {
         return jdbcTemplate.query("SELECT * FROM product", BeanPropertyRowMapper.newInstance(Product.class));
     }
 
+    // C4. Search for products by name
     @Override
     public List<Product> findByName(String name) {
         return jdbcTemplate.query("SELECT * FROM product WHERE product_name=?",
                 BeanPropertyRowMapper.newInstance(Product.class), name);
     }
 
-    // 9. Get information about all products, sorted by name
+    // M9. Get information about all products, sorted by name
     @Override
     public List<Product> findAllSortedByName() {
         return jdbcTemplate.query("SELECT * FROM product ORDER BY product_name", BeanPropertyRowMapper.newInstance(Product.class));
     }
 
-    // 13. Get information about all products from one category, sorted by name
+    // M13. Get information about all products from one category, sorted by name
     @Override
     public List<Product> findAllFromOneCategorySortedByName(int catId) {
         return jdbcTemplate.query("SELECT * FROM product WHERE category_number=? ORDER BY product_name",
                 BeanPropertyRowMapper.newInstance(Product.class), catId);
     }
 
-    // 17. Determine the total number of a certain product sold during a certain period of time
+    // M17. Determine the total number of a certain product sold during a certain period of time
     @Override
     public int findNumberOfProductsSoldInTimeRange(int productId, LocalDateTime startDate, LocalDateTime endDate) {
         String query =

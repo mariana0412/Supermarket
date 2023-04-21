@@ -57,20 +57,21 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
         return jdbcTemplate.query("SELECT * FROM employee", BeanPropertyRowMapper.newInstance(Employee.class));
     }
 
-    // 5. Get information about all employees, sorted by surname
+    // M5. Get information about all employees, sorted by surname
     @Override
     public List<Employee> findAllSortedBySurname() {
         return jdbcTemplate.query("SELECT * FROM employee ORDER BY empl_surname",
                 BeanPropertyRowMapper.newInstance(Employee.class));
     }
 
-    // 6. Get information about all cashier employees, sorted by surname
+    // M6. Get information about all cashier employees, sorted by surname
     @Override
     public List<Employee> findAllCashiersSortedBySurname() {
         return jdbcTemplate.query("SELECT * FROM employee WHERE empl_role = 'Cashier' ORDER BY empl_surname",
                 BeanPropertyRowMapper.newInstance(Employee.class));
     }
 
+    // M11 Search for the employee's phone number and address by last name
     @Override
     public List<Employee.EmployeeContactInfo> findContactInfoBySurname(String surname) {
         try {

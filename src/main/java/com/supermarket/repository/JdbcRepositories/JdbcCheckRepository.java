@@ -53,7 +53,7 @@ public class JdbcCheckRepository implements CheckRepository {
         return jdbcTemplate.query("SELECT * FROM receipt", BeanPropertyRowMapper.newInstance(Check.class));
     }
 
-    // 17. Get information about all checks created by a certain cashier for a certain period of time
+    // M17. Get information about all checks created by a certain cashier for a certain period of time
     // (with the possibility of viewing the purchased goods in this check, their names, quantities and prices)
     @Override
     public List<Check> findAllPrintedByCashierWithinTimePeriod(String cashierId, LocalDateTime startDate, LocalDateTime endDate) {
@@ -61,7 +61,7 @@ public class JdbcCheckRepository implements CheckRepository {
                 BeanPropertyRowMapper.newInstance(Check.class), cashierId, startDate, endDate);
     }
 
-    // 18. Get information about all checks created by all cashiers for a certain period of time
+    // M18. Get information about all checks created by all cashiers for a certain period of time
     // (with the possibility of viewing the purchased goods in this check, their name, quantity and prices)
     @Override
     public List<Check> findAllPrintedWithinTimePeriod(LocalDateTime startDate, LocalDateTime endDate) {
@@ -69,7 +69,7 @@ public class JdbcCheckRepository implements CheckRepository {
                 BeanPropertyRowMapper.newInstance(Check.class), startDate, endDate);
     }
 
-    // 19. Determine the total sum of goods sold from checks created by a certain cashier for a certain period of time
+    // M19. Determine the total sum of goods sold from checks created by a certain cashier for a certain period of time
     @Override
     public double getTotalSumOfProductsSoldByCashierForTimePeriod(String cashierId, LocalDateTime startDate,
                                                                   LocalDateTime endDate) {
@@ -82,7 +82,7 @@ public class JdbcCheckRepository implements CheckRepository {
         return sum != null ? sum : 0;
     }
 
-    // 20. Determine the total sum of goods sold from checks created by all cashiers for a certain period of time
+    // M20. Determine the total sum of goods sold from checks created by all cashiers for a certain period of time
     @Override
     public double getTotalSumOfProductsSoldForTimePeriod(LocalDateTime startDate, LocalDateTime endDate) {
         String query =
