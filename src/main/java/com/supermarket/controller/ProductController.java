@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +105,20 @@ public class ProductController {
                             "status", "error",
                             "message", "An error occurred while deleting the product."
                     ));
+        }
+    }
+
+    @GetMapping("/products-number")
+    public ResponseEntity<Integer> getProductsNumber(@RequestParam int productId,
+                                                     @RequestParam LocalDateTime startDate,
+                                                     @RequestParam LocalDateTime endDate) {
+        int productsNumber;
+        try {
+            productsNumber = productRepository.findNumberOfProductsSoldInTimeRange(productId, startDate, endDate);
+            return new ResponseEntity<>(productsNumber, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
