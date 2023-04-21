@@ -11,7 +11,6 @@ import com.supermarket.model.StoreProduct;
 
 import java.util.List;
 
-
 @Repository
 public class JdbcStoreProductRepository implements StoreProductRepository {
 
@@ -55,14 +54,25 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
         return jdbcTemplate.query("SELECT * FROM store_product", BeanPropertyRowMapper.newInstance(StoreProduct.class));
     }
 
-    // 10. Get information about all store products, sorted by number
+    // M10. Get information about all store products, sorted by number
     @Override
     public List<StoreProduct> findAllSortedByNumber() {
         return jdbcTemplate.query("SELECT * FROM store_product ORDER BY products_number",
                 BeanPropertyRowMapper.newInstance(StoreProduct.class));
     }
 
-    // 14. Get selling price, products number, product name and characteristics by UPC
+    // C2. Get information about all store products, sorted by name
+    @Override
+    public List<StoreProduct> findAllSortedByName() {
+        String query = "SELECT * " +
+                "FROM store_product " +
+                "JOIN product ON product.id_product = store_product.id_product " +
+                "ORDER BY product_name";
+        return jdbcTemplate.query(query,
+                BeanPropertyRowMapper.newInstance(StoreProduct.class));
+    }
+
+    // M14. Get selling price, products number, product name and characteristics by UPC
     @Override
     public StoreProduct.StoreProductDetails findDetailsByUPC(String UPC) {
         String query =
@@ -78,7 +88,7 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
         }
     }
 
-    // 15. Get information about all promotional store products, sorted by number
+    // M15. Get information about all promotional store products, sorted by number
     @Override
     public List<StoreProduct> findAllPromotionalSortedByNumber() {
         String query =
@@ -89,7 +99,7 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
         return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(StoreProduct.class));
     }
 
-    // 15. Get information about all promotional store products, sorted by name
+    // M15. Get information about all promotional store products, sorted by name
     @Override
     public List<StoreProduct> findAllPromotionalSortedByName() {
         String query =
@@ -101,7 +111,7 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
         return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(StoreProduct.class));
     }
 
-    // 16. Get information about all not promotional store products, sorted by number
+    // M16. Get information about all not promotional store products, sorted by number
     @Override
     public List<StoreProduct> findAllNotPromotionalSortedByNumber() {
         String query =
@@ -112,7 +122,7 @@ public class JdbcStoreProductRepository implements StoreProductRepository {
         return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(StoreProduct.class));
     }
 
-    // 16. Get information about all not promotional store products, sorted by name
+    // M16. Get information about all not promotional store products, sorted by name
     @Override
     public List<StoreProduct> findAllNotPromotionalSortedByName() {
         String query =

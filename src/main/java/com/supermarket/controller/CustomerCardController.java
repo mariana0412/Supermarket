@@ -21,13 +21,16 @@ public class CustomerCardController {
 
     @GetMapping("/customer-cards")
     public ResponseEntity<List<CustomerCard>> getAllCustomerCards(@RequestParam(required = false) boolean sorted,
-                                                                  @RequestParam(required = false) Integer salePercent) {
+                                                                  @RequestParam(required = false) Integer salePercent,
+                                                                  @RequestParam(required = false) String surname) {
         List<CustomerCard> customerCards;
         try {
             if(salePercent != null)
                 customerCards = customerCardRepository.findAllWithCertainSaleSortedBySurname(salePercent);
             else if(sorted)
                 customerCards = customerCardRepository.findAllSortedBySurname();
+            else if(surname != null)
+                customerCards = customerCardRepository.findBySurname(surname);
             else
                 customerCards = customerCardRepository.findAll();
 

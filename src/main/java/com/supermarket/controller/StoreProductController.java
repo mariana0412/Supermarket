@@ -20,6 +20,7 @@ public class StoreProductController {
 
     @GetMapping("/store-products")
     public ResponseEntity<List<StoreProduct>> getAllStoreProducts(@RequestParam(required = false) boolean sortedByNum,
+                                                                  @RequestParam(required = false) boolean sortedByName,
                                                                   @RequestParam(required = false) boolean promSortedByNum,
                                                                   @RequestParam(required = false) boolean promSortedByName,
                                                                   @RequestParam(required = false) boolean notPromSortedByNum,
@@ -28,6 +29,8 @@ public class StoreProductController {
         try {
             if(sortedByNum)
                 storeProducts = storeProductRepository.findAllSortedByNumber();
+            else if (sortedByName)
+                storeProducts = storeProductRepository.findAllSortedByName();
             else if(promSortedByNum)
                 storeProducts = storeProductRepository.findAllPromotionalSortedByNumber();
             else if(promSortedByName)

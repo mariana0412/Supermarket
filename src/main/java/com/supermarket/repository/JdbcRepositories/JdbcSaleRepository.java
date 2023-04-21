@@ -20,7 +20,7 @@ public class JdbcSaleRepository implements SaleRepository {
                 sale.getUPC(), sale.getCheck_number(), sale.getProduct_number(), sale.getSelling_price());
     }
 
-    // 17-18. Possibility of viewing the purchased goods in the check: their names, quantities and prices
+    // M17-18. Possibility of viewing the purchased goods in the check: their names, quantities and prices
     @Override
     public List<Sale.ProductNameNumberPrice> findPurchasedProductsInCheck(String checkNumber) {
         String query =

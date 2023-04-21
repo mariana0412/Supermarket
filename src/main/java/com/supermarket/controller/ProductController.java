@@ -23,13 +23,16 @@ public class ProductController {
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) boolean sorted,
-                                                        @RequestParam(required = false) Integer categoryId) {
+                                                        @RequestParam(required = false) Integer categoryId,
+                                                        @RequestParam(required = false) String name) {
         List<Product> products;
         try {
             if(categoryId != null)
-                products = new ArrayList<>(productRepository.findAllFromOneCategorySortedByName(categoryId));
+                products = productRepository.findAllFromOneCategorySortedByName(categoryId);
             else if(sorted)
-                products = new ArrayList<>(productRepository.findAllSortedByName());
+                products = productRepository.findAllSortedByName();
+            else if(name != null)
+                products = productRepository.findByName(name);
             else
                 products = new ArrayList<>(productRepository.findAll());
 

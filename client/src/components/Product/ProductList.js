@@ -15,6 +15,7 @@ import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 import '../../App.css';
 import useAuth from "../../hooks/useAuth";
+import SearchByNameModal from "./SearchByNameModal";
 
 const ProductList = () => {
 
@@ -22,11 +23,14 @@ const ProductList = () => {
     const [sorted, setSorted] = useState(false);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const [modal, setModal] = useState(false);
+    const [modalNumberSold, setModalNumberSold] = useState(false);
+    const [modalSearchByName, setModalSearchByName] = useState(false);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [numberSold, setNumberSold] = useState(null);
     const [selectedId, setSelectedId] = useState(null);
+    const [searchProductName, setSearchProductName] = useState('');
+    const [productsFoundByName, setProductsFoundByName] = useState(null);
     const {auth} = useAuth();
 
     useEffect(() => {
@@ -84,7 +88,7 @@ const ProductList = () => {
                         <Button size="sm" color="primary" tag={Link} to={"/products/" + product.id_product}>Edit</Button>
                         <Button size="sm" color="danger" onClick={() => remove(product.id_product)}>Delete</Button>
                         <Button size="sm" color="primary" onClick={() => {
-                            setModal(true);
+                            setModalNumberSold(true);
                             setSelectedId(product.id_product);
                         }}>
                             Number sold
@@ -103,15 +107,20 @@ const ProductList = () => {
         );
     });
 
-    const handleChange = (event) => {
-        setSelectedCategory(event.target.value);
+    const handleCategoryChange = (event) => setSelectedCategory(event.target.value);
+    const handleSearchProductNameChange = (event) => setSearchProductName(event.target.value);
+
+
+    const toggleModalNumberSold = () => {
+        setModalNumberSold(!modalNumberSold);
+        if(modalNumberSold) {
+            setNumberSold(null);
+            setStartDate('');
+            setEndDate('');
+        }
     }
 
-    const toggleModal = () => {
-        setModal(!modal);
-        if(modal)
-            setNumberSold(null);
-    }
+    const toggleModalSearchByName = () => setModalSearchByName(!modalSearchByName);
     const handleStartDate = event => setStartDate(event.target.value);
     const handleEndDate = event => setEndDate(event.target.value);
 
@@ -119,28 +128,50 @@ const ProductList = () => {
         try {
             const response = await fetch(`/api/products-number?productId=${productId}&startDate=${startDate}&endDate=${endDate}`);
             const data = await response.json();
-            //console.log(data);
             setNumberSold(data);
-            /*setPurchasedProducts(data);*/
-            //toggleModal();
         } catch (error) {
             console.log(error);
         }
     }
 
+    const findProductsByName = async () => {
+        try {
+            const response = await fetch(`/api/products?name=${searchProductName}`);
+            if (response.status === 204) {
+                alert('There is no products with this name.');
+            } else {
+                const data = await response.json();
+                setProductsFoundByName(data);
+                toggleModalSearchByName();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <div>
             <AppNavbar/>
             <Container fluid>
                 <h3>Product List</h3>
 
+                { auth?.role === "CASHIER"
+                    &&
+                    <div className='search-container'>
+                        <Input
+                            style={{width: '200px' }}
+                            type="text"
+                            placeholder="Find by name"
+                            value={searchProductName}
+                            onChange={handleSearchProductNameChange}
+                        />
+                        <Button color="primary" onClick={() => findProductsByName()}>Search</Button>
+                    </div>
+                }
+
                 <div className="float-end">
-                    { auth?.role === "MANAGER"
-                        &&
-                        <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
-                            {sorted ? "Unsort" : "Sort by Name"}
-                        </Button>
-                    }
+                    <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
+                        {sorted ? "Unsort" : "Sort by Name"}
+                    </Button>
                     { auth?.role === "MANAGER"
                         &&
                         <Button className="buttonWithMargins" color="success" tag={Link} to="/products/new">
@@ -155,19 +186,16 @@ const ProductList = () => {
                     }
                 </div>
 
-                { auth?.role === "MANAGER"
-                    &&
-                    <FormGroup>
-                        <Input style={{width: '200px'}}
-                               type="select"
-                               name="category_number"
-                               id="category_number"
-                               onChange={handleChange}>
-                            <option value="">Select Category</option>
-                            {categoryOptions}
-                        </Input>
-                    </FormGroup>
-                }
+                <FormGroup>
+                    <Input style={{width: '280px'}}
+                           type="select"
+                           name="category_number"
+                           id="category_number"
+                           onChange={handleCategoryChange}>
+                        <option value="">Sort by name within Category</option>
+                        {categoryOptions}
+                    </Input>
+                </FormGroup>
 
                 <Table className="mt-4">
                     <thead>
@@ -183,8 +211,8 @@ const ProductList = () => {
                     </tbody>
                 </Table>
 
-                <Modal isOpen={modal} toggle={toggleModal}>
-                    <ModalHeader toggle={toggleModal}>Number sold</ModalHeader>
+                <Modal isOpen={modalNumberSold} toggle={toggleModalNumberSold}>
+                    <ModalHeader toggle={toggleModalNumberSold}>Number sold</ModalHeader>
                     <ModalBody>
                         <FormGroup>
                             <Label for="startDate">Start date and time: </Label>
@@ -221,9 +249,15 @@ const ProductList = () => {
                         </p>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="secondary" onClick={toggleModal}>Close</Button>
+                        <Button color="secondary" onClick={toggleModalNumberSold}>Close</Button>
                     </ModalFooter>
                 </Modal>
+
+                <SearchByNameModal
+                    isOpen={modalSearchByName}
+                    toggle={toggleModalSearchByName}
+                    products={productsFoundByName}
+                />
 
             </Container>
         </div>

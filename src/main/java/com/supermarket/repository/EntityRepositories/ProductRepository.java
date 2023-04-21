@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ProductRepository extends CrudRepository<Product, Integer> {
+    List<Product> findByName(String name);
     List<Product> findAllSortedByName();
     List<Product> findAllFromOneCategorySortedByName(int categoryId);
     int findNumberOfProductsSoldInTimeRange(int productId, LocalDateTime startDate, LocalDateTime endDate);

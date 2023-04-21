@@ -4,6 +4,7 @@ import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 import '../../App.css';
 import useAuth from "../../hooks/useAuth";
+import SearchBySurnameModal from "./SearchBySurnameModal";
 
 const CustomerCardList = () => {
 
@@ -11,6 +12,9 @@ const CustomerCardList = () => {
     const [sorted, setSorted] = useState(false);
     const [salePercent, setSalePercent] = useState(false);
     const [showEmpty, setShowEmpty] = useState(false);
+    const [searchSurname, setSearchSurname] = useState('');
+    const [customersFoundBySurname, setCustomersFoundBySurname] = useState([]);
+    const [modalSearchBySurname, setModalSearchBySurname] = useState(false);
     const {auth} = useAuth();
 
     useEffect(() => {
@@ -62,9 +66,8 @@ const CustomerCardList = () => {
         }
     }
 
-    const handleSalePercentChange = (event) => {
-        setSalePercent(event.target.value);
-    }
+    const handleSalePercentChange = (event) => setSalePercent(event.target.value);
+    const handleSearchProductNameChange = (event) => setSearchSurname(event.target.value);
 
     let customerCardList = <tr><td colSpan="10" style={{ textAlign: "center" }}>No results found.</td></tr>;
 
@@ -100,25 +103,50 @@ const CustomerCardList = () => {
         });
     }
 
+    const toggleModalSearchBySurname = () => setModalSearchBySurname(!modalSearchBySurname);
+    const findCustomersBySurname = async () => {
+        try {
+            const response = await fetch(`/api/customer-cards?surname=${searchSurname}`);
+            if (response.status === 204) {
+                alert('There is no customers with this surname.');
+            } else {
+                const data = await response.json();
+                setCustomersFoundBySurname(data);
+                toggleModalSearchBySurname();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div>
             <AppNavbar/>
             <Container fluid>
                 <h3>Customer Cards List</h3>
+
+                { auth?.role === "CASHIER"
+                    &&
+                    <div className='search-container'>
+                        <Input
+                            style={{width: '200px' }}
+                            type="text"
+                            placeholder="Find by name"
+                            value={searchSurname}
+                            onChange={handleSearchProductNameChange}
+                        />
+                        <Button color="primary" onClick={() => findCustomersBySurname()}>Search</Button>
+                    </div>
+                }
+
                 <div>
                     <div className="float-end">
-                        { auth?.role === "MANAGER"
-                            &&
-                            <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
-                                {sorted ? "Unsort" : "Sort by Surname"}
-                            </Button>
-                        }
-                        { auth?.role === "MANAGER"
-                            &&
-                            <Button className="buttonWithMargins" color="success" tag={Link} to="/customer-cards/new">
-                                Add Customer Card
-                            </Button>
-                        }
+                        <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
+                            {sorted ? "Unsort" : "Sort by Surname"}
+                        </Button>
+                        <Button className="buttonWithMargins" color="success" tag={Link} to="/customer-cards/new">
+                            Add Customer Card
+                        </Button>
                         { auth?.role === "MANAGER"
                             &&
                             <Button className="buttonWithMargins" onClick={() => window.print()}>
@@ -165,6 +193,12 @@ const CustomerCardList = () => {
                     </tbody>
                 </Table>
                 }
+
+                <SearchBySurnameModal
+                    isOpen={modalSearchBySurname}
+                    toggle={toggleModalSearchBySurname}
+                    customers={customersFoundBySurname}
+                />
             </Container>
         </div>
     );
