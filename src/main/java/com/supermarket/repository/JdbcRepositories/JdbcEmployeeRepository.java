@@ -70,4 +70,15 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
         return jdbcTemplate.query("SELECT * FROM employee WHERE empl_role = 'Cashier' ORDER BY empl_surname",
                 BeanPropertyRowMapper.newInstance(Employee.class));
     }
+
+    @Override
+    public List<Employee.EmployeeContactInfo> findContactInfoBySurname(String surname) {
+        try {
+            return jdbcTemplate.query("SELECT phone_number, city, street, zip_code FROM employee " +
+                            "WHERE empl_surname=?",
+                    BeanPropertyRowMapper.newInstance(Employee.EmployeeContactInfo.class), surname);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return null;
+        }
+    }
 }

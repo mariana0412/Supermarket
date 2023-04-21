@@ -53,7 +53,6 @@ public class JdbcCheckRepository implements CheckRepository {
         return jdbcTemplate.query("SELECT * FROM receipt", BeanPropertyRowMapper.newInstance(Check.class));
     }
 
-    // TODO: it should join Sale, think about where it is called
     // 17. Get information about all checks created by a certain cashier for a certain period of time
     // (with the possibility of viewing the purchased goods in this check, their names, quantities and prices)
     @Override
@@ -62,7 +61,6 @@ public class JdbcCheckRepository implements CheckRepository {
                 BeanPropertyRowMapper.newInstance(Check.class), cashierId, startDate, endDate);
     }
 
-    // TODO: it should join Sale, think about where it is called
     // 18. Get information about all checks created by all cashiers for a certain period of time
     // (with the possibility of viewing the purchased goods in this check, their name, quantity and prices)
     @Override

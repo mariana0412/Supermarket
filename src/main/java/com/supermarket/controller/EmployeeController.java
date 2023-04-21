@@ -3,12 +3,14 @@ package com.supermarket.controller;
 import com.supermarket.model.Employee;
 import com.supermarket.repository.EntityRepositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -37,6 +39,7 @@ public class EmployeeController {
 
             return new ResponseEntity<>(employees, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -51,15 +54,33 @@ public class EmployeeController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+   @GetMapping("/employees/contact-info")
+    public ResponseEntity<List<Employee.EmployeeContactInfo>> getEmployeeContactInfoBySurname(@RequestParam("surname")
+                                                                                                 String surname) {
+        List<Employee.EmployeeContactInfo> employeeContactInfos;
+        try {
+            employeeContactInfos = new ArrayList<>(employeeRepository.findContactInfoBySurname(surname));
+
+            if (employeeContactInfos.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+            return new ResponseEntity<>(employeeContactInfos, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/employees")
     public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
         try {
-            employeeRepository.save(new Employee(employee.getId_employee(), employee.getEmpl_surname(),
+            employeeRepository.save(new Employee(employee.getEmpl_surname(),
                     employee.getEmpl_name(), employee.getEmpl_patronymic(), employee.getEmpl_role(),
                     employee.getSalary(), employee.getDate_of_birth(), employee.getDate_of_start(),
                     employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code()));
             return new ResponseEntity<>("Employee was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -89,12 +110,28 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/employees/{id}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable("id") String id) {
+    public ResponseEntity<Map<String, Object>> deleteEmployee(@PathVariable("id") String id) {
         try {
             employeeRepository.deleteById(id);
-            return new ResponseEntity<>("Employee was deleted successfully.", HttpStatus.OK);
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Employee was deleted successfully."
+            ));
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of(
+                            "status", "error",
+                            "message", "Cannot delete employee because they have associated checks."
+                    ));
         } catch (Exception e) {
-            return new ResponseEntity<>("Cannot delete employee.", HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "status", "error",
+                            "message", "An error occurred while deleting the employee."
+                    ));
         }
     }
+
 }

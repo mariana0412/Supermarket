@@ -52,6 +52,7 @@ public class CheckController {
 
             return new ResponseEntity<>(sum, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -73,6 +74,7 @@ public class CheckController {
                     check.getPrint_date(), check.getSum_total(), check.getVat()));
             return new ResponseEntity<>("Check was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -101,7 +103,9 @@ public class CheckController {
             checkRepository.deleteById(id);
             return new ResponseEntity<>("Check was deleted successfully.", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Cannot delete Check.", HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return new ResponseEntity<>("An error occurred while deleting the check.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

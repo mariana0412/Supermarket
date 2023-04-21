@@ -3,12 +3,14 @@ package com.supermarket.controller;
 import com.supermarket.model.Category;
 import com.supermarket.repository.EntityRepositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -31,6 +33,7 @@ public class CategoryController {
 
             return new ResponseEntity<>(categories, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -52,6 +55,7 @@ public class CategoryController {
             categoryRepository.save(new Category(id, category.getCategory_name()));
             return new ResponseEntity<>("Category was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -71,13 +75,28 @@ public class CategoryController {
     }
 
     @DeleteMapping("/categories/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable("id") int id) {
+    public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable("id") int id) {
         try {
             categoryRepository.deleteById(id);
-            return new ResponseEntity<>("Category was deleted successfully.", HttpStatus.OK);
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Category was deleted successfully."
+            ));
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of(
+                            "status", "error",
+                            "message", "Cannot delete category because it has associated products."
+                    ));
         } catch (Exception e) {
-            e.printStackTrace();   // log the exception
-            return new ResponseEntity<>("Cannot delete Category.", HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "status", "error",
+                            "message", "An error occurred while deleting the category."
+                    ));
         }
     }
+
 }

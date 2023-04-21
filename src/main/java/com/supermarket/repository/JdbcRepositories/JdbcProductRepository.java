@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.supermarket.model.Product;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -70,5 +71,26 @@ public class JdbcProductRepository implements ProductRepository {
     public List<Product> findAllFromOneCategorySortedByName(int catId) {
         return jdbcTemplate.query("SELECT * FROM product WHERE category_number=? ORDER BY product_name",
                 BeanPropertyRowMapper.newInstance(Product.class), catId);
+    }
+
+    // 17. Determine the total number of a certain product sold during a certain period of time
+    @Override
+    public int findNumberOfProductsSoldInTimeRange(int productId, LocalDateTime startDate, LocalDateTime endDate) {
+        String query =
+                "SELECT SUM(product_number) " +
+                "FROM product " +
+                "INNER JOIN store_product ON store_product.id_product = product.id_product " +
+                "INNER JOIN sale ON sale.UPC = store_product.UPC " +
+                "INNER JOIN receipt ON receipt.check_number = sale.check_number " +
+                "WHERE product.id_product=? AND print_date BETWEEN ? AND ?";
+        Integer productsNumber = jdbcTemplate.queryForObject(query, Integer.class, productId, startDate, endDate);
+        return (productsNumber != null) ? productsNumber : 0;
+    }
+
+    @Override
+    public int getMaxId() {
+        String query = "SELECT MAX(id_product) FROM product";
+        Integer maxId = jdbcTemplate.queryForObject(query, Integer.class);
+        return (maxId != null) ? maxId : 0;
     }
 }

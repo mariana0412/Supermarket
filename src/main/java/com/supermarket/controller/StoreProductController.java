@@ -3,11 +3,14 @@ package com.supermarket.controller;
 import com.supermarket.model.StoreProduct;
 import com.supermarket.repository.EntityRepositories.StoreProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/api")
@@ -44,6 +47,7 @@ public class StoreProductController {
 
             return new ResponseEntity<>(storeProducts, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -70,14 +74,39 @@ public class StoreProductController {
 
     @PostMapping("/store-products")
     public ResponseEntity<String> createStoreProduct(@RequestBody StoreProduct storeProduct) {
+        String UPC_prom = null;
+
+        if(!storeProduct.isPromotional_product())
+            UPC_prom = findPromotionalStoreProductUPC(storeProduct.getId_product());
+
         try {
-            storeProductRepository.save(new StoreProduct(storeProduct.getUPC(), storeProduct.getUPC_prom(),
-                    storeProduct.getId_product(), storeProduct.getSelling_price(), storeProduct.getProducts_number(),
+            storeProductRepository.save(new StoreProduct(UPC_prom, storeProduct.getId_product(),
+                    storeProduct.getSelling_price(), storeProduct.getProducts_number(),
                     storeProduct.isPromotional_product()));
+            // TODO: update UPC_prom in not promotional store product correctly
+            /*if(storeProduct.isPromotional_product()) {
+                String UPC = storeProduct.getUPC();
+                StoreProduct notPromotionalStoreProduct = storeProductRepository.findNotPromotional(storeProduct.getId_product());
+                if(notPromotionalStoreProduct != null) {
+                    notPromotionalStoreProduct.setUPC_prom(UPC);
+                    storeProductRepository.update(notPromotionalStoreProduct);
+                }
+            }*/
             return new ResponseEntity<>("Store Product was created successfully.", HttpStatus.CREATED);
+        } catch(org.springframework.dao.DuplicateKeyException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("This store product already exists.", HttpStatus.CONFLICT);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private String findPromotionalStoreProductUPC(int productId) {
+        StoreProduct promotionalStoreProduct = storeProductRepository.findPromotional(productId);
+        if(promotionalStoreProduct != null)
+            return promotionalStoreProduct.getUPC();
+        return null;
     }
 
     @PutMapping("/store-products/{id}")
@@ -99,12 +128,28 @@ public class StoreProductController {
     }
 
     @DeleteMapping("/store-products/{id}")
-    public ResponseEntity<String> deleteStoreProduct(@PathVariable("id") String id) {
+    public ResponseEntity<Map<String, Object>> deleteStoreProduct(@PathVariable("id") String id) {
         try {
             storeProductRepository.deleteById(id);
-            return new ResponseEntity<>("Store Product was deleted successfully.", HttpStatus.OK);
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Store Product was deleted successfully."
+            ));
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of(
+                            "status", "error",
+                            "message", "Cannot delete store product because it has associated sales."
+                    ));
         } catch (Exception e) {
-            return new ResponseEntity<>("Cannot delete Store Product.", HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "status", "error",
+                            "message", "An error occurred while deleting the store product."
+                    ));
         }
     }
+
 }
