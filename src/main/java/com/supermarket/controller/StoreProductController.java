@@ -72,6 +72,7 @@ public class StoreProductController {
     @PostMapping("/store-products")
     public ResponseEntity<String> createStoreProduct(@RequestBody StoreProduct storeProduct) {
         String UPC_prom = null;
+
         if(!storeProduct.isPromotional_product())
             UPC_prom = findPromotionalStoreProductUPC(storeProduct.getId_product());
 
@@ -89,6 +90,9 @@ public class StoreProductController {
                 }
             }*/
             return new ResponseEntity<>("Store Product was created successfully.", HttpStatus.CREATED);
+        } catch(org.springframework.dao.DuplicateKeyException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("This store product already exists.", HttpStatus.CONFLICT);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
