@@ -101,7 +101,7 @@ const StoreProductList = () => {
             setSearchUPC('');
     };
 
-    const showContactInfo = async () => {
+    const showStoreProductDetails = async () => {
         try {
             const response = await fetch(`/api/store-products-details/${searchUPC}`);
             if (response.status === 404) {
@@ -152,7 +152,7 @@ const StoreProductList = () => {
                             value={searchUPC}
                             onChange={handleSearchInputChange}
                         />
-                        <Button color="primary" onClick={() => showContactInfo()}>Search</Button>
+                        <Button color="primary" onClick={() => showStoreProductDetails()}>Search</Button>
                     </div>
                 }
 
