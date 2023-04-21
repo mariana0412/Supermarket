@@ -40,6 +40,8 @@ const StoreProductList = () => {
             url += '?';
             if (sortOption === 'num')
                 url += 'sortedByNum=true';
+            else if(sortOption === 'name')
+                url += 'sortedByName=true';
             else if (sortOption === 'promNum')
                 url += 'promSortedByNum=true';
             else if (sortOption === 'promName')
@@ -170,6 +172,8 @@ const StoreProductList = () => {
                         </Button>
                     }
                 </div>
+
+                { auth.role === "CASHIER" && <Button onClick={() => toggleSort('name')}>Sort by name</Button> }
 
                 { auth?.role === "MANAGER"
                     &&
