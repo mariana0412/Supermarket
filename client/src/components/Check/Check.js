@@ -17,11 +17,9 @@ const Check = ({ auth, check, remove, showPurchasedProducts }) => {
                         Delete
                     </Button>
                 }
-                { auth?.role === "MANAGER" &&
-                    <Button size="sm" color="primary" onClick={() => showPurchasedProducts(check.check_number)}>
-                        View Details
-                    </Button>
-                }
+                <Button size="sm" color="primary" onClick={() => showPurchasedProducts(check.check_number)}>
+                    View Details
+                </Button>
             </ButtonGroup>
         </td>
     </tr>

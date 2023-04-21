@@ -169,12 +169,9 @@ const ProductList = () => {
                 }
 
                 <div className="float-end">
-                    { auth?.role === "MANAGER"
-                        &&
-                        <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
-                            {sorted ? "Unsort" : "Sort by Name"}
-                        </Button>
-                    }
+                    <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
+                        {sorted ? "Unsort" : "Sort by Name"}
+                    </Button>
                     { auth?.role === "MANAGER"
                         &&
                         <Button className="buttonWithMargins" color="success" tag={Link} to="/products/new">
@@ -189,19 +186,16 @@ const ProductList = () => {
                     }
                 </div>
 
-                { auth?.role === "MANAGER"
-                    &&
-                    <FormGroup>
-                        <Input style={{width: '200px'}}
-                               type="select"
-                               name="category_number"
-                               id="category_number"
-                               onChange={handleCategoryChange}>
-                            <option value="">Select Category</option>
-                            {categoryOptions}
-                        </Input>
-                    </FormGroup>
-                }
+                <FormGroup>
+                    <Input style={{width: '280px'}}
+                           type="select"
+                           name="category_number"
+                           id="category_number"
+                           onChange={handleCategoryChange}>
+                        <option value="">Sort by name within Category</option>
+                        {categoryOptions}
+                    </Input>
+                </FormGroup>
 
                 <Table className="mt-4">
                     <thead>

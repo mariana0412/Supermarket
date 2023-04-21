@@ -141,18 +141,12 @@ const CustomerCardList = () => {
 
                 <div>
                     <div className="float-end">
-                        { auth?.role === "MANAGER"
-                            &&
-                            <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
-                                {sorted ? "Unsort" : "Sort by Surname"}
-                            </Button>
-                        }
-                        { auth?.role === "MANAGER"
-                            &&
-                            <Button className="buttonWithMargins" color="success" tag={Link} to="/customer-cards/new">
-                                Add Customer Card
-                            </Button>
-                        }
+                        <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
+                            {sorted ? "Unsort" : "Sort by Surname"}
+                        </Button>
+                        <Button className="buttonWithMargins" color="success" tag={Link} to="/customer-cards/new">
+                            Add Customer Card
+                        </Button>
                         { auth?.role === "MANAGER"
                             &&
                             <Button className="buttonWithMargins" onClick={() => window.print()}>

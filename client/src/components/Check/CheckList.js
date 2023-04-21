@@ -136,49 +136,46 @@ const CheckList = () => {
             <Container fluid>
                 <h3>Checks List</h3>
 
-                { auth?.role === "MANAGER"
-                    &&
-                    <div className="checks-filter">
-                        <FormGroup>
-                            <Label for="startDate">Start date and time: </Label>
-                            <Input
-                                style={{ display: 'inline-block', width: '200px'}}
-                                type="datetime-local"
-                                name="startDate"
-                                id="startDate"
-                                value={startDate}
-                                required
-                                onChange={handleStartDate}
-                            />
-                        </FormGroup>
+                <div className="checks-filter">
+                    <FormGroup>
+                        <Label for="startDate">Start date and time: </Label>
+                        <Input
+                            style={{ display: 'inline-block', width: '200px'}}
+                            type="datetime-local"
+                            name="startDate"
+                            id="startDate"
+                            value={startDate}
+                            required
+                            onChange={handleStartDate}
+                        />
+                    </FormGroup>
 
-                        <FormGroup>
-                            <Label for="endDate">End date and time: </Label>
-                            <Input
-                                style={{ display: 'inline-block', width: '200px'}}
-                                type="datetime-local"
-                                name="endDate"
-                                id="endDate"
-                                value={endDate}
-                                required
-                                onChange={handleEndDate}
-                            />
-                        </FormGroup>
+                    <FormGroup>
+                        <Label for="endDate">End date and time: </Label>
+                        <Input
+                            style={{ display: 'inline-block', width: '200px'}}
+                            type="datetime-local"
+                            name="endDate"
+                            id="endDate"
+                            value={endDate}
+                            required
+                            onChange={handleEndDate}
+                        />
+                    </FormGroup>
 
-                        <FormGroup>
-                            <Input style={{width: '200px'}}
-                                   type="select"
-                                   name="id_employee"
-                                   id="id_employee"
-                                   onChange={handleCashier}>
-                                <option value="">Select Cashier</option>
-                                {cashierOptions}
-                            </Input>
-                        </FormGroup>
+                    <FormGroup>
+                        <Input style={{width: '200px'}}
+                               type="select"
+                               name="id_employee"
+                               id="id_employee"
+                               onChange={handleCashier}>
+                            <option value="">Select Cashier</option>
+                            {cashierOptions}
+                        </Input>
+                    </FormGroup>
 
-                        {totalSum && <>Total sum: ${totalSum}</>}
-                    </div>
-                }
+                    {totalSum && <>Total sum: ${totalSum}</>}
+                </div>
 
                 { auth?.role === "MANAGER"
                     &&
