@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import {Button, ButtonGroup, Container, FormGroup, Input, Table} from 'reactstrap';
+import {
+    Button,
+    ButtonGroup,
+    Container,
+    FormGroup,
+    Input, Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Table
+} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 import '../../App.css';
@@ -11,6 +22,11 @@ const ProductList = () => {
     const [sorted, setSorted] = useState(false);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const [modal, setModal] = useState(false);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [numberSold, setNumberSold] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
     const {auth} = useAuth();
 
     useEffect(() => {
@@ -67,6 +83,12 @@ const ProductList = () => {
                     <ButtonGroup>
                         <Button size="sm" color="primary" tag={Link} to={"/products/" + product.id_product}>Edit</Button>
                         <Button size="sm" color="danger" onClick={() => remove(product.id_product)}>Delete</Button>
+                        <Button size="sm" color="primary" onClick={() => {
+                            setModal(true);
+                            setSelectedId(product.id_product);
+                        }}>
+                            Number sold
+                        </Button>
                     </ButtonGroup>
                 </td>
             }
@@ -83,6 +105,27 @@ const ProductList = () => {
 
     const handleChange = (event) => {
         setSelectedCategory(event.target.value);
+    }
+
+    const toggleModal = () => {
+        setModal(!modal);
+        if(modal)
+            setNumberSold(null);
+    }
+    const handleStartDate = event => setStartDate(event.target.value);
+    const handleEndDate = event => setEndDate(event.target.value);
+
+    const productsNum = async (productId, startDate, endDate) => {
+        try {
+            const response = await fetch(`/api/products-number?productId=${productId}&startDate=${startDate}&endDate=${endDate}`);
+            const data = await response.json();
+            //console.log(data);
+            setNumberSold(data);
+            /*setPurchasedProducts(data);*/
+            //toggleModal();
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -129,16 +172,59 @@ const ProductList = () => {
                 <Table className="mt-4">
                     <thead>
                     <tr>
-                        <th width="40%">Name</th>
+                        <th width="20%">Name</th>
                         <th width="20%">Category</th>
-                        <th width="30%">Characteristics</th>
-                        { auth?.role === "MANAGER" && <th width="10%">Actions</th> }
+                        <th width="40%">Characteristics</th>
+                        { auth?.role === "MANAGER" && <th width="20%">Actions</th> }
                     </tr>
                     </thead>
                     <tbody>
                     {productList}
                     </tbody>
                 </Table>
+
+                <Modal isOpen={modal} toggle={toggleModal}>
+                    <ModalHeader toggle={toggleModal}>Number sold</ModalHeader>
+                    <ModalBody>
+                        <FormGroup>
+                            <Label for="startDate">Start date and time: </Label>
+                            <Input
+                                style={{ display: 'inline-block', width: '200px'}}
+                                type="datetime-local"
+                                name="startDate"
+                                id="startDate"
+                                value={startDate}
+                                required
+                                onChange={handleStartDate}
+                            />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label for="endDate">End date and time: </Label>
+                            <Input
+                                style={{ display: 'inline-block', width: '200px'}}
+                                type="datetime-local"
+                                name="endDate"
+                                id="endDate"
+                                value={endDate}
+                                required
+                                onChange={handleEndDate}
+                            />
+                        </FormGroup>
+
+                        <Button color="secondary" onClick={() => productsNum(selectedId, startDate, endDate)}>Find</Button>
+                        <p style={{margin: '10px'}}>
+                            {numberSold === null ?
+                                '' :
+                                `Number of products sold in this time range: ${numberSold}`
+                            }
+                        </p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={toggleModal}>Close</Button>
+                    </ModalFooter>
+                </Modal>
+
             </Container>
         </div>
     );
