@@ -4,7 +4,7 @@ import React from "react";
 const SearchBySurnameModal = ({ isOpen, toggle, customers}) => {
     return (
         <Modal isOpen={isOpen} toggle={toggle} products={customers}>
-            <ModalHeader toggle={toggle}>Products</ModalHeader>
+            <ModalHeader toggle={toggle}>Customer Cards</ModalHeader>
             <ModalBody>
                 {customers && customers.map(customer => (
                     <div key={customer.card_number}>

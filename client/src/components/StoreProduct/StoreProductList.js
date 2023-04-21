@@ -18,6 +18,7 @@ import useAuth from "../../hooks/useAuth";
 const StoreProductList = () => {
 
     const [storeProducts, setStoreProducts] = useState([]);
+    const [sortedByName, setSortedByName] = useState(false);
     const [products, setProducts] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [sortOption, setSortOption] = useState(null);
@@ -173,7 +174,15 @@ const StoreProductList = () => {
                     }
                 </div>
 
-                { auth.role === "CASHIER" && <Button onClick={() => toggleSort('name')}>Sort by name</Button> }
+                { auth.role === "CASHIER"
+                    &&
+                    <Button onClick={() => {
+                        toggleSort('name');
+                        setSortedByName(!sortedByName);
+                    }}>
+                        { sortedByName ? "Unsort" : "Sort by name" }
+                    </Button>
+                }
 
                 { auth?.role === "MANAGER"
                     &&
