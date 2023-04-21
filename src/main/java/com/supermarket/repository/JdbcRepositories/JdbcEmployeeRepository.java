@@ -79,6 +79,7 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
                             "WHERE empl_surname=?",
                     BeanPropertyRowMapper.newInstance(Employee.EmployeeContactInfo.class), surname);
         } catch (IncorrectResultSizeDataAccessException e) {
+            e.printStackTrace();
             return null;
         }
     }

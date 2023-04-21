@@ -57,8 +57,13 @@ public class JdbcProductRepository implements ProductRepository {
     // C4. Search for products by name
     @Override
     public List<Product> findByName(String name) {
-        return jdbcTemplate.query("SELECT * FROM product WHERE product_name=?",
-                BeanPropertyRowMapper.newInstance(Product.class), name);
+        try {
+            return jdbcTemplate.query("SELECT * FROM product WHERE product_name=?",
+                    BeanPropertyRowMapper.newInstance(Product.class), name);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // M9. Get information about all products, sorted by name
