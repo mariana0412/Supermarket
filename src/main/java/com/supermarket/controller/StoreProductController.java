@@ -96,6 +96,9 @@ public class StoreProductController {
         } catch(org.springframework.dao.DuplicateKeyException e) {
             e.printStackTrace();
             return new ResponseEntity<>("This store product already exists.", HttpStatus.CONFLICT);
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Violates corporate integrity constraints.", HttpStatus.CONFLICT);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -120,7 +123,12 @@ public class StoreProductController {
             _storeProduct.setSelling_price(storeProduct.getSelling_price());
             _storeProduct.setProducts_number(storeProduct.getProducts_number());
             _storeProduct.setPromotional_product(storeProduct.isPromotional_product());
-            storeProductRepository.update(_storeProduct);
+            try {
+                storeProductRepository.update(_storeProduct);
+            } catch (DataIntegrityViolationException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>("Violates corporate integrity constraints.", HttpStatus.CONFLICT);
+            }
             return new ResponseEntity<>("Store Product was updated successfully.", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Cannot find Store Product with id=" + id, HttpStatus.NOT_FOUND);
