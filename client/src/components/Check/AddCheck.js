@@ -37,7 +37,7 @@ const AddCheck = () => {
     const storeProductsOptions = storeProducts.map((storeProduct) => {
         return (
             <option key={storeProduct.upc} value={storeProduct.upc}>
-                {products.find(p => p.id_product === storeProduct.id_product).product_name} (
+                {products.find(p => p.id_product === storeProduct.id_product)?.product_name} (
                 {storeProduct.promotional_product ? 'prom' : 'not prom'})
             </option>
         );
@@ -79,22 +79,13 @@ const AddCheck = () => {
             storeProducts.find(storeProduct => (sale.upc === storeProduct.upc))
                 .selling_price) && (sale.check_number = check.check_number)));
 
-        sales.map(async sale => {
-            await fetch(`/api/sales`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(sale)
-            });
-        })
         check.card_number = selectedCustomerCard;
         check.id_employee = 'f3k77dls92'; // TODO: get current cashier ID
         check.print_date = new Date();
         sales.map(sale => check.sum_total += sale.product_number * sale.selling_price)
         check.vat = check.sum_total * 0.2;
 
+        // create receipt
         await fetch(`/api/checks`, {
             method: 'POST',
             headers: {
@@ -103,6 +94,20 @@ const AddCheck = () => {
             },
             body: JSON.stringify(check)
         });
+
+        // create sales
+        const salesPromises = sales.map(sale => {
+            return fetch(`/api/sales`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(sale)
+            });
+        });
+
+        await Promise.all(salesPromises);
 
         setCheck(initialCheck);
         setSales([{ upc: '', product_number: 0 }])
