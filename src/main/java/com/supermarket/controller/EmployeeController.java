@@ -105,7 +105,12 @@ public class EmployeeController {
             _employee.setCity(employee.getCity());
             _employee.setStreet(employee.getStreet());
             _employee.setZip_code(employee.getZip_code());
-            employeeRepository.update(_employee);
+            try {
+                employeeRepository.update(_employee);
+            } catch (DataIntegrityViolationException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>("Violates corporate integrity constraints.", HttpStatus.CONFLICT);
+            }
             return new ResponseEntity<>("Employee was updated successfully.", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Cannot find Employee with id=" + id, HttpStatus.NOT_FOUND);
