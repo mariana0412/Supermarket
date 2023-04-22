@@ -54,14 +54,17 @@ const StoreProductEdit = () => {
             body: JSON.stringify(storeProduct)
         });
 
-        if (response.status === 409) {
+        if(response.ok) {
+            setStoreProduct(initialFormState);
+            navigate('/store-products');
+        } else if(response.status === 409) {
             const message = await response.text();
             alert(message);
         } else {
-            setStoreProduct(initialFormState);
-            navigate('/store-products');
+            const message = await response.text();
+            console.log(message);
         }
-    };
+    }
 
     const productsOptions = products.map((product) => {
         return (

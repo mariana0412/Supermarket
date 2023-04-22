@@ -50,9 +50,11 @@ const CustomerCardEdit = () => {
             setCustomer(initialFormState);
             navigate('/customer-cards');
         } else if(response.status === 409){
-            alert("This data failed corporate integrity constraint.");
+            const message = await response.text();
+            alert(message);
         } else {
-            console.log(response)
+            const message = await response.text();
+            console.log(message)
         }
     };
 
