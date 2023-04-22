@@ -79,24 +79,6 @@ public class CheckController {
         }
     }
 
-    @PutMapping("/checks/{id}")
-    public ResponseEntity<String> updateCheck(@PathVariable("id") String id, @RequestBody Check check) {
-        Check _check = checkRepository.findById(id);
-
-        if (_check != null) {
-            _check.setCheck_number(id);
-            _check.setId_employee(check.getId_employee());
-            _check.setCard_number(check.getCard_number());
-            _check.setPrint_date(check.getPrint_date());
-            _check.setSum_total(check.getSum_total());
-            _check.setVat(check.getVat());
-            checkRepository.update(_check);
-            return new ResponseEntity<>("Check was updated successfully.", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Cannot find Check with id=" + id, HttpStatus.NOT_FOUND);
-        }
-    }
-
     @DeleteMapping("/checks/{id}")
     public ResponseEntity<String> deleteCheck(@PathVariable("id") String id) {
         try {
