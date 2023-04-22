@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, ButtonGroup, Container, Input, Table} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 import '../../App.css';
 import useAuth from "../../hooks/useAuth";
 import SearchBySurnameModal from "./SearchBySurnameModal";
+import {useReactToPrint} from "react-to-print";
 
 const CustomerCardList = () => {
 
@@ -16,6 +17,7 @@ const CustomerCardList = () => {
     const [customersFoundBySurname, setCustomersFoundBySurname] = useState([]);
     const [modalSearchBySurname, setModalSearchBySurname] = useState(false);
     const {auth} = useAuth();
+    const componentPDF = useRef();
 
     useEffect(() => {
         let url = 'api/customer-cards';
@@ -86,13 +88,13 @@ const CustomerCardList = () => {
                     <td>{customerCard.percent}</td>
                     <td>
                         <ButtonGroup>
-                            <Button size="sm" color="primary" tag={Link}
+                            <Button className="buttonWithMargins" size="sm" color="primary" tag={Link}
                                     to={"/customer-cards/" + customerCard.card_number}>
                                 Edit
                             </Button>
 
                             { auth?.role === "MANAGER" &&
-                                <Button size="sm" color="danger" onClick={() => remove(customerCard.card_number)}>
+                                <Button className="buttonWithMargins" size="sm" color="danger" onClick={() => remove(customerCard.card_number)}>
                                     Delete
                                 </Button>
                             }
@@ -119,26 +121,15 @@ const CustomerCardList = () => {
         }
     }
 
+    const generatePDF = useReactToPrint({
+        content: () => componentPDF.current,
+        documentTitle: "Customer Cards",
+    });
+
     return (
         <div>
             <AppNavbar/>
             <Container fluid>
-                <h3>Customer Cards List</h3>
-
-                { auth?.role === "CASHIER"
-                    &&
-                    <div className='search-container'>
-                        <Input
-                            style={{width: '200px' }}
-                            type="text"
-                            placeholder="Find by name"
-                            value={searchSurname}
-                            onChange={handleSearchProductNameChange}
-                        />
-                        <Button color="primary" onClick={() => findCustomersBySurname()}>Search</Button>
-                    </div>
-                }
-
                 <div>
                     <div className="float-end">
                         <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
@@ -149,23 +140,11 @@ const CustomerCardList = () => {
                         </Button>
                         { auth?.role === "MANAGER"
                             &&
-                            <Button className="buttonWithMargins" onClick={() => window.print()}>
+                            <Button className="buttonWithMargins" onClick={generatePDF}>
                                 Print
                             </Button>
                         }
                     </div>
-                    { auth?.role === "MANAGER"
-                        &&
-                        <div className='search-container'>
-                            <Input
-                                style={{width: '200px' }}
-                                type="number"
-                                placeholder="Enter sale percent"
-                                value={salePercent}
-                                onChange={handleSalePercentChange}
-                            />
-                        </div>
-                    }
                 </div>
 
                 {showEmpty ?
@@ -173,25 +152,53 @@ const CustomerCardList = () => {
                         <p>No results found.</p>
                     </div>
                     :
-                <Table className="mt-4">
-                    <thead>
-                    <tr>
-                        <th>Card Number</th>
-                        <th>Surname</th>
-                        <th>Name</th>
-                        <th>Patronymic</th>
-                        <th>Phone Number</th>
-                        <th>City</th>
-                        <th>Street</th>
-                        <th>Zip Code</th>
-                        <th>Percent</th>
-                        <th width="10%">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {customerCardList}
-                    </tbody>
-                </Table>
+                    <div ref={componentPDF}>
+                        <h1>Customer Cards</h1>
+                        { auth?.role === "MANAGER"
+                            &&
+                            <div className='search-container noPrint'>
+                                <Input
+                                    style={{width: '200px' }}
+                                    type="number"
+                                    placeholder="Enter sale percent"
+                                    value={salePercent}
+                                    onChange={handleSalePercentChange}
+                                />
+                            </div>
+                        }
+                        { auth?.role === "CASHIER"
+                            &&
+                            <div className='search-container noPrint'>
+                                <Input
+                                    style={{width: '200px' }}
+                                    type="text"
+                                    placeholder="Find by name"
+                                    value={searchSurname}
+                                    onChange={handleSearchProductNameChange}
+                                />
+                                <Button color="primary" onClick={() => findCustomersBySurname()}>Search</Button>
+                            </div>
+                        }
+                        <Table className="mt-4">
+                            <thead>
+                            <tr>
+                                <th>Card Number</th>
+                                <th>Surname</th>
+                                <th>Name</th>
+                                <th>Patronymic</th>
+                                <th>Phone Number</th>
+                                <th>City</th>
+                                <th>Street</th>
+                                <th>Zip Code</th>
+                                <th>Percent</th>
+                                <th width="10%">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {customerCardList}
+                            </tbody>
+                        </Table>
+                    </div>
                 }
 
                 <SearchBySurnameModal

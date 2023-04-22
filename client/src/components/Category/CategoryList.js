@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Button, ButtonGroup, Container, Table } from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 import useAuth from "../../hooks/useAuth";
+import {useReactToPrint} from 'react-to-print';
+import '../../App.css'
 
 const CategoryList = () => {
-
     const [categories, setCategories] = useState([]);
     const [sorted, setSorted] = useState(false);
     const {auth} = useAuth();
+    const componentPDF = useRef();
 
     useEffect(() => {
         const url = sorted ? "api/categories?sorted=true" : "api/categories";
@@ -50,20 +52,23 @@ const CategoryList = () => {
                 &&
                 <td>
                     <ButtonGroup>
-                        <Button size="sm" color="primary" tag={Link} to={"/categories/" + category.category_number}>Edit</Button>
-                        <Button size="sm" color="danger" onClick={() => remove(category.category_number)}>Delete</Button>
+                        <Button className="buttonWithMargins" size="sm" color="primary" tag={Link} to={"/categories/" + category.category_number}>Edit</Button>
+                        <Button className="buttonWithMargins" size="sm" color="danger" onClick={() => remove(category.category_number)}>Delete</Button>
                     </ButtonGroup>
                 </td>
             }
         </tr>
     });
 
+    const generatePDF = useReactToPrint({
+        content: () => componentPDF.current,
+        documentTitle: "Categories",
+    });
+
     return (
         <div>
             <AppNavbar/>
             <Container fluid>
-                <h3>Product Categories</h3>
-
                 <div className="float-end">
                     { auth?.role === "MANAGER"
                         &&
@@ -79,23 +84,25 @@ const CategoryList = () => {
                     }
                     { auth?.role === "MANAGER"
                         &&
-                        <Button className="buttonWithMargins" onClick={() => window.print()}>
+                        <Button className="buttonWithMargins" onClick={generatePDF}>
                             Print
                         </Button>
                     }
                 </div>
-
-                <Table className="mt-4">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        { auth?.role === "MANAGER" && <th>Actions</th> }
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {categoryList}
-                    </tbody>
-                </Table>
+                <div ref={componentPDF}>
+                    <h1>Categories</h1>
+                    <Table className="mt-4">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            { auth?.role === "MANAGER" && <th width="20%">Actions</th> }
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {categoryList}
+                        </tbody>
+                    </Table>
+                </div>
             </Container>
         </div>
     );
