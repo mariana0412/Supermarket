@@ -147,56 +147,54 @@ const CheckList = () => {
                         Print
                     </Button>
                 }
+                <div ref={componentPDF} style={{width: '100%'}}>
+                    <h1>Checks</h1>
 
-                {showEmpty ?
-                    <div className="text-center">
-                        <p>No results found.</p>
+                    <div className="checks-filter noPrint">
+                        <FormGroup>
+                            <Label for="startDate">Start date and time: </Label>
+                            <Input
+                                style={{ display: 'inline-block', width: '200px'}}
+                                type="datetime-local"
+                                name="startDate"
+                                id="startDate"
+                                value={startDate}
+                                required
+                                onChange={handleStartDate}
+                            />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label for="endDate">End date and time: </Label>
+                            <Input
+                                style={{ display: 'inline-block', width: '200px'}}
+                                type="datetime-local"
+                                name="endDate"
+                                id="endDate"
+                                value={endDate}
+                                required
+                                onChange={handleEndDate}
+                            />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Input style={{width: '200px'}}
+                                   type="select"
+                                   name="id_employee"
+                                   id="id_employee"
+                                   onChange={handleCashier}>
+                                <option value="">Select Cashier</option>
+                                {cashierOptions}
+                            </Input>
+                        </FormGroup>
+
+                        {totalSum && <>Total sum: ${totalSum}</>}
                     </div>
-                    :
-                    <div ref={componentPDF} style={{width: '100%'}}>
-                        <h1>Checks</h1>
-
-                        <div className="checks-filter noPrint">
-                            <FormGroup>
-                                <Label for="startDate">Start date and time: </Label>
-                                <Input
-                                    style={{ display: 'inline-block', width: '200px'}}
-                                    type="datetime-local"
-                                    name="startDate"
-                                    id="startDate"
-                                    value={startDate}
-                                    required
-                                    onChange={handleStartDate}
-                                />
-                            </FormGroup>
-
-                            <FormGroup>
-                                <Label for="endDate">End date and time: </Label>
-                                <Input
-                                    style={{ display: 'inline-block', width: '200px'}}
-                                    type="datetime-local"
-                                    name="endDate"
-                                    id="endDate"
-                                    value={endDate}
-                                    required
-                                    onChange={handleEndDate}
-                                />
-                            </FormGroup>
-
-                            <FormGroup>
-                                <Input style={{width: '200px'}}
-                                       type="select"
-                                       name="id_employee"
-                                       id="id_employee"
-                                       onChange={handleCashier}>
-                                    <option value="">Select Cashier</option>
-                                    {cashierOptions}
-                                </Input>
-                            </FormGroup>
-
-                            {totalSum && <>Total sum: ${totalSum}</>}
+                    {showEmpty ?
+                        <div className="text-center">
+                            <p>No results found.</p>
                         </div>
-
+                        :
                         <Table className="mt-4">
                             <thead>
                             <tr>
@@ -213,8 +211,8 @@ const CheckList = () => {
                             {checksList ({ checks, remove, showPurchasedProducts })}
                             </tbody>
                         </Table>
-                    </div>
-                }
+                    }
+                </div>
 
                 <Modal isOpen={modal} toggle={toggleModal} >
                     <ModalHeader toggle={toggleModal}>Purchased Products</ModalHeader>

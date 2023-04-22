@@ -26,6 +26,7 @@ const StoreProductList = () => {
     const [searchUPC, setSearchUPC] = useState('');
     const [modal, setModal] = useState(false);
     const [productDetails, setProductDetails] = useState(null);
+    const [showEmpty, setShowEmpty] = useState(false);
     const {auth} = useAuth();
     const componentPDF = useRef();
 
@@ -56,10 +57,21 @@ const StoreProductList = () => {
         }
 
         fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                if (response.status === 204)
+                    return null;
+                else
+                    return response.json();
+            })
             .then(data => {
-                setStoreProducts(data);
-            });
+                if (data) {
+                    setStoreProducts(data);
+                    setShowEmpty(data.length === 0);
+                } else {
+                    setStoreProducts([]);
+                    setShowEmpty(true);
+                }
+            })
     }, [sortOption]);
 
     const remove = async (id) => {
@@ -204,22 +216,28 @@ const StoreProductList = () => {
                             </DropdownMenu>
                         </Dropdown>
                     }
-                    <Table className="mt-4">
-                        <thead>
-                        <tr>
-                            <th>UPC</th>
-                            <th>Promotional product UPC</th>
-                            <th>Product ID</th>
-                            <th>Selling Price</th>
-                            <th>Products number</th>
-                            <th>Is promotional?</th>
-                            { auth?.role === "MANAGER" && <th width="10%">Actions</th>}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {storeProductList}
-                        </tbody>
-                    </Table>
+                    {showEmpty ?
+                        <div className="text-center">
+                            <p>No results found.</p>
+                        </div>
+                        :
+                        <Table className="mt-4">
+                            <thead>
+                            <tr>
+                                <th>UPC</th>
+                                <th>Promotional product UPC</th>
+                                <th>Product ID</th>
+                                <th>Selling Price</th>
+                                <th>Products number</th>
+                                <th>Is promotional?</th>
+                                { auth?.role === "MANAGER" && <th width="10%">Actions</th>}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {storeProductList}
+                            </tbody>
+                        </Table>
+                    }
                 </div>
 
                 <Modal isOpen={modal} toggle={toggleModal}>

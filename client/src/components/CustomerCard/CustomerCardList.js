@@ -147,38 +147,40 @@ const CustomerCardList = () => {
                     </div>
                 </div>
 
-                {showEmpty ?
-                    <div className="text-center">
-                        <p>No results found.</p>
-                    </div>
-                    :
-                    <div ref={componentPDF}>
-                        <h1>Customer Cards</h1>
-                        { auth?.role === "MANAGER"
-                            &&
-                            <div className='search-container noPrint'>
-                                <Input
-                                    style={{width: '200px' }}
-                                    type="number"
-                                    placeholder="Enter sale percent"
-                                    value={salePercent}
-                                    onChange={handleSalePercentChange}
-                                />
-                            </div>
-                        }
-                        { auth?.role === "CASHIER"
-                            &&
-                            <div className='search-container noPrint'>
-                                <Input
-                                    style={{width: '200px' }}
-                                    type="text"
-                                    placeholder="Find by name"
-                                    value={searchSurname}
-                                    onChange={handleSearchProductNameChange}
-                                />
-                                <Button color="primary" onClick={() => findCustomersBySurname()}>Search</Button>
-                            </div>
-                        }
+                <div ref={componentPDF}>
+                    <h1>Customer Cards</h1>
+
+                    { auth?.role === "MANAGER"
+                        &&
+                        <div className='search-container'>
+                            <Input
+                                style={{width: '200px' }}
+                                type="number"
+                                placeholder="Enter sale percent"
+                                value={salePercent}
+                                onChange={handleSalePercentChange}
+                            />
+                        </div>
+                    }
+                    { auth?.role === "CASHIER"
+                        &&
+                        <div className='search-container noPrint'>
+                            <Input
+                                style={{width: '200px' }}
+                                type="text"
+                                placeholder="Find by name"
+                                value={searchSurname}
+                                onChange={handleSearchProductNameChange}
+                            />
+                            <Button color="primary" onClick={() => findCustomersBySurname()}>Search</Button>
+                        </div>
+                    }
+
+                    {showEmpty ?
+                        <div className="text-center">
+                            <p>No results found.</p>
+                        </div>
+                        :
                         <Table className="mt-4">
                             <thead>
                             <tr>
@@ -198,8 +200,8 @@ const CustomerCardList = () => {
                             {customerCardList}
                             </tbody>
                         </Table>
-                    </div>
-                }
+                    }
+                </div>
 
                 <SearchBySurnameModal
                     isOpen={modalSearchBySurname}

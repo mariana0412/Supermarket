@@ -21,7 +21,6 @@ import {useReactToPrint} from "react-to-print";
 const ProductList = () => {
 
     const [products, setProducts] = useState([]);
-    const [sorted, setSorted] = useState(false);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [modalNumberSold, setModalNumberSold] = useState(false);
@@ -32,28 +31,40 @@ const ProductList = () => {
     const [selectedId, setSelectedId] = useState(null);
     const [searchProductName, setSearchProductName] = useState('');
     const [productsFoundByName, setProductsFoundByName] = useState(null);
+    const [showEmpty, setShowEmpty] = useState(false);
     const {auth} = useAuth();
     const componentPDF = useRef();
 
     useEffect(() => {
         let url = `api/products`;
-        if(sorted)
+        if(selectedCategory === 'allCategories')
             url += `?sorted=true`;
         else if(selectedCategory)
             url += `?categoryId=` + selectedCategory;
 
         fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                if (response.status === 204)
+                    return null;
+                else
+                    return response.json();
+            })
             .then(data => {
-                setProducts(data);
-            });
+                if (data) {
+                    setProducts(data);
+                    setShowEmpty(data.length === 0);
+                } else {
+                    setProducts([]);
+                    setShowEmpty(true);
+                }
+            })
 
         fetch(`/api/categories`)
             .then(response => response.json())
             .then(data => {
                 setCategories(data);
             });
-    }, [sorted, selectedCategory]);
+    }, [selectedCategory]);
 
     const remove = async (id) => {
         try {
@@ -161,9 +172,6 @@ const ProductList = () => {
             <AppNavbar/>
             <Container fluid>
                 <div className="float-end">
-                    <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
-                        {sorted ? "Unsort" : "Sort by Name"}
-                    </Button>
                     { auth?.role === "MANAGER"
                         &&
                         <Button className="buttonWithMargins" color="success" tag={Link} to="/products/new">
@@ -187,6 +195,7 @@ const ProductList = () => {
                                id="category_number"
                                onChange={handleCategoryChange}>
                             <option value="">Sort by name within Category</option>
+                            <option value="allCategories">All categories</option>
                             {categoryOptions}
                         </Input>
                     </FormGroup>
@@ -205,6 +214,11 @@ const ProductList = () => {
                         </div>
                     }
 
+                    {showEmpty ?
+                        <div className="text-center">
+                            <p>No results found.</p>
+                        </div>
+                        :
                     <Table className="mt-4">
                         <thead>
                         <tr>
@@ -218,6 +232,7 @@ const ProductList = () => {
                         {productList}
                         </tbody>
                     </Table>
+                    }
                 </div>
 
                 <Modal isOpen={modalNumberSold} toggle={toggleModalNumberSold}>
