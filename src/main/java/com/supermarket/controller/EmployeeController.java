@@ -79,6 +79,9 @@ public class EmployeeController {
                     employee.getSalary(), employee.getDate_of_birth(), employee.getDate_of_start(),
                     employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code()));
             return new ResponseEntity<>("Employee was created successfully.", HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("This data failed corporate integrity constraint.", HttpStatus.CONFLICT);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

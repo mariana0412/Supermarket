@@ -38,7 +38,7 @@ const EmployeeEdit = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        await fetch(`/api/employees${employee.id_employee ? `/${employee.id_employee}` : ''}`, {
+        const response = await fetch(`/api/employees${employee.id_employee ? `/${employee.id_employee}` : ''}`, {
             method: (employee.id_employee) ? 'PUT' : 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -46,8 +46,15 @@ const EmployeeEdit = () => {
             },
             body: JSON.stringify(employee)
         });
-        setEmployee(initialFormState);
-        navigate('/employees');
+
+        if (response.ok) {
+            setEmployee(initialFormState);
+            navigate('/employees');
+        } else if(response.status === 409){
+            alert("This data failed corporate integrity constraint.");
+        } else {
+            console.log(response)
+        }
     }
 
     const title = <h2>{employee.id_employee ? 'Edit Employee' : 'Add Employee'}</h2>;
