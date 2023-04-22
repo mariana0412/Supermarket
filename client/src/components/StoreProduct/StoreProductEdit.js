@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
+import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import {Link, useNavigate, useParams} from 'react-router-dom';
 
@@ -77,64 +77,66 @@ const StoreProductEdit = () => {
     return (
         <div>
             <AppNavbar/>
-            <Form onSubmit={handleSubmit}>
-                <FormGroup>
-                    <Label for="id_product">Product</Label>
-                    <Input
-                        type="select"
-                        name="id_product"
-                        id="id_product"
-                        required
-                        value={storeProduct.id_product || ''}
-                        onChange={handleChange}>
-                        <option value="">Select Product</option>
-                        {productsOptions}
-                    </Input>
-                </FormGroup>
+            <Container>
+                <Form onSubmit={handleSubmit}>
+                    <FormGroup>
+                        <Label for="id_product">Product</Label>
+                        <Input
+                            type="select"
+                            name="id_product"
+                            id="id_product"
+                            required
+                            value={storeProduct.id_product || ''}
+                            onChange={handleChange}>
+                            <option value="">Select Product</option>
+                            {productsOptions}
+                        </Input>
+                    </FormGroup>
 
-                <FormGroup>
-                    <Label for="selling_price">Selling Price</Label>
-                    <Input
-                        type="number"
-                        name="selling_price"
-                        id="selling_price"
-                        required
-                        value={storeProduct.selling_price || ''}
-                        onChange={handleChange}
-                        autoComplete="selling_price"
-                    />
-                </FormGroup>
+                    <FormGroup>
+                        <Label for="selling_price">Selling Price</Label>
+                        <Input
+                            type="number"
+                            name="selling_price"
+                            id="selling_price"
+                            required
+                            value={storeProduct.selling_price || ''}
+                            onChange={handleChange}
+                            autoComplete="selling_price"
+                        />
+                    </FormGroup>
 
-                <FormGroup>
-                    <Label for="products_number">Products Number</Label>
-                    <Input
-                        type="number"
-                        name="products_number"
-                        id="products_number"
-                        required
-                        value={storeProduct.products_number || ''}
-                        onChange={handleChange}
-                        autoComplete="products_number"
-                    />
-                </FormGroup>
+                    <FormGroup>
+                        <Label for="products_number">Products Number</Label>
+                        <Input
+                            type="number"
+                            name="products_number"
+                            id="products_number"
+                            required
+                            value={storeProduct.products_number || ''}
+                            onChange={handleChange}
+                            autoComplete="products_number"
+                        />
+                    </FormGroup>
 
-                <FormGroup>
-                    <Label for="promotional_product">Is promotional?</Label>
-                    <Input
-                        type="checkbox"
-                        name="promotional_product"
-                        id="promotional_product"
-                        checked={storeProduct.promotional_product || false}
-                        onChange={handleChange}
-                        autoComplete="promotional_product"
-                    />
-                </FormGroup>
+                    <FormGroup>
+                        <Label for="promotional_product">Is promotional?</Label>
+                        <Input
+                            type="checkbox"
+                            name="promotional_product"
+                            id="promotional_product"
+                            checked={storeProduct.promotional_product || false}
+                            onChange={handleChange}
+                            autoComplete="promotional_product"
+                        />
+                    </FormGroup>
 
-                <FormGroup>
-                    <Button color="primary" type="submit">Save</Button>{' '}
-                    <Button color="secondary" tag={Link} to={"/store-products"}>Cancel</Button>
-                </FormGroup>
-            </Form>
+                    <FormGroup>
+                        <Button color="primary" type="submit">Save</Button>{' '}
+                        <Button color="secondary" tag={Link} to={"/store-products"}>Cancel</Button>
+                    </FormGroup>
+                </Form>
+            </Container>
         </div>
     );
 };

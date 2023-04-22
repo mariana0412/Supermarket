@@ -5,6 +5,7 @@ import '../../App.css';
 import Check from "./Check";
 import useAuth from "../../hooks/useAuth";
 import {useReactToPrint} from "react-to-print";
+import {Link} from "react-router-dom";
 
 const CheckList = () => {
 
@@ -141,12 +142,20 @@ const CheckList = () => {
         <div>
             <AppNavbar/>
             <Container fluid>
-                { auth?.role === "MANAGER"
-                    &&
-                    <Button className="float-end buttonWithMargins" onClick={generatePDF}>
-                        Print
-                    </Button>
-                }
+                <div className="float-end">
+                    { auth?.role === "MANAGER"
+                        &&
+                        <Button className="float-end buttonWithMargins" onClick={generatePDF}>
+                            Print
+                        </Button>
+                    }
+                    { auth?.role === "CASHIER"
+                        &&
+                        <Button className="buttonWithMargins" color="success" tag={Link} to="/checks/new">
+                            Add Check
+                        </Button>
+                    }
+                </div>
                 <div ref={componentPDF} style={{width: '100%'}}>
                     <h1>Checks</h1>
 

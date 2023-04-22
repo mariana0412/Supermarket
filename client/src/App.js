@@ -16,6 +16,7 @@ import CheckList from "./components/Check/CheckList";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import RequireAuth from "./components/RequireAuth";
+import AddCheck from "./components/Check/AddCheck";
 
 
 const App = () => {
@@ -44,6 +45,7 @@ const App = () => {
                 <Route path='/store-products/:id' exact={true} element={<StoreProductEdit/>}/>
 
                 <Route path='/checks' exact={true} element={<CheckList/>}/>
+                <Route path='/checks/:id' exact={true} element={<AddCheck/>}/>
             </Route>
         </Routes>
       </Router>
