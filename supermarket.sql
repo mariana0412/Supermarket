@@ -7,7 +7,7 @@
 --
 CREATE TABLE employee
 (
-    id_emloyee VARCHAR(10) PRIMARY KEY NOT NULL,
+    id_employee VARCHAR(10) PRIMARY KEY NOT NULL,
     empl_surname VARCHAR(50) NOT NULL,
     empl_name VARCHAR(50) NOT NULL,
     empl_patronymic VARCHAR(50) NULL,
@@ -54,8 +54,13 @@ CREATE TABLE customer_card
 --
 -- Dumping data for table `customer_card`
 --
-INSERT INTO customer_card (card_number, cust_surname, cust_name, cust_patronymic, phone_number, city,  street, zip_code, percent) VALUES
-    ('hg79dk2n47', 'Bratkov', 'Ivan', '', '+380975632345', '', '', '', 20);
+INSERT INTO customer_card (card_number, cust_surname, cust_name, cust_patronymic, phone_number, city,  street, zip_code, percent)
+VALUES
+    ('hg79dk2n47dg5', 'Bratkov', 'Ivan', '', '+380975632345', '', '', '', 5),
+    ('chd64kc8e9hfr', 'Koval', 'Iryna', 'Ihorivna', '+380985656254', 'Lviv', 'Medovoi Pechery', '79007', 10),
+    ('dkv58dc6sbfge', 'Rozbyshak', 'Petro', 'Volodymyrovych', '+380977569087', '', '', '79007', 5),
+    ('dk83od9s5xk9d', 'Pochay', 'Mykola', '', '+380675638749', 'Lviv', '', '', 10),
+    ('dh73e5s7f9l3d', 'Gor', 'Viktor', 'Petrovych', '+380993452917', 'Lviv', '', '', 5);
 
 
 -- --------------------------------------------------------
@@ -72,12 +77,13 @@ CREATE TABLE category
 --
 -- Dumping data for table `category`
 --
-INSERT INTO category (category_number, category_name) VALUES
-                                                          ('1', 'fruit'),
-                                                          ('2', 'vegetables'),
-                                                          ('3', 'meat'),
-                                                          ('4', 'stationery'),
-                                                          ('5', 'clothes');
+INSERT INTO category (category_number, category_name)
+    VALUES
+        ('1', 'fruit'),
+        ('2', 'vegetables'),
+        ('3', 'meat'),
+        ('4', 'stationery'),
+        ('5', 'clothes');
 
 
 -- --------------------------------------------------------
@@ -97,7 +103,13 @@ CREATE TABLE product
 --
 -- Dumping data for table `product`
 --
--- INSERT INTO product (id_product, category_number, product_name, producer, characteristics) VALUES
+INSERT INTO product (id_product, category_number, product_name, producer, characteristics)
+VALUES
+    (1, 1, 'Tangerine', 'Italy', 'Sweet and juicy'),
+    (2, 1, 'Apple', 'Ukraine', 'Sort Champion'),
+    (3, 4, 'Pen', 'Ukraine', 'Black gel pen'),
+    (4, 5, 'Socks', 'Ukraine', 'Warm black socks 39-45'),
+    (5, 3, 'Chicken leg', 'Ukraine', 'Tender');
 
 
 
@@ -119,7 +131,14 @@ CREATE TABLE store_product
 --
 -- Dumping data for table `store_product`
 --
--- INSERT INTO store_product (UPC, UPC_prom, id_product, selling_price, products_number, promotional_product) VALUES
+INSERT INTO store_product (UPC, UPC_prom, id_product, selling_price, products_number, promotional_product)
+VALUES
+    ('df7k8d93bdkl', null, 1, 40, 40, true),
+    ('hkdu64hg9fd7', 'df7k8d93bdkl', 1, 50, 40, false),
+    ('hd78sk3vdf26', null, 3, 15, 100, true),
+    ('lp3chs5hs9p9', 'hd78sk3vdf26', 3, 12, 80, false),
+    ('ola5d89c3jss', null, 5, 100, 100, false);
+
 
 
 
@@ -141,7 +160,10 @@ CREATE TABLE receipt
 --
 -- Dumping data for table `receipt`
 --
--- INSERT INTO receipt (check_number, id_employee, card_number, print_date, sum_total, vat) VALUES
+INSERT INTO receipt (check_number, id_employee, card_number, print_date, sum_total, vat)
+VALUES
+    ('ksj6c73b45', 'd1jc79slc6', 'hg79dk2n47dg5', '2023-04-22T15:45:56.637997', 617.5, 123.5);
+
 
 
 -- --------------------------------------------------------
@@ -161,7 +183,12 @@ CREATE TABLE sale
 --
 -- Dumping data for table `sale`
 --
--- INSERT INTO sale (UPC, check_number, product_number, selling_price) VALUES
+INSERT INTO sale (UPC, check_number, product_number, selling_price)
+VALUES
+    ('ola5d89c3jss', 'ksj6c73b45', 5, 100),
+    ('hd78sk3vdf26', 'ksj6c73b45', 10, 15);
+
+
 
 
 -- constraints
