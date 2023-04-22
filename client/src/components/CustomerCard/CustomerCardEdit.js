@@ -35,7 +35,7 @@ const CustomerCardEdit = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        await fetch(
+        const response = await fetch(
             `/api/customer-cards${customer.card_number ? `/${customer.card_number}` : ''}`,
             {
                 method: customer.card_number ? 'PUT' : 'POST',
@@ -46,8 +46,14 @@ const CustomerCardEdit = () => {
                 body: JSON.stringify(customer)
             }
         );
-        setCustomer(initialFormState);
-        navigate('/customer-cards');
+        if (response.ok) {
+            setCustomer(initialFormState);
+            navigate('/customer-cards');
+        } else if(response.status === 409){
+            alert("This data failed corporate integrity constraint.");
+        } else {
+            console.log(response)
+        }
     };
 
     const title = <h2>{customer.card_number ? 'Edit Customer Card' : 'Add Customer Card'}</h2>;
@@ -115,7 +121,6 @@ const CustomerCardEdit = () => {
                             type="text"
                             name="city"
                             id="city"
-                            required
                             value={customer.city || ''}
                             onChange={handleChange}
                             autoComplete="city"
@@ -128,7 +133,6 @@ const CustomerCardEdit = () => {
                             type="text"
                             name="street"
                             id="street"
-                            required
                             value={customer.street || ''}
                             onChange={handleChange}
                             autoComplete="street"
@@ -141,7 +145,6 @@ const CustomerCardEdit = () => {
                             type="text"
                             name="zip_code"
                             id="zip_code"
-                            required
                             value={customer.zip_code || ''}
                             onChange={handleChange}
                             autoComplete="zip_code"
