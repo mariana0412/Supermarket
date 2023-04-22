@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     Button,
     ButtonGroup,
@@ -14,6 +14,7 @@ import AppNavbar from '../AppNavbar';
 import '../../App.css';
 import { Link } from 'react-router-dom';
 import useAuth from "../../hooks/useAuth";
+import {useReactToPrint} from "react-to-print";
 
 const StoreProductList = () => {
 
@@ -25,7 +26,9 @@ const StoreProductList = () => {
     const [searchUPC, setSearchUPC] = useState('');
     const [modal, setModal] = useState(false);
     const [productDetails, setProductDetails] = useState(null);
+    const [showEmpty, setShowEmpty] = useState(false);
     const {auth} = useAuth();
+    const componentPDF = useRef();
 
     useEffect(() => {
         fetch(`/api/products`)
@@ -54,10 +57,21 @@ const StoreProductList = () => {
         }
 
         fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                if (response.status === 204)
+                    return null;
+                else
+                    return response.json();
+            })
             .then(data => {
-                setStoreProducts(data);
-            });
+                if (data) {
+                    setStoreProducts(data);
+                    setShowEmpty(data.length === 0);
+                } else {
+                    setStoreProducts([]);
+                    setShowEmpty(true);
+                }
+            })
     }, [sortOption]);
 
     const remove = async (id) => {
@@ -131,34 +145,23 @@ const StoreProductList = () => {
                 &&
                 <td>
                     <ButtonGroup>
-                        <Button size="sm" color="primary" tag={Link} to={"/store-products/" + storeProduct.upc}>Edit</Button>
-                        <Button size="sm" color="danger" onClick={() => remove(storeProduct.upc)}>Delete</Button>
+                        <Button className="buttonWithMargins" size="sm" color="primary" tag={Link} to={"/store-products/" + storeProduct.upc}>Edit</Button>
+                        <Button className="buttonWithMargins" size="sm" color="danger" onClick={() => remove(storeProduct.upc)}>Delete</Button>
                     </ButtonGroup>
                 </td>
             }
         </tr>
     });
 
+    const generatePDF = useReactToPrint({
+        content: () => componentPDF.current,
+        documentTitle: "Categories",
+    });
+
     return (
         <div>
             <AppNavbar/>
             <Container fluid>
-                <h3>Store Product List</h3>
-
-                { auth?.role === "MANAGER"
-                    &&
-                    <div className='search-container'>
-                        <Input
-                            style={{width: '200px' }}
-                            type="text"
-                            placeholder="Find more info by UPC"
-                            value={searchUPC}
-                            onChange={handleSearchInputChange}
-                        />
-                        <Button color="primary" onClick={() => showStoreProductDetails()}>Search</Button>
-                    </div>
-                }
-
                 <div className="float-end">
                     { auth?.role === "MANAGER"
                         &&
@@ -168,52 +171,74 @@ const StoreProductList = () => {
                     }
                     { auth?.role === "MANAGER"
                         &&
-                        <Button className="buttonWithMargins" onClick={() => window.print()}>
+                        <Button className="buttonWithMargins" onClick={generatePDF}>
                             Print
                         </Button>
                     }
                 </div>
 
-                { auth.role === "CASHIER"
-                    &&
-                    <Button onClick={() => {
-                        toggleSort('name');
-                        setSortedByName(!sortedByName);
-                    }}>
-                        { sortedByName ? "Unsort" : "Sort by name" }
-                    </Button>
-                }
+                <div ref={componentPDF}>
+                    <h1>Store Products</h1>
+                    { auth.role === "CASHIER"
+                        &&
+                        <Button onClick={() => {
+                            toggleSort('name');
+                            setSortedByName(!sortedByName);
+                        }}>
+                            { sortedByName ? "Unsort" : "Sort by name" }
+                        </Button>
+                    }
 
-                { auth?.role === "MANAGER"
-                    &&
-                    <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
-                        <DropdownToggle caret>Sort</DropdownToggle>
-                        <DropdownMenu>
-                            <DropdownItem onClick={() => toggleSort('num')}>all by number</DropdownItem>
-                            <DropdownItem onClick={() => toggleSort('promNum')}>promotional by number</DropdownItem>
-                            <DropdownItem onClick={() => toggleSort('promName')}>promotional by name</DropdownItem>
-                            <DropdownItem onClick={() => toggleSort('notPromNum')}>not promotional by number</DropdownItem>
-                            <DropdownItem onClick={() => toggleSort('notPromName')}>not promotional by name</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                }
+                    { auth?.role === "MANAGER"
+                        &&
+                        <div className='search-container noPrint'>
+                            <Input
+                                style={{width: '200px' }}
+                                type="text"
+                                placeholder="Find more info by UPC"
+                                value={searchUPC}
+                                onChange={handleSearchInputChange}
+                            />
+                            <Button color="primary" onClick={() => showStoreProductDetails()}>Search</Button>
+                        </div>
+                    }
 
-                <Table className="mt-4">
-                    <thead>
-                    <tr>
-                        <th>UPC</th>
-                        <th>Promotional product UPC</th>
-                        <th>Product ID</th>
-                        <th>Selling Price</th>
-                        <th>Products number</th>
-                        <th>Is promotional?</th>
-                        { auth?.role === "MANAGER" && <th width="10%">Actions</th>}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {storeProductList}
-                    </tbody>
-                </Table>
+                    { auth?.role === "MANAGER"
+                        &&
+                        <Dropdown className="noPrint" isOpen={dropdownOpen} toggle={toggleDropdown}>
+                            <DropdownToggle caret>Sort</DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem onClick={() => toggleSort('num')}>all by number</DropdownItem>
+                                <DropdownItem onClick={() => toggleSort('promNum')}>promotional by number</DropdownItem>
+                                <DropdownItem onClick={() => toggleSort('promName')}>promotional by name</DropdownItem>
+                                <DropdownItem onClick={() => toggleSort('notPromNum')}>not promotional by number</DropdownItem>
+                                <DropdownItem onClick={() => toggleSort('notPromName')}>not promotional by name</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    }
+                    {showEmpty ?
+                        <div className="text-center">
+                            <p>No results found.</p>
+                        </div>
+                        :
+                        <Table className="mt-4">
+                            <thead>
+                            <tr>
+                                <th>UPC</th>
+                                <th>Promotional product UPC</th>
+                                <th>Product ID</th>
+                                <th>Selling Price</th>
+                                <th>Products number</th>
+                                <th>Is promotional?</th>
+                                { auth?.role === "MANAGER" && <th width="10%">Actions</th>}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {storeProductList}
+                            </tbody>
+                        </Table>
+                    }
+                </div>
 
                 <Modal isOpen={modal} toggle={toggleModal}>
                     <ModalHeader toggle={toggleModal}>Store Product Details</ModalHeader>

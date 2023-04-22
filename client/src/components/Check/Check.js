@@ -13,11 +13,11 @@ const Check = ({ auth, check, remove, showPurchasedProducts }) => {
         <td>
             <ButtonGroup>
                 { auth?.role === "MANAGER" &&
-                    <Button size="sm" color="danger" onClick={() => remove(check.check_number)}>
+                    <Button className="buttonWithMargins" size="sm" color="danger" onClick={() => remove(check.check_number)}>
                         Delete
                     </Button>
                 }
-                <Button size="sm" color="primary" onClick={() => showPurchasedProducts(check.check_number)}>
+                <Button className="buttonWithMargins" size="sm" color="primary" onClick={() => showPurchasedProducts(check.check_number)}>
                     View Details
                 </Button>
             </ButtonGroup>

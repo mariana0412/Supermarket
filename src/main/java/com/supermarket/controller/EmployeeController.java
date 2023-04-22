@@ -79,6 +79,9 @@ public class EmployeeController {
                     employee.getSalary(), employee.getDate_of_birth(), employee.getDate_of_start(),
                     employee.getPhone_number(), employee.getCity(), employee.getStreet(), employee.getZip_code()));
             return new ResponseEntity<>("Employee was created successfully.", HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Violates corporate integrity constraints.", HttpStatus.CONFLICT);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -102,7 +105,12 @@ public class EmployeeController {
             _employee.setCity(employee.getCity());
             _employee.setStreet(employee.getStreet());
             _employee.setZip_code(employee.getZip_code());
-            employeeRepository.update(_employee);
+            try {
+                employeeRepository.update(_employee);
+            } catch (DataIntegrityViolationException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>("Violates corporate integrity constraints.", HttpStatus.CONFLICT);
+            }
             return new ResponseEntity<>("Employee was updated successfully.", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Cannot find Employee with id=" + id, HttpStatus.NOT_FOUND);

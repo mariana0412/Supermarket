@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     Button,
     ButtonGroup,
@@ -16,11 +16,11 @@ import { Link } from 'react-router-dom';
 import '../../App.css';
 import useAuth from "../../hooks/useAuth";
 import SearchByNameModal from "./SearchByNameModal";
+import {useReactToPrint} from "react-to-print";
 
 const ProductList = () => {
 
     const [products, setProducts] = useState([]);
-    const [sorted, setSorted] = useState(false);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [modalNumberSold, setModalNumberSold] = useState(false);
@@ -31,27 +31,40 @@ const ProductList = () => {
     const [selectedId, setSelectedId] = useState(null);
     const [searchProductName, setSearchProductName] = useState('');
     const [productsFoundByName, setProductsFoundByName] = useState(null);
+    const [showEmpty, setShowEmpty] = useState(false);
     const {auth} = useAuth();
+    const componentPDF = useRef();
 
     useEffect(() => {
         let url = `api/products`;
-        if(sorted)
+        if(selectedCategory === 'allCategories')
             url += `?sorted=true`;
         else if(selectedCategory)
             url += `?categoryId=` + selectedCategory;
 
         fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                if (response.status === 204)
+                    return null;
+                else
+                    return response.json();
+            })
             .then(data => {
-                setProducts(data);
-            });
+                if (data) {
+                    setProducts(data);
+                    setShowEmpty(data.length === 0);
+                } else {
+                    setProducts([]);
+                    setShowEmpty(true);
+                }
+            })
 
         fetch(`/api/categories`)
             .then(response => response.json())
             .then(data => {
                 setCategories(data);
             });
-    }, [sorted, selectedCategory]);
+    }, [selectedCategory]);
 
     const remove = async (id) => {
         try {
@@ -85,9 +98,9 @@ const ProductList = () => {
                 &&
                 <td>
                     <ButtonGroup>
-                        <Button size="sm" color="primary" tag={Link} to={"/products/" + product.id_product}>Edit</Button>
-                        <Button size="sm" color="danger" onClick={() => remove(product.id_product)}>Delete</Button>
-                        <Button size="sm" color="primary" onClick={() => {
+                        <Button className="buttonWithMargins" size="sm" color="primary" tag={Link} to={"/products/" + product.id_product}>Edit</Button>
+                        <Button className="buttonWithMargins" size="sm" color="danger" onClick={() => remove(product.id_product)}>Delete</Button>
+                        <Button className="buttonWithMargins" size="sm" color="primary" onClick={() => {
                             setModalNumberSold(true);
                             setSelectedId(product.id_product);
                         }}>
@@ -148,30 +161,17 @@ const ProductList = () => {
             console.log(error);
         }
     }
+
+    const generatePDF = useReactToPrint({
+        content: () => componentPDF.current,
+        documentTitle: "Categories",
+    });
+
     return (
         <div>
             <AppNavbar/>
             <Container fluid>
-                <h3>Product List</h3>
-
-                { auth?.role === "CASHIER"
-                    &&
-                    <div className='search-container'>
-                        <Input
-                            style={{width: '200px' }}
-                            type="text"
-                            placeholder="Find by name"
-                            value={searchProductName}
-                            onChange={handleSearchProductNameChange}
-                        />
-                        <Button color="primary" onClick={() => findProductsByName()}>Search</Button>
-                    </div>
-                }
-
                 <div className="float-end">
-                    <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
-                        {sorted ? "Unsort" : "Sort by Name"}
-                    </Button>
                     { auth?.role === "MANAGER"
                         &&
                         <Button className="buttonWithMargins" color="success" tag={Link} to="/products/new">
@@ -180,36 +180,60 @@ const ProductList = () => {
                     }
                     { auth?.role === "MANAGER"
                         &&
-                        <Button className="buttonWithMargins" onClick={() => window.print()}>
+                        <Button className="buttonWithMargins" onClick={generatePDF}>
                             Print
                         </Button>
                     }
                 </div>
 
-                <FormGroup>
-                    <Input style={{width: '280px'}}
-                           type="select"
-                           name="category_number"
-                           id="category_number"
-                           onChange={handleCategoryChange}>
-                        <option value="">Sort by name within Category</option>
-                        {categoryOptions}
-                    </Input>
-                </FormGroup>
+                <div ref={componentPDF}>
+                    <h1>Products</h1>
+                    <FormGroup className="noPrint">
+                        <Input style={{width: '280px'}}
+                               type="select"
+                               name="category_number"
+                               id="category_number"
+                               onChange={handleCategoryChange}>
+                            <option value="">Sort by name within Category</option>
+                            <option value="allCategories">All categories</option>
+                            {categoryOptions}
+                        </Input>
+                    </FormGroup>
 
-                <Table className="mt-4">
-                    <thead>
-                    <tr>
-                        <th width="20%">Name</th>
-                        <th width="20%">Category</th>
-                        <th width="40%">Characteristics</th>
-                        { auth?.role === "MANAGER" && <th width="20%">Actions</th> }
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {productList}
-                    </tbody>
-                </Table>
+                    { auth?.role === "CASHIER"
+                        &&
+                        <div className='search-container'>
+                            <Input
+                                style={{width: '200px' }}
+                                type="text"
+                                placeholder="Find by name"
+                                value={searchProductName}
+                                onChange={handleSearchProductNameChange}
+                            />
+                            <Button color="primary" onClick={() => findProductsByName()}>Search</Button>
+                        </div>
+                    }
+
+                    {showEmpty ?
+                        <div className="text-center">
+                            <p>No results found.</p>
+                        </div>
+                        :
+                    <Table className="mt-4">
+                        <thead>
+                        <tr>
+                            <th width="20%">Name</th>
+                            <th width="20%">Category</th>
+                            <th width="40%">Characteristics</th>
+                            { auth?.role === "MANAGER" && <th width="20%">Actions</th> }
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {productList}
+                        </tbody>
+                    </Table>
+                    }
+                </div>
 
                 <Modal isOpen={modalNumberSold} toggle={toggleModalNumberSold}>
                     <ModalHeader toggle={toggleModalNumberSold}>Number sold</ModalHeader>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, ButtonGroup, Container, Table, Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
     Modal, ModalHeader, ModalBody, ModalFooter, Input
 } from 'reactstrap';
@@ -6,6 +6,7 @@ import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
 import '../../App.css';
 import useAuth from "../../hooks/useAuth";
+import {useReactToPrint} from "react-to-print";
 
 const EmployeeList = () => {
 
@@ -16,6 +17,7 @@ const EmployeeList = () => {
     const [modal, setModal] = useState(false);
     const [sortOption, setSortOption] = useState(null);
     const {auth} = useAuth();
+    const componentPDF = useRef();
 
     useEffect(() => {
         let url = 'api/employees';
@@ -109,71 +111,79 @@ const EmployeeList = () => {
                 &&
                 <td>
                     <ButtonGroup>
-                        <Button size="sm" color="primary" tag={Link} to={"/employees/" + employee.id_employee}>Edit</Button>
-                        <Button size="sm" color="danger" onClick={() => remove(employee.id_employee)}>Delete</Button>
+                        <Button className="buttonWithMargins" size="sm" color="primary" tag={Link} to={"/employees/" + employee.id_employee}>Edit</Button>
+                        <Button className="buttonWithMargins" size="sm" color="danger" onClick={() => remove(employee.id_employee)}>Delete</Button>
                     </ButtonGroup>
                 </td>
             }
         </tr>
     });
 
+    const generatePDF = useReactToPrint({
+        content: () => componentPDF.current,
+        documentTitle: "Employees",
+    });
+
     return (
         <div>
             <AppNavbar/>
             <Container fluid>
-                <h3>Employees List</h3>
-                { auth?.role === "MANAGER"
-                    &&
-                    <Dropdown className="float-right" isOpen={dropdownOpen} toggle={toggleDropdown}>
-                        <DropdownToggle caret>Sort by surname</DropdownToggle>
-                        <DropdownMenu>
-                            <DropdownItem onClick={() => toggleSort('allSorted')}>all employees</DropdownItem>
-                            <DropdownItem onClick={() => toggleSort('cashiersSorted')}>cashiers</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                }
-                { auth?.role === "MANAGER"
-                    &&
-                    <Button className="float-end" onClick={() => window.print()}>
-                        Print
-                    </Button>
-                }
-                { auth?.role === "MANAGER"
-                    &&
-                    <Button className="float-end" style={{ marginRight: '20px' }} color="success" tag={Link} to="/employees/new">
-                        Add Employee
-                    </Button>
-                }
-                { auth?.role === "MANAGER"
-                    &&
-                    <div className='search-container'>
-                        <Input style={{width: '200px' }} type="text" placeholder="Search by Surname" value={searchSurname} onChange={handleSearchInputChange} />
-                        <Button color="primary" onClick={() => showContactInfo()}>Search</Button>
-                    </div>
-                }
+                <div className="float-end">
+                    { auth?.role === "MANAGER"
+                        &&
+                        <Button className="buttonWithMargins" onClick={generatePDF}>
+                            Print
+                        </Button>
+                    }
+                    { auth?.role === "MANAGER"
+                        &&
+                        <Button className="buttonWithMargins" color="success" tag={Link} to="/employees/new">
+                            Add Employee
+                        </Button>
+                    }
+                    { auth?.role === "MANAGER"
+                        &&
+                        <Dropdown className="buttonWithMargins"  isOpen={dropdownOpen} toggle={toggleDropdown}>
+                            <DropdownToggle caret>Sort by surname</DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem onClick={() => toggleSort('allSorted')}>all employees</DropdownItem>
+                                <DropdownItem onClick={() => toggleSort('cashiersSorted')}>cashiers</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    }
+                </div>
 
-
-                <Table className="mt-4">
-                    <thead>
-                    <tr>
-                        <th>Surname</th>
-                        <th>Name</th>
-                        <th>Patronymic</th>
-                        <th>Role</th>
-                        <th>Salary</th>
-                        <th>Date of Birth</th>
-                        <th>Date of Start</th>
-                        <th>Phone Number</th>
-                        <th>City</th>
-                        <th>Street</th>
-                        <th>Zip Code</th>
-                        { auth?.role === "MANAGER" && <th width="10%">Actions</th> }
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {employeeList}
-                    </tbody>
-                </Table>
+                <div ref={componentPDF}>
+                    <h1>Employees</h1>
+                    { auth?.role === "MANAGER"
+                        &&
+                        <div className='search-container noPrint'>
+                            <Input type="text" placeholder="Search by Surname" value={searchSurname} onChange={handleSearchInputChange} />
+                            <Button color="primary" onClick={() => showContactInfo()}>Search</Button>
+                        </div>
+                    }
+                    <Table className="mt-4">
+                        <thead>
+                        <tr>
+                            <th>Surname</th>
+                            <th>Name</th>
+                            <th>Patronymic</th>
+                            <th>Role</th>
+                            <th>Salary</th>
+                            <th>Date of Birth</th>
+                            <th>Date of Start</th>
+                            <th>Phone Number</th>
+                            <th>City</th>
+                            <th>Street</th>
+                            <th>Zip Code</th>
+                            { auth?.role === "MANAGER" && <th width="10%">Actions</th> }
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {employeeList}
+                        </tbody>
+                    </Table>
+                </div>
 
                 <Modal isOpen={modal} toggle={toggleModal}>
                     <ModalHeader toggle={toggleModal}>Contact Info</ModalHeader>
@@ -191,8 +201,6 @@ const EmployeeList = () => {
                         <Button color="secondary" onClick={toggleModal}>Close</Button>
                     </ModalFooter>
                 </Modal>
-
-
             </Container>
         </div>
     );

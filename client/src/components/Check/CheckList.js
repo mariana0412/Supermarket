@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, Container, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Table} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import '../../App.css';
 import Check from "./Check";
 import useAuth from "../../hooks/useAuth";
+import {useReactToPrint} from "react-to-print";
 
 const CheckList = () => {
 
@@ -17,6 +18,7 @@ const CheckList = () => {
     const [modal, setModal] = useState(false);
     const [purchasedProducts, setPurchasedProducts] = useState(null);
     const {auth} = useAuth();
+    const componentPDF = useRef();
 
     useEffect(() => {
         let url = `api/checks`;
@@ -130,82 +132,87 @@ const CheckList = () => {
         }
     }
 
+    const generatePDF = useReactToPrint({
+        content: () => componentPDF.current,
+        documentTitle: "Checks",
+    });
+
     return (
         <div>
             <AppNavbar/>
             <Container fluid>
-                <h3>Checks List</h3>
-
-                <div className="checks-filter">
-                    <FormGroup>
-                        <Label for="startDate">Start date and time: </Label>
-                        <Input
-                            style={{ display: 'inline-block', width: '200px'}}
-                            type="datetime-local"
-                            name="startDate"
-                            id="startDate"
-                            value={startDate}
-                            required
-                            onChange={handleStartDate}
-                        />
-                    </FormGroup>
-
-                    <FormGroup>
-                        <Label for="endDate">End date and time: </Label>
-                        <Input
-                            style={{ display: 'inline-block', width: '200px'}}
-                            type="datetime-local"
-                            name="endDate"
-                            id="endDate"
-                            value={endDate}
-                            required
-                            onChange={handleEndDate}
-                        />
-                    </FormGroup>
-
-                    <FormGroup>
-                        <Input style={{width: '200px'}}
-                               type="select"
-                               name="id_employee"
-                               id="id_employee"
-                               onChange={handleCashier}>
-                            <option value="">Select Cashier</option>
-                            {cashierOptions}
-                        </Input>
-                    </FormGroup>
-
-                    {totalSum && <>Total sum: ${totalSum}</>}
-                </div>
-
                 { auth?.role === "MANAGER"
                     &&
-                    <Button className="float-end buttonWithMargins" onClick={() => window.print()}>
+                    <Button className="float-end buttonWithMargins" onClick={generatePDF}>
                         Print
                     </Button>
                 }
+                <div ref={componentPDF} style={{width: '100%'}}>
+                    <h1>Checks</h1>
 
-                {showEmpty ?
-                    <div className="text-center">
-                        <p>No results found.</p>
+                    <div className="checks-filter noPrint">
+                        <FormGroup>
+                            <Label for="startDate">Start date and time: </Label>
+                            <Input
+                                style={{ display: 'inline-block', width: '200px'}}
+                                type="datetime-local"
+                                name="startDate"
+                                id="startDate"
+                                value={startDate}
+                                required
+                                onChange={handleStartDate}
+                            />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label for="endDate">End date and time: </Label>
+                            <Input
+                                style={{ display: 'inline-block', width: '200px'}}
+                                type="datetime-local"
+                                name="endDate"
+                                id="endDate"
+                                value={endDate}
+                                required
+                                onChange={handleEndDate}
+                            />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Input style={{width: '200px'}}
+                                   type="select"
+                                   name="id_employee"
+                                   id="id_employee"
+                                   onChange={handleCashier}>
+                                <option value="">Select Cashier</option>
+                                {cashierOptions}
+                            </Input>
+                        </FormGroup>
+
+                        {totalSum && <>Total sum: ${totalSum}</>}
                     </div>
-                    :
-                <Table className="mt-4">
-                    <thead>
-                    <tr>
-                        <th>Check Number</th>
-                        <th>Cashier ID</th>
-                        <th>Card Number</th>
-                        <th>Print Date</th>
-                        <th>Total Sum</th>
-                        <th>Vat</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {checksList ({ checks, remove, showPurchasedProducts })}
-                    </tbody>
-                </Table>
-                }
+                    {showEmpty ?
+                        <div className="text-center">
+                            <p>No results found.</p>
+                        </div>
+                        :
+                        <Table className="mt-4">
+                            <thead>
+                            <tr>
+                                <th>Check Number</th>
+                                <th>Cashier ID</th>
+                                <th>Card Number</th>
+                                <th>Print Date</th>
+                                <th>Total Sum</th>
+                                <th>Vat</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {checksList ({ checks, remove, showPurchasedProducts })}
+                            </tbody>
+                        </Table>
+                    }
+                </div>
 
                 <Modal isOpen={modal} toggle={toggleModal} >
                     <ModalHeader toggle={toggleModal}>Purchased Products</ModalHeader>

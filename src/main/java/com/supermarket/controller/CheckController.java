@@ -3,6 +3,7 @@ package com.supermarket.controller;
 import com.supermarket.model.Check;
 import com.supermarket.repository.EntityRepositories.CheckRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,27 +74,12 @@ public class CheckController {
             checkRepository.save(new Check(check.getCheck_number(), check.getId_employee(), check.getCard_number(),
                     check.getPrint_date(), check.getSum_total(), check.getVat()));
             return new ResponseEntity<>("Check was created successfully.", HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Violates corporate integrity constraints.", HttpStatus.CONFLICT);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PutMapping("/checks/{id}")
-    public ResponseEntity<String> updateCheck(@PathVariable("id") String id, @RequestBody Check check) {
-        Check _check = checkRepository.findById(id);
-
-        if (_check != null) {
-            _check.setCheck_number(id);
-            _check.setId_employee(check.getId_employee());
-            _check.setCard_number(check.getCard_number());
-            _check.setPrint_date(check.getPrint_date());
-            _check.setSum_total(check.getSum_total());
-            _check.setVat(check.getVat());
-            checkRepository.update(_check);
-            return new ResponseEntity<>("Check was updated successfully.", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Cannot find Check with id=" + id, HttpStatus.NOT_FOUND);
         }
     }
 

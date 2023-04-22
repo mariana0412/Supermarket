@@ -85,9 +85,10 @@ h1 {
 
 .search-container {
   display: flex;
-  align-items: center;
+  justify-content: right;
   margin-top: 20px;
   margin-bottom: 20px;
+  width: 270px;
 }
 
 .search-container > *:not(:last-child) {
@@ -123,4 +124,19 @@ h1 {
 
 .home-button-text {
   color: #fff;
+}
+
+/*.myContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: flex-end;
+  width: 400px;
+  justify-content: right;
+  align-content: space-between;
+}*/
+
+@media print {
+  table td:last-child, table th:last-child  {display:none}
+  .noPrint {display: none}
 }
