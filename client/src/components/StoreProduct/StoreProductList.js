@@ -189,19 +189,16 @@ const StoreProductList = () => {
                         </Button>
                     }
 
-                    { auth?.role === "MANAGER"
-                        &&
-                        <div className='search-container noPrint'>
-                            <Input
-                                style={{width: '200px' }}
-                                type="text"
-                                placeholder="Find more info by UPC"
-                                value={searchUPC}
-                                onChange={handleSearchInputChange}
-                            />
-                            <Button color="primary" onClick={() => showStoreProductDetails()}>Search</Button>
-                        </div>
-                    }
+                    <div className='search-container noPrint'>
+                        <Input
+                            style={{width: '200px' }}
+                            type="text"
+                            placeholder="Find more info by UPC"
+                            value={searchUPC}
+                            onChange={handleSearchInputChange}
+                        />
+                        <Button color="primary" onClick={() => showStoreProductDetails()}>Search</Button>
+                    </div>
 
                     { auth?.role === "MANAGER"
                         &&
@@ -246,7 +243,7 @@ const StoreProductList = () => {
                         {productDetails && (
                             <>
                                 <p>Name: {productDetails?.product_name}</p>
-                                <p>Characteristics: {productDetails?.characteristics}</p>
+                                { auth?.role === "MANAGER" && <p>Characteristics: {productDetails?.characteristics}</p>}
                                 <p>Products number: {productDetails?.products_number}</p>
                                 <p>Selling price: {productDetails?.selling_price}</p>
                             </>
