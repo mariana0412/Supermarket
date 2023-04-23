@@ -189,6 +189,17 @@ VALUES
     ('hd78sk3vdf26', 'ksj6c73b45', 10, 15);
 
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sale`
+--
+CREATE TABLE _user
+(
+    id SERIAL PRIMARY KEY NOT NULL,
+    phone_number VARCHAR(13) NOT NULL,
+    user_password VARCHAR(50) NOT NULL
+);
 
 
 -- constraints
