@@ -1,11 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, Container, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Table} from 'reactstrap';
+import {Button, Container, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Table}
+    from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import '../../App.css';
-import Check from "./Check";
 import useAuth from "../../hooks/useAuth";
 import {useReactToPrint} from "react-to-print";
 import {Link} from "react-router-dom";
+import Check from "./Check";
 
 const CheckList = () => {
 
@@ -13,6 +14,7 @@ const CheckList = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [cashiers, setCashiers] = useState([]);
+    const [customers, setCustomers] = useState([]);
     const [selectedCashier, setSelectedCashier] = useState(null);
     const [showEmpty, setShowEmpty] = useState(false);
     const [totalSum, setTotalSum] = useState(null);
@@ -51,16 +53,23 @@ const CheckList = () => {
     }, [startDate, endDate, selectedCashier]);
 
     useEffect(() => {
-        let url = `api/employees?cashier=true`;
 
-        fetch(url)
+        fetch(`api/employees?cashier=true`)
             .then(response => response.json())
             .then(data => {
                 setCashiers(data);
             })
-    });
+    }, []);
 
-    // TODO: fix bug: after clicking DELETE check is removed from DB but is present on the screen
+    useEffect(() => {
+
+        fetch(`api/customer-cards`)
+            .then(response => response.json())
+            .then(data => {
+                setCustomers(data);
+            })
+    }, []);
+
     const remove = async (id) => {
         try {
             const response = await fetch(`/api/checks/${id}`, {
@@ -71,7 +80,7 @@ const CheckList = () => {
                 }
             });
 
-            const data = await response.json();
+            const data = await response.text();
 
             if (response.ok) {
                 let updatedChecks = [...checks].filter(i => i.check_number !== id);
@@ -84,18 +93,25 @@ const CheckList = () => {
         }
     }
 
-    const checksList = ({ checks, remove, showPurchasedProducts }) => checks.map(check => (
-            <Check
-                auth={auth}
-                check={check}
-                remove={remove}
-                showPurchasedProducts={showPurchasedProducts}
+    const checksList = ({ checks, remove, showPurchasedProducts }) => checks.map(check => {
+        const cashier = cashiers.find(cashier => cashier.id_employee === check.id_employee);
+        const cashierName = cashier ? `${cashier.empl_surname} ${cashier.empl_name} ${cashier?.empl_patronymic}` : '';
+
+        const customer = customers.find(customer => customer.card_number === check.card_number);
+        const customerName = customer ? `${customer.cust_surname} ${customer.cust_name} ${customer?.cust_patronymic}` : '';
+
+        return (
+            <Check auth={auth}
+                   check={check} cashierName={cashierName} customerName={customerName}
+                   remove={remove}
+                   showPurchasedProducts={showPurchasedProducts}
             />
-        ));
+        );
+    });
 
     const cashierOptions = cashiers.map((cashier) =>
-            <option key={cashier.id_employee} value={cashier.id_employee}>
-                {cashier.id_employee} - {cashier.empl_surname} {cashier.empl_name} {cashier.empl_patronymic}
+            <option key={cashier.id_employee}>
+                {cashier.empl_surname} {cashier.empl_name} {cashier.empl_patronymic}
             </option>
     );
 
@@ -111,7 +127,6 @@ const CheckList = () => {
                 alert('There is no products in this check.');
             } else {
                 const data = await response.json();
-                console.log(data);
                 setPurchasedProducts(data);
                 toggleModal();
             }
@@ -208,8 +223,8 @@ const CheckList = () => {
                             <thead>
                             <tr>
                                 <th>Check Number</th>
-                                <th>Cashier ID</th>
-                                <th>Card Number</th>
+                                <th>Cashier</th>
+                                <th>Customer</th>
                                 <th>Print Date</th>
                                 <th>Total Sum</th>
                                 <th>Vat</th>
