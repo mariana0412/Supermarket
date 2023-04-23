@@ -17,6 +17,8 @@ import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import RequireAuth from "./components/RequireAuth";
 import AddCheck from "./components/Check/AddCheck";
+import RequireCashierAuth from "./components/RequireAuthCashier";
+import CashierCabinet from "./components/CashierCabinet";
 
 
 const App = () => {
@@ -46,6 +48,10 @@ const App = () => {
 
                 <Route path='/checks' exact={true} element={<CheckList/>}/>
                 <Route path='/checks/:id' exact={true} element={<AddCheck/>}/>
+            </Route>
+
+            <Route element={<RequireCashierAuth/>}>
+                <Route path='/cabinet' exact={true} element={<CashierCabinet/>}/>
             </Route>
         </Routes>
       </Router>
