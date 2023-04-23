@@ -2,6 +2,7 @@ import AppNavbar from "../AppNavbar";
 import {Button, Container, Form, FormGroup, Input, Label} from "reactstrap";
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const AddCheck = () => {
     const initialCheck = {
@@ -19,6 +20,7 @@ const AddCheck = () => {
     const [selectedCustomerCard, setSelectedCustomerCard] = useState(null);
     const [sales, setSales] = useState([{ upc: '', product_number: 0 }]);
     const navigate = useNavigate();
+    const {auth} = useAuth();
 
     useEffect(() => {
         fetch(`/api/products`)
@@ -60,58 +62,110 @@ const AddCheck = () => {
         setSales(list);
     }
 
-    const handleRemoveSale = (index) => {
-        const list = [...sales];
-        list.splice(index, 1);
-        setSales(list);
+    const handleAddSale = () => setSales([...sales, { upc: '', product_number: 0 }]);
+
+    const correctUPCsInSales = () => {
+        let correct = true;
+        sales.forEach(sale => {
+            if (!sale.upc || sale.upc.trim() === "")
+                correct = false;
+        });
+        return correct;
     }
 
-    const handleAddSale = () => setSales([...sales, { upc: '', product_number: 0 }]);
+    const setCheckNumberToSales = (check_number) => sales.map(sale => sale.check_number = check_number);
+    const setSellingPriceToSales = () => {
+        sales.map(sale => {
+            const storeProduct = storeProducts.find(storeProduct => (sale.upc === storeProduct.upc));
+            sale.selling_price = storeProduct.selling_price;
+        });
+    };
+
+    const calculateCheckTotalSum = (customerSalePercent = 0) => {
+        let totalSum = 0;
+        sales.forEach(sale => {
+            const salePrice = sale.product_number * sale.selling_price;
+            totalSum += salePrice;
+        });
+        return totalSum * ((100 - customerSalePercent) / 100);
+    };
+
+    const getProductName = (saleUPC) => {
+        const storeProduct = storeProducts
+            .find(storeProduct => (storeProduct.upc === saleUPC));
+        const product = products
+            .find(product => (product.id_product === storeProduct.id_product));
+        return product.product_name;
+    };
+
+    const getStoreProductNumber = (saleUPC) => {
+        const storeProduct = storeProducts.find(storeProduct => storeProduct.upc === saleUPC);
+        return storeProduct.products_number;
+    }
+
+    const formAlertMessage = (responseText, productName, trueProductNumber, wantedProductNumber) => {
+        return responseText
+            + `\n\nStore product: ${productName}.`
+            + `\nNumber: ${trueProductNumber}.`
+            + `\nYou want: ${wantedProductNumber}`;
+    }
 
     const handleCreateCheck = async (event) => {
         event.preventDefault();
+        if(!correctUPCsInSales()) {
+            alert("Please, enter all store products.");
+            return;
+        }
 
-        // generate check number
+        setSellingPriceToSales();
+
         check.check_number = Date.now().toString().substring(0, 10);
-
-        // give selling_price and check_number to each sale
-        sales.map(sale => ((sale.selling_price =
-            storeProducts.find(storeProduct => (sale.upc === storeProduct.upc))
-                .selling_price) && (sale.check_number = check.check_number)));
-
         check.card_number = selectedCustomerCard;
-        check.id_employee = 'f3k77dls92'; // TODO: get current cashier ID
+        check.id_employee = auth?.employeeId;
         check.print_date = new Date();
-        sales.map(sale => check.sum_total += sale.product_number * sale.selling_price)
+        check.sum_total = calculateCheckTotalSum(customerCards.find(customerCard => customerCard.card_number === selectedCustomerCard)?.percent);
         check.vat = check.sum_total * 0.2;
 
-        // create receipt
-        await fetch(`/api/checks`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(check)
-        });
-
-        // create sales
-        const salesPromises = sales.map(sale => {
-            return fetch(`/api/sales`, {
+        try {
+            const checkResponse = await fetch(`/api/checks`, {
                 method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(sale)
+                headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                body: JSON.stringify(check)
             });
-        });
 
-        await Promise.all(salesPromises);
+            if(checkResponse.ok) {
 
-        setCheck(initialCheck);
-        setSales([{ upc: '', product_number: 0 }])
-        navigate('/checks');
+                const salesPromises = sales.map(async sale => {
+                    setCheckNumberToSales(check.check_number);
+                    const response = await fetch(`/api/sales`, {
+                        method: 'POST',
+                        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                        body: JSON.stringify(sale)
+                    });
+
+                    if (response.status === 409) {
+                        const responseText = await response.text();
+                        const productName = getProductName(sale.upc);
+                        const productNumber = getStoreProductNumber(sale.upc);
+                        alert(formAlertMessage(responseText, productName, productNumber, sale.product_number));
+                        throw new Error(responseText);
+                    }
+                });
+
+                await Promise.all(salesPromises);
+
+                setCheck(initialCheck);
+                setSales([{upc: '', product_number: 0}])
+                navigate('/checks');
+            } else {
+                alert(await checkResponse.text())
+            }
+        } catch (error) {
+            await fetch(`/api/checks/${check.check_number}`, {
+                method: 'DELETE'
+            });
+            console.error(error);
+        }
     };
 
     return (
@@ -134,41 +188,34 @@ const AddCheck = () => {
 
                     <FormGroup>
                         {sales.map((sale, index) => (
-                                <FormGroup key={index}>
-                                    <Label for="upc">Store Product</Label>
-                                    <Input
-                                        type="select"
-                                        name="upc"
-                                        id="upc"
-                                        value={sale.upc}
-                                        onChange={e => handleInputChange(e, index)}
-                                    >
-                                        <option value="">Select Store Product</option>
-                                        {storeProductsOptions}
-                                    </Input>
+                            <FormGroup key={index}>
+                                <Label for="upc">Store Product</Label>
+                                <Input
+                                    type="select"
+                                    name="upc"
+                                    id="upc"
+                                    value={sale.upc}
+                                    onChange={e => handleInputChange(e, index)}
+                                >
+                                    <option value="">Select Store Product</option>
+                                    {storeProductsOptions}
+                                </Input>
 
-                                    <Label for="product_number">Number</Label>
-                                    <Input
-                                        type="number"
-                                        name="product_number"
-                                        value={sale.product_number}
-                                        required
-                                        onChange={e => handleInputChange(e, index)}
-                                    />
-                                    <Button className="buttonWithMargins" onClick={() => handleRemoveSale(index)}>
-                                        Remove
-                                    </Button>
-                                </FormGroup>
-                            ))}
+                                <Label for="product_number">Number</Label>
+                                <Input
+                                    type="number"
+                                    name="product_number"
+                                    value={sale.product_number}
+                                    required
+                                    onChange={e => handleInputChange(e, index)}
+                                />
+                            </FormGroup>
+                        ))}
                     </FormGroup>
 
                     <Button className="buttonWithMargins" onClick={handleAddSale}>
                         Add Sale
                     </Button>
-
-                    <div>
-                        {/*<p>Total: {total}</p>*/}
-                    </div>
 
                     <FormGroup>
                         <Button className="buttonWithMargins" color="primary" type="submit">Save</Button>
@@ -181,3 +228,4 @@ const AddCheck = () => {
 }
 
 export default AddCheck;
+
