@@ -35,7 +35,8 @@ function LoginPage() {
 
                     const accessToken = response?.data?.token;
                     const role = jwt_decode(accessToken).role;
-                    setAuth({ role, accessToken});
+                    const employeeId = jwt_decode(accessToken).id_employee
+                    setAuth({ role, employeeId, accessToken});
 
                     console.log(role);
                     console.log('token: ' + response.data.token)

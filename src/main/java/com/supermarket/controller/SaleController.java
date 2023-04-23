@@ -1,7 +1,9 @@
 package com.supermarket.controller;
 
 import com.supermarket.model.Sale;
+import com.supermarket.model.StoreProduct;
 import com.supermarket.repository.EntityRepositories.SaleRepository;
+import com.supermarket.repository.EntityRepositories.StoreProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -17,9 +19,19 @@ public class SaleController {
     @Autowired
     SaleRepository saleRepository;
 
+    @Autowired
+    StoreProductRepository storeProductRepository;
+
     @PostMapping("/sales")
     public ResponseEntity<String> createSale(@RequestBody Sale sale) {
         try {
+            StoreProduct storeProduct = storeProductRepository.findById(sale.getUPC());
+            if(storeProduct.getProducts_number() < sale.getProduct_number())
+                return new ResponseEntity<>("There is not enough products.", HttpStatus.CONFLICT);
+            else {
+                storeProduct.setProducts_number(storeProduct.getProducts_number() - sale.getProduct_number());
+                storeProductRepository.update(storeProduct);
+            }
             saleRepository.save(new Sale(sale.getUPC(), sale.getCheck_number(), sale.getProduct_number(),
                     sale.getSelling_price()));
             return new ResponseEntity<>("Sale was created successfully.", HttpStatus.CREATED);
