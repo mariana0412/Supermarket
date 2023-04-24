@@ -31,7 +31,11 @@ const StoreProductList = () => {
     const componentPDF = useRef();
 
     useEffect(() => {
-        fetch(`/api/products`)
+        fetch(`/api/products`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setProducts(data);
@@ -56,7 +60,11 @@ const StoreProductList = () => {
                 url += 'notPromSortedByName=true';
         }
 
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`
+            }
+        })
             .then(response => {
                 if (response.status === 204)
                     return null;
@@ -79,6 +87,7 @@ const StoreProductList = () => {
             const response = await fetch(`/api/store-products/${id}`, {
                 method: 'DELETE',
                 headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
@@ -120,7 +129,11 @@ const StoreProductList = () => {
 
     const showStoreProductDetails = async () => {
         try {
-            const response = await fetch(`/api/store-products-details/${searchUPC}`);
+            const response = await fetch(`/api/store-products-details/${searchUPC}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
+                }
+            });
             if (response.status === 404) {
                 alert('There is no store product with such UPC.');
             } else {

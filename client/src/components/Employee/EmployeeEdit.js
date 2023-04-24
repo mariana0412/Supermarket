@@ -23,7 +23,11 @@ const EmployeeEdit = () => {
     const { id } = useParams();
     useEffect(() => {
         if (id !== 'new') {
-            fetch(`/api/employees/${id}`)
+            fetch(`/api/employees/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
+                },
+            })
                 .then(response => response.json())
                 .then(data => setEmployee(data));
         }
@@ -41,6 +45,7 @@ const EmployeeEdit = () => {
         const response = await fetch(`/api/employees${employee.id_employee ? `/${employee.id_employee}` : ''}`, {
             method: (employee.id_employee) ? 'PUT' : 'POST',
             headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },

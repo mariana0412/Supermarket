@@ -15,7 +15,13 @@ const CategoryList = () => {
     useEffect(() => {
         const url = sorted ? "api/categories?sorted=true" : "api/categories";
 
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setCategories(data);
@@ -27,6 +33,7 @@ const CategoryList = () => {
             const response = await fetch(`/api/categories/${id}`, {
                 method: 'DELETE',
                 headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }

@@ -14,7 +14,13 @@ const CategoryEdit = () => {
 
     useEffect(() => {
         if (id !== 'new') {
-            fetch(`/api/categories/${id}`)
+            fetch(`/api/categories/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
                 .then(response => response.json())
                 .then(data => setCategory(data));
         }
@@ -32,6 +38,7 @@ const CategoryEdit = () => {
         await fetch(`/api/categories${category.category_number ? `/${category.category_number}` : ''}`, {
             method: (category.category_number) ? 'PUT' : 'POST',
             headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },

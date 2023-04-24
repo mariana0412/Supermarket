@@ -42,7 +42,11 @@ const ProductList = () => {
         else if(selectedCategory)
             url += `?categoryId=` + selectedCategory;
 
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
             .then(response => {
                 if (response.status === 204)
                     return null;
@@ -59,7 +63,11 @@ const ProductList = () => {
                 }
             })
 
-        fetch(`/api/categories`)
+        fetch(`/api/categories`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setCategories(data);
@@ -71,6 +79,7 @@ const ProductList = () => {
             const response = await fetch(`/api/products/${id}`, {
                 method: 'DELETE',
                 headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
@@ -139,7 +148,11 @@ const ProductList = () => {
 
     const productsNum = async (productId, startDate, endDate) => {
         try {
-            const response = await fetch(`/api/products-number?productId=${productId}&startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`/api/products-number?productId=${productId}&startDate=${startDate}&endDate=${endDate}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
+                }
+            });
             const data = await response.json();
             setNumberSold(data);
         } catch (error) {
@@ -149,7 +162,11 @@ const ProductList = () => {
 
     const findProductsByName = async () => {
         try {
-            const response = await fetch(`/api/products?name=${searchProductName}`);
+            const response = await fetch(`/api/products?name=${searchProductName}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
+                }
+            });
             if (response.status === 204) {
                 alert('There is no products with this name.');
             } else {

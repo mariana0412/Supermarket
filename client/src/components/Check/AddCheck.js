@@ -23,15 +23,27 @@ const AddCheck = () => {
     const {auth} = useAuth();
 
     useEffect(() => {
-        fetch(`/api/products`)
+        fetch(`/api/products`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
             .then(response => response.json())
             .then(data => setProducts(data));
 
-        fetch(`/api/store-products`)
+        fetch(`/api/store-products`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
             .then(response => response.json())
             .then(data => setStoreProducts(data));
 
-        fetch(`/api/customer-cards`)
+        fetch(`/api/customer-cards`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
             .then(response => response.json())
             .then(data => setCustomerCards(data));
     }, []);
@@ -129,7 +141,11 @@ const AddCheck = () => {
         try {
             const checkResponse = await fetch(`/api/checks`, {
                 method: 'POST',
-                headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
                 body: JSON.stringify(check)
             });
 
@@ -139,7 +155,11 @@ const AddCheck = () => {
                     setCheckNumberToSales(check.check_number);
                     const response = await fetch(`/api/sales`, {
                         method: 'POST',
-                        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                        },
                         body: JSON.stringify(sale)
                     });
 
@@ -162,7 +182,10 @@ const AddCheck = () => {
             }
         } catch (error) {
             await fetch(`/api/checks/${check.check_number}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                }
             });
             console.error(error);
         }

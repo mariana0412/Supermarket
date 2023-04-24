@@ -18,13 +18,21 @@ const ProductEdit = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        fetch(`/api/products/${id}`)
+        fetch(`/api/products/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setProduct(data);
             });
 
-        fetch(`/api/categories`)
+        fetch(`/api/categories`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setCategories(data);
@@ -43,6 +51,7 @@ const ProductEdit = () => {
         await fetch(`/api/products${product.id_product ? `/${product.id_product}` : ''}`, {
             method: (product.id_product) ? 'PUT' : 'POST',
             headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
