@@ -2,6 +2,7 @@ package com.supermarket.security.user;
 
 import com.supermarket.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,7 +27,11 @@ public class JdbcUserRepository implements UserRepository {
             else
                 user.setRole(UserRole.CASHIER);
             return user;
-        } catch (IncorrectResultSizeDataAccessException e) {
+        }
+        catch (EmptyResultDataAccessException e){
+            return null;
+        }
+        catch (IncorrectResultSizeDataAccessException e) {
             e.printStackTrace();
             return null;
         }

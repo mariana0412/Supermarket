@@ -22,6 +22,11 @@ public class AuthenticationService {
 
     public ResponseEntity<AuthenticationResponse> register(AuthenticationRequest request) {
         String phoneNumber = request.getPhone_number();
+        User foundUser = userRepository.findByPhoneNumber(phoneNumber);
+        if(foundUser != null){
+            System.out.println("user already exists");
+            return ResponseEntity.badRequest().build();
+        }
         Employee employee = userRepository.findEmployeeByPhoneNumber(phoneNumber);
         if(employee == null)
             return ResponseEntity.noContent().build();
