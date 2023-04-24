@@ -234,7 +234,7 @@ const CheckList = () => {
                             </Input>
                         </FormGroup>
 
-                        {totalSum && <>Total sum: ${totalSum}</>}
+                        {auth?.role === "MANAGER" && totalSum && <>Total sum: ${totalSum}</>}
                     </div>
                     {showEmpty ?
                         <div className="text-center">

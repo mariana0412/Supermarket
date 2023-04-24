@@ -147,13 +147,15 @@ const StoreProductList = () => {
     }
 
     const storeProductList = storeProducts.map(storeProduct => {
+        const productName = products.find(p => p.id_product === storeProduct.id_product)?.product_name;
+        const isPromotional = storeProduct.promotional_product ? "yes" : "no";
         return <tr key={storeProduct.upc}>
             <td>{storeProduct.upc}</td>
-            <td style={{whiteSpace: 'nowrap'}}>{storeProduct.upc_prom ? storeProduct.upc_prom : 'missing'}</td>
-            <td>{storeProduct.id_product} - {products.find(p => p.id_product === storeProduct.id_product)?.product_name}</td>
+            <td>{storeProduct.upc_prom ? storeProduct.upc_prom : 'missing'}</td>
+            <td>{productName}</td>
             <td>{storeProduct.selling_price}</td>
             <td>{storeProduct.products_number} </td>
-            <td>{storeProduct.promotional_product.toString()}</td>
+            <td>{isPromotional}</td>
             { auth?.role === "MANAGER"
                 &&
                 <td>
