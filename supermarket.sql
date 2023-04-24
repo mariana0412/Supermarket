@@ -2,6 +2,12 @@
 -- Database: `supermarket`
 --
 
+
+--
+-- Drop all tables
+--
+DROP TABLE sale, receipt, store_product, product, category, employee, customer_card, _user;
+
 --
 -- Table structure for table `employee`
 --
@@ -12,9 +18,9 @@ CREATE TABLE employee
     empl_name VARCHAR(50) NOT NULL,
     empl_patronymic VARCHAR(50) NULL,
     empl_role VARCHAR(10) NOT NULL,
-    salary DECIMAL(13,4) NOT NULL,
-    date_of_birth DATE NOT NULL,
-    date_of_start DATE NOT NULL,
+    salary DECIMAL(13,4) NOT NULL CHECK (salary >= 0),
+    date_of_birth DATE NOT NULL CHECK (date_of_birth <= (CURRENT_DATE - INTERVAL '18 years')),
+    date_of_start DATE NOT NULL CHECK (date_of_start > date_of_birth),
     phone_number VARCHAR(13) NOT NULL,
     city VARCHAR(50) NOT NULL,
     street VARCHAR(50) NOT NULL,
@@ -48,7 +54,7 @@ CREATE TABLE customer_card
     city VARCHAR(50) NULL,
     street VARCHAR(50) NULL,
     zip_code VARCHAR(9) NULL,
-    percent SMALLINT NOT NULL
+    percent SMALLINT NOT NULL CHECK (percent >= 0)
 );
 
 --
@@ -123,8 +129,8 @@ CREATE TABLE store_product
     UPC VARCHAR(12) PRIMARY KEY NOT NULL,
     UPC_prom VARCHAR(12) NULL REFERENCES store_product ON DELETE SET NULL ON UPDATE CASCADE,
     id_product INTEGER NOT NULL REFERENCES product ON DELETE NO ACTION ON UPDATE CASCADE,
-    selling_price DECIMAL(13,4) NOT NULL,
-    products_number INTEGER NOT NULL,
+    selling_price DECIMAL(13,4) NOT NULL CHECK (selling_price >= 0),
+    products_number INTEGER NOT NULL CHECK (products_number >= 0),
     promotional_product BOOLEAN NOT NULL
 );
 
@@ -154,7 +160,7 @@ CREATE TABLE receipt
     card_number VARCHAR(13) NULL REFERENCES customer_card ON DELETE NO ACTION ON UPDATE CASCADE,
     print_date TIMESTAMP NOT NULL,
     sum_total DECIMAL(13,4) NOT NULL,
-    vat DECIMAL(13,4) NOT NULL
+    vat DECIMAL(13,4) NOT NULL CHECK (vat >= 0)
 );
 
 --
@@ -175,8 +181,8 @@ CREATE TABLE sale
 (
     UPC VARCHAR(12) NOT NULL REFERENCES store_product ON DELETE NO ACTION ON UPDATE CASCADE,
     check_number VARCHAR(10) NOT NULL REFERENCES receipt ON DELETE CASCADE ON UPDATE CASCADE,
-    product_number INTEGER NOT NULL,
-    selling_price DECIMAL(13,4) NOT NULL,
+    product_number INTEGER NOT NULL CHECK (product_number >= 0),
+    selling_price DECIMAL(13,4) NOT NULL CHECK (selling_price >= 0),
     PRIMARY KEY(UPC, check_number)
 );
 
@@ -200,32 +206,3 @@ CREATE TABLE _user
     phone_number VARCHAR(13) NOT NULL,
     user_password VARCHAR(50) NOT NULL
 );
-
-
--- constraints
-ALTER TABLE employee
-    ADD CONSTRAINT check_employee_age CHECK (date_of_birth <= (CURRENT_DATE - INTERVAL '18 years'));
-
-ALTER TABLE employee
-    ADD CONSTRAINT salary_greater_than_zero CHECK (salary >= 0);
-
-ALTER TABLE customer_card
-    ADD CONSTRAINT percent_greater_than_zero CHECK (percent >= 0);
-
-ALTER TABLE store_product
-    ADD CONSTRAINT selling_price_greater_than_zero CHECK (selling_price >= 0);
-
-ALTER TABLE store_product
-    ADD CONSTRAINT products_number_greater_than_zero CHECK (products_number >= 0);
-
-ALTER TABLE receipt
-    ADD CONSTRAINT sum_total_greater_than_zero CHECK (sum_total >= 0);
-
-ALTER TABLE receipt
-    ADD CONSTRAINT vat_greater_than_zero CHECK (vat >= 0);
-
-ALTER TABLE sale
-    ADD CONSTRAINT product_number_greater_than_zero CHECK (product_number >= 0);
-
-ALTER TABLE sale
-    ADD CONSTRAINT selling_price_greater_than_zero CHECK (selling_price >= 0);
