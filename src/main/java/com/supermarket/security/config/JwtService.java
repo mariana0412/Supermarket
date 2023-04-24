@@ -49,7 +49,7 @@ public class JwtService {
                 .claim("role", user.getRole().toString())
                 .claim("id_employee", userRepository.findEmployeeByPhoneNumber(user.getPhone_number()).getId_employee())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
