@@ -2,12 +2,16 @@ import {Button, ButtonGroup} from "reactstrap";
 import React from "react";
 
 const Check = ({ auth, check, cashierName, customerName, remove, showPurchasedProducts }) => {
+    const printDate = new Date(check.print_date);
+    const formattedDate = `${printDate.getDate().toString().padStart(2, '0')}-${(printDate.getMonth() + 1).toString().padStart(2, '0')}-${printDate.getFullYear()} 
+    ${printDate.getHours().toString().padStart(2, '0')}:${printDate.getMinutes().toString().padStart(2, '0')}:${printDate.getSeconds().toString().padStart(2, '0')}`;
+
     return (
         <tr key={check.check_number}>
             <td>{check.check_number}</td>
             <td>{cashierName}</td>
             <td>{customerName}</td>
-            <td>{check.print_date}</td>
+            <td>{formattedDate}</td>
             <td>{check.sum_total}</td>
             <td>{check.vat}</td>
             <td>
