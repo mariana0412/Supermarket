@@ -12,6 +12,7 @@ const CustomerCardList = () => {
     const [customerCards, setCustomerCards] = useState([]);
     const [sorted, setSorted] = useState(false);
     const [salePercent, setSalePercent] = useState(false);
+    const [boughtFromEachCategory, setBoughtFromEachCategory] = useState(false);
     const [showEmpty, setShowEmpty] = useState(false);
     const [searchSurname, setSearchSurname] = useState('');
     const [customersFoundBySurname, setCustomersFoundBySurname] = useState([]);
@@ -25,6 +26,8 @@ const CustomerCardList = () => {
             url += '?sorted=true';
         else if(salePercent)
             url += '?salePercent=' + salePercent;
+        else if(boughtFromEachCategory)
+            url += '?boughtFromEachCategory=true';
 
         fetch(url, {
             headers: {
@@ -47,7 +50,7 @@ const CustomerCardList = () => {
                 }
             })
             .catch(error => console.log(error));
-    }, [sorted, salePercent]);
+    }, [sorted, salePercent, boughtFromEachCategory]);
 
     const remove = async (id) => {
         try {
@@ -75,6 +78,11 @@ const CustomerCardList = () => {
 
     const handleSalePercentChange = (event) => setSalePercent(event.target.value);
     const handleSearchProductNameChange = (event) => setSearchSurname(event.target.value);
+    const handleSetBoughtFromEachCategory = () => {
+        setBoughtFromEachCategory(!boughtFromEachCategory);
+        if(sorted)
+            setSorted(false);
+    }
 
     let customerCardList = <tr><td colSpan="10" style={{ textAlign: "center" }}>No results found.</td></tr>;
 
@@ -141,8 +149,23 @@ const CustomerCardList = () => {
             <Container fluid>
                 <div>
                     <div className="float-end">
-                        <Button className="buttonWithMargins" color="primary" onClick={() => setSorted(!sorted)}>
+                        <Button className="buttonWithMargins" color="primary" onClick={() => {
+                            setSorted(!sorted);
+                            if(boughtFromEachCategory)
+                                setBoughtFromEachCategory(false);
+                        }}>
                             {sorted ? "Unsort" : "Sort by Surname"}
+                        </Button>
+                        <Button
+                            className="buttonWithMargins multiLineButton"
+                            color="primary"
+                            onClick={() => handleSetBoughtFromEachCategory()}
+                        >
+                            {
+                                boughtFromEachCategory ?
+                                "Show all" :
+                                "All-Category Purchase Customers"
+                            }
                         </Button>
                         <Button className="buttonWithMargins" color="success" tag={Link} to="/customer-cards/new">
                             Add Customer Card

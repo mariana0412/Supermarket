@@ -20,9 +20,11 @@ public class CustomerCardController {
     CustomerCardRepository customerCardRepository;
 
     @GetMapping("/customer-cards")
-    public ResponseEntity<List<CustomerCard>> getAllCustomerCards(@RequestParam(required = false) boolean sorted,
-                                                                  @RequestParam(required = false) Integer salePercent,
-                                                                  @RequestParam(required = false) String surname) {
+    public ResponseEntity<List<CustomerCard>> getAllCustomerCards(
+            @RequestParam(required = false) boolean sorted,
+            @RequestParam(required = false) Integer salePercent,
+            @RequestParam(required = false) String surname,
+            @RequestParam(required = false) boolean boughtFromEachCategory) {
         List<CustomerCard> customerCards;
         try {
             if(salePercent != null)
@@ -31,6 +33,8 @@ public class CustomerCardController {
                 customerCards = customerCardRepository.findAllSortedBySurname();
             else if(surname != null)
                 customerCards = customerCardRepository.findBySurname(surname);
+            else if(boughtFromEachCategory)
+                customerCards = customerCardRepository.findCustomersWhoBoughtFromEachCategory();
             else
                 customerCards = customerCardRepository.findAll();
 

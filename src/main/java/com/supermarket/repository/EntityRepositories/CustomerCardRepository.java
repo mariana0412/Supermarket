@@ -8,4 +8,5 @@ public interface CustomerCardRepository extends CrudRepository<CustomerCard, Str
     List<CustomerCard> findAllSortedBySurname();
     List<CustomerCard> findAllWithCertainSaleSortedBySurname(double salePercent);
     List<CustomerCard> findBySurname(String surname);
+    List<CustomerCard> findCustomersWhoBoughtFromEachCategory();
 }

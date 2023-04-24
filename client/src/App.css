@@ -126,17 +126,13 @@ h1 {
   color: #fff;
 }
 
-/*.myContainer {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  align-items: flex-end;
-  width: 400px;
-  justify-content: right;
-  align-content: space-between;
-}*/
-
 @media print {
   table td:last-child, table th:last-child  {display:none}
   .noPrint {display: none}
+}
+
+.multiLineButton {
+  display: inline-block;
+  height: 60px; /* or any height you prefer */
+  width: 200px; /* or any width you prefer */
 }

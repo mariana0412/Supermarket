@@ -79,4 +79,25 @@ public class JdbcCustomerCardRepository implements CustomerCardRepository {
             return null;
         }
     }
+
+    @Override
+    public List<CustomerCard> findCustomersWhoBoughtFromEachCategory() {
+        String query = "" +
+                "SELECT * " +
+                "FROM customer_card " +
+                "WHERE NOT EXISTS ( " +
+                "        SELECT * " +
+                "        FROM category " +
+                "        WHERE NOT EXISTS ( " +
+                "               SELECT * " +
+                "               FROM store_product " +
+                "               INNER JOIN product ON store_product.id_product = product.id_product " +
+                "               INNER JOIN sale ON store_product.UPC = sale.UPC " +
+                "               INNER JOIN receipt ON sale.check_number = receipt.check_number " +
+                "               WHERE receipt.card_number = customer_card.card_number " +
+                "               AND product.category_number = category.category_number " +
+                "               ) " +
+                "       )";
+        return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(CustomerCard.class));
+    }
 }
