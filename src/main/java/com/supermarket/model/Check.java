@@ -27,6 +27,15 @@ public class Check {
         this.vat = vat;
     }
 
+    public Check(String check_number, String id_employee, String card_number, double sum_total) {
+        this.check_number = check_number;
+        this.id_employee = id_employee;
+        this.card_number = card_number;
+        this.print_date = LocalDateTime.now();
+        this.sum_total = sum_total;
+        this.vat = sum_total * 0.2;
+    }
+
     public Check(String id_employee, String card_number, LocalDateTime print_date, double sum_total, double vat) {
         this.id_employee = id_employee;
         this.card_number = card_number;

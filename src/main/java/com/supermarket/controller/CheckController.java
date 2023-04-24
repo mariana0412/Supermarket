@@ -72,7 +72,7 @@ public class CheckController {
     public ResponseEntity<String> createCheck(@RequestBody Check check) {
         try {
             checkRepository.save(new Check(check.getCheck_number(), check.getId_employee(), check.getCard_number(),
-                    check.getPrint_date(), check.getSum_total(), check.getVat()));
+                    check.getSum_total()));
             return new ResponseEntity<>("Check was created successfully.", HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();

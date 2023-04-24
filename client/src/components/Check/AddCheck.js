@@ -134,9 +134,8 @@ const AddCheck = () => {
         check.check_number = Date.now().toString().substring(0, 10);
         check.card_number = selectedCustomerCard;
         check.id_employee = auth?.employeeId;
-        check.print_date = new Date();
-        check.sum_total = calculateCheckTotalSum(customerCards.find(customerCard => customerCard.card_number === selectedCustomerCard)?.percent);
-        check.vat = check.sum_total * 0.2;
+        const salePercent = customerCards.find(customerCard => customerCard.card_number === selectedCustomerCard)?.percent;
+        check.sum_total = calculateCheckTotalSum(salePercent);
 
         try {
             const checkResponse = await fetch(`/api/checks`, {
