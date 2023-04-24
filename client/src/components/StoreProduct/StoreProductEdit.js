@@ -19,7 +19,11 @@ const StoreProductEdit = () => {
     const {id} = useParams();
 
     useEffect(() => {
-        fetch(`/api/products`)
+        fetch(`/api/products`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setProducts(data);
@@ -27,7 +31,11 @@ const StoreProductEdit = () => {
     }, []);
 
     useEffect(() => {
-        fetch(`/api/store-products/${id}`)
+        fetch(`/api/store-products/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setStoreProduct(data);
@@ -48,6 +56,7 @@ const StoreProductEdit = () => {
         const response = await fetch(`/api/store-products${storeProduct.upc ? `/${storeProduct.upc}` : ''}`, {
             method: (storeProduct.upc) ? 'PUT' : 'POST',
             headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },

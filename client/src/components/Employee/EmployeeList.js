@@ -26,7 +26,11 @@ const EmployeeList = () => {
         else if (sortOption === 'cashiersSorted')
             url += '?sorted=true&cashier=true';
 
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setEmployees(data);
@@ -38,6 +42,7 @@ const EmployeeList = () => {
             const response = await fetch(`/api/employees/${id}`, {
                 method: 'DELETE',
                 headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
@@ -79,7 +84,11 @@ const EmployeeList = () => {
 
     const showContactInfo = async () => {
         try {
-            const response = await fetch(`/api/employees/contact-info?surname=${searchSurname}`);
+            const response = await fetch(`/api/employees/contact-info?surname=${searchSurname}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
+                }
+            });
             if (response.status === 204) {
                 alert('There is no employee with such a surname.');
             } else {

@@ -21,7 +21,13 @@ const CustomerCardEdit = () => {
 
     useEffect(() => {
         if (id !== 'new') {
-            fetch(`/api/customer-cards/${id}`)
+            fetch(`/api/customer-cards/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
                 .then(response => response.json())
                 .then(data => setCustomer(data));
         }
@@ -40,7 +46,8 @@ const CustomerCardEdit = () => {
             {
                 method: customer.card_number ? 'PUT' : 'POST',
                 headers: {
-                    Accept: 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(customer)

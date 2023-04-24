@@ -20,8 +20,6 @@ public class EmployeeController {
     @Autowired
     EmployeeRepository employeeRepository;
 
-    // it is possible too pass @RequestParam(required = false) String role
-    // (will be useful when implementing search of cashiers)
     @GetMapping("/employees")
     public ResponseEntity<List<Employee>> getAllEmployees(@RequestParam(required = false) boolean sorted,
                                                           @RequestParam(required = false) boolean cashier) {

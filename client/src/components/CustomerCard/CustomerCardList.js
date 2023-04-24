@@ -26,7 +26,11 @@ const CustomerCardList = () => {
         else if(salePercent)
             url += '?salePercent=' + salePercent;
 
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`
+            },
+        })
             .then(response => {
                 if (response.status === 204)
                     return null;
@@ -50,6 +54,7 @@ const CustomerCardList = () => {
             const response = await fetch(`/api/customer-cards/${id}`, {
                 method: 'DELETE',
                 headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
@@ -108,7 +113,11 @@ const CustomerCardList = () => {
     const toggleModalSearchBySurname = () => setModalSearchBySurname(!modalSearchBySurname);
     const findCustomersBySurname = async () => {
         try {
-            const response = await fetch(`/api/customer-cards?surname=${searchSurname}`);
+            const response = await fetch(`/api/customer-cards?surname=${searchSurname}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
+                },
+            });
             if (response.status === 204) {
                 alert('There is no customers with this surname.');
             } else {

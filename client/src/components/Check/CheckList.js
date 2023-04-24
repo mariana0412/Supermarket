@@ -34,7 +34,11 @@ const CheckList = () => {
             showTotalSum();
         }
 
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
             .then(response => {
                 if (response.status === 204)
                     return null;
@@ -54,7 +58,11 @@ const CheckList = () => {
 
     useEffect(() => {
 
-        fetch(`api/employees?cashier=true`)
+        fetch(`api/employees?cashier=true`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setCashiers(data);
@@ -63,7 +71,11 @@ const CheckList = () => {
 
     useEffect(() => {
 
-        fetch(`api/customer-cards`)
+        fetch(`api/customer-cards`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 setCustomers(data);
@@ -75,6 +87,7 @@ const CheckList = () => {
             const response = await fetch(`/api/checks/${id}`, {
                 method: 'DELETE',
                 headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
@@ -122,7 +135,12 @@ const CheckList = () => {
 
     const showPurchasedProducts = async (checkNumber) => {
         try {
-            const response = await fetch(`/api/sales?checkNumber=${checkNumber}`);
+            const response = await fetch(`/api/sales?checkNumber=${checkNumber}`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                    }
+                });
             if (response.status === 204) {
                 alert('There is no products in this check.');
             } else {
@@ -140,7 +158,11 @@ const CheckList = () => {
             let url = `/api/checks-sum?startDate=${startDate}&endDate=${endDate}`;
             if(selectedCashier)
                 url += `&cashierId=${selectedCashier}`;
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                }
+            });
             const data = await response.json();
             setTotalSum(data);
         } catch (error) {
