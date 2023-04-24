@@ -99,9 +99,10 @@ const ProductList = () => {
     }
 
     const productList = products.map(product => {
+        const categoryName = categories.find(cat => cat.category_number === product.category_number)?.category_name;
         return <tr key={product.id_product}>
             <td style={{whiteSpace: 'nowrap'}}>{product.product_name}</td>
-            <td>{product.category_number} - {categories.find(cat => cat.category_number === product.category_number)?.category_name}</td>
+            <td>{categoryName}</td>
             <td>{product.characteristics}</td>
             { auth?.role === "MANAGER"
                 &&
