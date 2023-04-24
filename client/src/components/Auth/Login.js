@@ -17,7 +17,8 @@ function LoginPage() {
         if (token) {
             const decodedToken = jwt_decode(token);
             const role = decodedToken.role;
-            setAuth({ role, accessToken: token });
+            const employeeId = decodedToken.id_employee;
+            setAuth({ role, employeeId, token });
         }
     }, []);
 
