@@ -162,7 +162,7 @@ CREATE TABLE receipt
 --
 INSERT INTO receipt (check_number, id_employee, card_number, print_date, sum_total, vat)
 VALUES
-    ('ksj6c73b45', 'd1jc79slc6', 'hg79dk2n47dg5', '2023-04-22T15:45:56.637997', 617.5, 123.5);
+    ('8983647230', 'd1jc79slc6', 'hg79dk2n47dg5', '2023-04-22T15:45:56.637997', 617.5, 123.5);
 
 
 
@@ -185,8 +185,8 @@ CREATE TABLE sale
 --
 INSERT INTO sale (UPC, check_number, product_number, selling_price)
 VALUES
-    ('ola5d89c3jss', 'ksj6c73b45', 5, 100),
-    ('hd78sk3vdf26', 'ksj6c73b45', 10, 15);
+    ('ola5d89c3jss', '8983647230', 5, 100),
+    ('hd78sk3vdf26', '8983647230', 10, 15);
 
 
 -- --------------------------------------------------------
