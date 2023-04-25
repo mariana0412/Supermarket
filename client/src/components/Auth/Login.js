@@ -49,7 +49,10 @@ function LoginPage() {
             })
             .catch((error) => {
                 console.error(error);
-                if (error.response && error.response.status === 403) {
+                if(error.response.status === 400){
+                    alert("You are already registered");
+                }
+                else if (error.response && error.response.status === 403) {
                     alert("Incorrect phone number or password");
                 } else {
                     alert("An error occurred");
