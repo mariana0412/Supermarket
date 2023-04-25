@@ -58,15 +58,13 @@ const CheckList = () => {
 
     useEffect(() => {
 
-        fetch(`api/employees?cashier=true`, {
+        fetch(`api/employees?sorted=true&cashier=true`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("token")}`,
             }
         })
             .then(response => response.json())
-            .then(data => {
-                setCashiers(data);
-            })
+            .then(data => setCashiers(data))
     }, []);
 
     useEffect(() => {
@@ -77,9 +75,7 @@ const CheckList = () => {
             }
         })
             .then(response => response.json())
-            .then(data => {
-                setCustomers(data);
-            })
+            .then(data => setCustomers(data))
     }, []);
 
     const remove = async (id) => {
@@ -123,7 +119,7 @@ const CheckList = () => {
     });
 
     const cashierOptions = cashiers.map((cashier) =>
-            <option key={cashier.id_employee}>
+            <option key={cashier.id_employee} value={cashier.id_employee}>
                 {cashier.empl_surname} {cashier.empl_name} {cashier.empl_patronymic}
             </option>
     );
@@ -135,8 +131,7 @@ const CheckList = () => {
 
     const showPurchasedProducts = async (checkNumber) => {
         try {
-            const response = await fetch(`/api/sales?checkNumber=${checkNumber}`,
-                {
+            const response = await fetch(`/api/sales?checkNumber=${checkNumber}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem("token")}`,
                     }
@@ -229,7 +224,7 @@ const CheckList = () => {
                                    name="id_employee"
                                    id="id_employee"
                                    onChange={handleCashier}>
-                                <option value="">Select Cashier</option>
+                                <option value="">All Cashiers</option>
                                 {cashierOptions}
                             </Input>
                         </FormGroup>
@@ -244,7 +239,6 @@ const CheckList = () => {
                         <Table className="mt-4">
                             <thead>
                             <tr>
-                                <th>Check Number</th>
                                 <th>Cashier</th>
                                 <th>Customer</th>
                                 <th>Print Date</th>
