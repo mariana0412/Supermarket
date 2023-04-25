@@ -229,7 +229,7 @@ const CheckList = () => {
                                    name="id_employee"
                                    id="id_employee"
                                    onChange={handleCashier}>
-                                <option value="">Select Cashier</option>
+                                <option value="">All Cashiers</option>
                                 {cashierOptions}
                             </Input>
                         </FormGroup>
