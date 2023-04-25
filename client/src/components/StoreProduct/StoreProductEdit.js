@@ -129,18 +129,6 @@ const StoreProductEdit = () => {
                     </FormGroup>
 
                     <FormGroup>
-                        <Label for="promotional_product">Is promotional?</Label>
-                        <Input
-                            type="checkbox"
-                            name="promotional_product"
-                            id="promotional_product"
-                            checked={storeProduct.promotional_product || false}
-                            onChange={handleChange}
-                            autoComplete="promotional_product"
-                        />
-                    </FormGroup>
-
-                    <FormGroup>
                         <Button color="primary" type="submit">Save</Button>{' '}
                         <Button color="secondary" tag={Link} to={"/store-products"}>Cancel</Button>
                     </FormGroup>

@@ -261,7 +261,7 @@ const CheckList = () => {
                             <>
                                 <p>Name: {p?.product_name}</p>
                                 <p>Products number: {p?.product_number}</p>
-                                <p>Selling price: {p?.selling_price}</p>
+                                <p>Selling price: {p?.selling_price} ₴</p>
                                 <br></br>
                             </>
                             )

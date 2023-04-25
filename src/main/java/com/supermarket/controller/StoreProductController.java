@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -74,24 +75,18 @@ public class StoreProductController {
 
     @PostMapping("/store-products")
     public ResponseEntity<String> createStoreProduct(@RequestBody StoreProduct storeProduct) {
-        String UPC_prom = null;
-
-        if(!storeProduct.isPromotional_product())
-            UPC_prom = findPromotionalStoreProductUPC(storeProduct.getId_product());
+        UUID uuid = UUID.randomUUID();
+        storeProduct.setUPC(uuid.toString().substring(0, 12));
+        storeProduct.setUPC_prom(null);
 
         try {
-            storeProductRepository.save(new StoreProduct(UPC_prom, storeProduct.getId_product(),
-                    storeProduct.getSelling_price(), storeProduct.getProducts_number(),
+            storeProductRepository.save(new StoreProduct(storeProduct.getUPC(), storeProduct.getUPC_prom(),
+                    storeProduct.getId_product(), storeProduct.getSelling_price(), storeProduct.getProducts_number(),
                     storeProduct.isPromotional_product()));
-            // TODO: update UPC_prom in not promotional store product correctly
-            /*if(storeProduct.isPromotional_product()) {
-                String UPC = storeProduct.getUPC();
-                StoreProduct notPromotionalStoreProduct = storeProductRepository.findNotPromotional(storeProduct.getId_product());
-                if(notPromotionalStoreProduct != null) {
-                    notPromotionalStoreProduct.setUPC_prom(UPC);
-                    storeProductRepository.update(notPromotionalStoreProduct);
-                }
-            }*/
+
+            if(storeProduct.isPromotional_product())
+                updateNotPromWhenCreatingProm(storeProduct);
+
             return new ResponseEntity<>("Store Product was created successfully.", HttpStatus.CREATED);
         } catch(org.springframework.dao.DuplicateKeyException e) {
             e.printStackTrace();
@@ -105,11 +100,12 @@ public class StoreProductController {
         }
     }
 
-    private String findPromotionalStoreProductUPC(int productId) {
-        StoreProduct promotionalStoreProduct = storeProductRepository.findPromotional(productId);
-        if(promotionalStoreProduct != null)
-            return promotionalStoreProduct.getUPC();
-        return null;
+    private void updateNotPromWhenCreatingProm(StoreProduct promStoreProduct) {
+        String promotionalProductUPC = promStoreProduct.getUPC();
+        int productId = promStoreProduct.getId_product();
+        StoreProduct notPromotionalStoreProduct = storeProductRepository.findNotPromotional(productId);
+        notPromotionalStoreProduct.setUPC_prom(promotionalProductUPC);
+        storeProductRepository.update(notPromotionalStoreProduct);
     }
 
     @PutMapping("/store-products/{id}")

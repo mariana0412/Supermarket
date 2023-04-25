@@ -1,15 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {
-    Button,
-    ButtonGroup,
-    Container,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Input, Modal, ModalBody, ModalFooter, ModalHeader,
-    Table
-} from 'reactstrap';
+import {Button, ButtonGroup, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, FormGroup,
+    Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Table} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import '../../App.css';
 import { Link } from 'react-router-dom';
@@ -24,8 +15,18 @@ const StoreProductList = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [sortOption, setSortOption] = useState(null);
     const [searchUPC, setSearchUPC] = useState('');
-    const [modal, setModal] = useState(false);
+    const [storeProductDetails, setStoreProductDetails] = useState(false);
     const [productDetails, setProductDetails] = useState(null);
+    const initialPromStoreProduct = {
+        upc: '',
+        upc_prom: '',
+        id_product: 0,
+        selling_price: 0,
+        products_number: 0,
+        promotional_product: true,
+    }
+    const [promStoreProduct, setPromStoreProduct] = useState(initialPromStoreProduct);
+    const [promStoreProductModalOpen, setPromStoreProductModalOpen] = useState(false);
     const [showEmpty, setShowEmpty] = useState(false);
     const {auth} = useAuth();
     const componentPDF = useRef();
@@ -37,9 +38,7 @@ const StoreProductList = () => {
             }
         })
             .then(response => response.json())
-            .then(data => {
-                setProducts(data);
-            });
+            .then(data => setProducts(data));
     }, []);
 
     useEffect(() => {
@@ -80,7 +79,7 @@ const StoreProductList = () => {
                     setShowEmpty(true);
                 }
             })
-    }, [sortOption]);
+    }, [sortOption, promStoreProduct]);
 
     const remove = async (id) => {
         try {
@@ -106,26 +105,16 @@ const StoreProductList = () => {
         }
     }
 
-    const toggleSort = (option) => {
-        if (sortOption === option)
-            setSortOption(null);
-        else
-            setSortOption(option);
-    }
-
-    const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
-    }
-
-    const handleSearchInputChange = (event) => {
-        setSearchUPC(event.target.value);
-    }
-
-    const toggleModal = () => {
-        setModal(!modal);
-        if(modal)
+    const toggleSort = (option) => (sortOption === option) ? setSortOption(null) : setSortOption(option);
+    const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+    const handleSearchInputChange = (event) => setSearchUPC(event.target.value);
+    const toggleStoreProductDetailsModal = () => {
+        setStoreProductDetails(!storeProductDetails);
+        if(storeProductDetails)
             setSearchUPC('');
     };
+    const togglePromStoreProductModal = () => setPromStoreProductModalOpen(!promStoreProductModalOpen);
+    const handlePromStoreProductNumberChange = (event) => promStoreProduct.products_number = event.target.value;
 
     const showStoreProductDetails = async () => {
         try {
@@ -136,13 +125,43 @@ const StoreProductList = () => {
             });
             if (response.status === 404) {
                 alert('There is no store product with such UPC.');
-            } else {
+            } else if(response.ok) {
                 const data = await response.json();
                 setProductDetails(data);
-                toggleModal();
+                toggleStoreProductDetailsModal();
             }
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    const setPromStoreProductAttributes = (storeProduct) => {
+        const promSellingPriceCoef = 0.8;
+        promStoreProduct.selling_price = storeProduct.selling_price * promSellingPriceCoef;
+        promStoreProduct.id_product = storeProduct.id_product;
+        togglePromStoreProductModal();
+    }
+
+    const createPromStoreProduct = async (event) => {
+        event.preventDefault();
+        const response = await fetch(`/api/store-products`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(promStoreProduct)
+        });
+        if(response.ok) {
+            togglePromStoreProductModal();
+            setPromStoreProduct(initialPromStoreProduct);
+        } else if(response.status === 409) {
+            const message = await response.text();
+            alert(message);
+        } else {
+            const message = await response.text();
+            console.log(message);
         }
     }
 
@@ -151,17 +170,32 @@ const StoreProductList = () => {
         const isPromotional = storeProduct.promotional_product ? "yes" : "no";
         return <tr key={storeProduct.upc}>
             <td>{storeProduct.upc}</td>
-            <td>{storeProduct.upc_prom ? storeProduct.upc_prom : 'missing'}</td>
+            <td>{storeProduct?.upc_prom}</td>
             <td>{productName}</td>
-            <td>{storeProduct.selling_price}</td>
+            <td>{storeProduct.selling_price} ₴</td>
             <td>{storeProduct.products_number} </td>
             <td>{isPromotional}</td>
             { auth?.role === "MANAGER"
                 &&
                 <td>
                     <ButtonGroup>
-                        <Button className="buttonWithMargins" size="sm" color="primary" tag={Link} to={"/store-products/" + storeProduct.upc}>Edit</Button>
-                        <Button className="buttonWithMargins" size="sm" color="danger" onClick={() => remove(storeProduct.upc)}>Delete</Button>
+                        <Button className="buttonWithMargins" size="sm" color="primary" tag={Link}
+                                to={"/store-products/" + storeProduct.upc}>
+                            Edit
+                        </Button>
+
+                        <Button className="buttonWithMargins" size="sm" color="danger"
+                                onClick={() => remove(storeProduct.upc)}>
+                            Delete
+                        </Button>
+
+                        {!storeProduct.promotional_product
+                            &&
+                            <Button className="buttonWithMargins" size="sm" color="success"
+                                onClick={() => setPromStoreProductAttributes(storeProduct)}>
+                            Create promotional
+                        </Button>
+                        }
                     </ButtonGroup>
                 </td>
             }
@@ -238,11 +272,11 @@ const StoreProductList = () => {
                             <tr>
                                 <th>UPC</th>
                                 <th>Promotional product UPC</th>
-                                <th>Product ID</th>
+                                <th>Product</th>
                                 <th>Selling Price</th>
                                 <th>Products number</th>
                                 <th>Is promotional?</th>
-                                { auth?.role === "MANAGER" && <th width="10%">Actions</th>}
+                                { auth?.role === "MANAGER" && <th>Actions</th>}
                             </tr>
                             </thead>
                             <tbody>
@@ -252,8 +286,8 @@ const StoreProductList = () => {
                     }
                 </div>
 
-                <Modal isOpen={modal} toggle={toggleModal}>
-                    <ModalHeader toggle={toggleModal}>Store Product Details</ModalHeader>
+                <Modal isOpen={storeProductDetails} toggle={toggleStoreProductDetailsModal}>
+                    <ModalHeader toggle={toggleStoreProductDetailsModal}>Store Product Details</ModalHeader>
                     <ModalBody>
                         {productDetails && (
                             <>
@@ -265,9 +299,31 @@ const StoreProductList = () => {
                         )}
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="secondary" onClick={toggleModal}>Close</Button>
+                        <Button color="secondary" onClick={toggleStoreProductDetailsModal}>Close</Button>
                     </ModalFooter>
                 </Modal>
+
+                <Modal isOpen={promStoreProductModalOpen} toggle={togglePromStoreProductModal}>
+                    <ModalHeader toggle={togglePromStoreProductModal}>Promotional Store Product</ModalHeader>
+                    <ModalBody>
+                        <FormGroup>
+                            <Label for="products_number">Products Number</Label>
+                            <Input
+                                type="number"
+                                name="products_number"
+                                id="products_number"
+                                required
+                                onChange={handlePromStoreProductNumberChange}
+                                autoComplete="products_number"
+                            />
+                        </FormGroup>
+                        <Button color="secondary" onClick={createPromStoreProduct}>Create</Button>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={togglePromStoreProductModal}>Close</Button>
+                    </ModalFooter>
+                </Modal>
+
             </Container>
         </div>
     );

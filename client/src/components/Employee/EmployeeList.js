@@ -108,7 +108,7 @@ const EmployeeList = () => {
             <td style={{whiteSpace: 'nowrap'}}>{employee.empl_name}</td>
             <td style={{whiteSpace: 'nowrap'}}>{employee.empl_patronymic}</td>
             <td style={{whiteSpace: 'nowrap'}}>{employee.empl_role}</td>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.salary}</td>
+            <td style={{whiteSpace: 'nowrap'}}>{employee.salary} ₴</td>
             <td style={{whiteSpace: 'nowrap'}}>{employee.date_of_birth}</td>
             <td style={{whiteSpace: 'nowrap'}}>{employee.date_of_start}</td>
             <td style={{whiteSpace: 'nowrap'}}>{employee.phone_number}</td>
