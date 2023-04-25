@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, ButtonGroup, Container, Table, Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-    Modal, ModalHeader, ModalBody, ModalFooter, Input
+import {
+    Button, ButtonGroup, Container, Table, Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+    Modal, ModalHeader, ModalBody, ModalFooter, Input, FormGroup, Label
 } from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import { Link } from 'react-router-dom';
@@ -14,8 +15,13 @@ const EmployeeList = () => {
     const [contactInfo, setContactInfo] = useState(null);
     const [searchSurname, setSearchSurname] = useState('');
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [modal, setModal] = useState(false);
+    const [contactInfoModal, setContactInfoModal] = useState(false);
+    const [statisticsModal, setStatisticsModal] = useState(false);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [sortOption, setSortOption] = useState(null);
+    const [statistics, setStatistics] = useState([]);
+    const [showStatistics, setShowStatistics] = useState(false);
     const {auth} = useAuth();
     const componentPDF = useRef();
 
@@ -68,18 +74,25 @@ const EmployeeList = () => {
             setSortOption(option);
     }
 
-    const handleSearchInputChange = (event) => {
-        setSearchSurname(event.target.value);
-    }
+    const handleSearchInputChange = (event) => setSearchSurname(event.target.value);
+    const handleStartDate = event => setStartDate(event.target.value);
+    const handleEndDate = event => setEndDate(event.target.value);
+    const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
-    const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
-    }
-
-    const toggleModal = () => {
-        setModal(!modal);
-        if(modal)
+    const toggleContactInfoModal = () => {
+        setContactInfoModal(!contactInfoModal);
+        if(contactInfoModal)
             setSearchSurname('');
+    };
+
+    const toggleStatisticsModal = () => {
+        setStatisticsModal(!statisticsModal);
+        if(statisticsModal) {
+            setStartDate('');
+            setEndDate('');
+            setShowStatistics(false);
+            setStatistics([]);
+        }
     };
 
     const showContactInfo = async () => {
@@ -94,7 +107,7 @@ const EmployeeList = () => {
             } else {
                 const data = await response.json();
                 setContactInfo(data[0]);
-                toggleModal();
+                toggleContactInfoModal();
             }
         } catch (error) {
             console.log(error);
@@ -133,11 +146,32 @@ const EmployeeList = () => {
         documentTitle: "Employees",
     });
 
+    const getStatistics = async (startDate, endDate) => {
+        try {
+            const response = await fetch(`/api/employees/statistics?startDate=${startDate}&endDate=${endDate}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            const data = await response.json();
+            setStatistics(data);
+            setShowStatistics(true);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div>
             <AppNavbar/>
             <Container fluid>
                 <div className="float-end">
+                    { auth?.role === "MANAGER"
+                        &&
+                        <Button className="buttonWithMargins" onClick={toggleStatisticsModal}>
+                            Statistics
+                        </Button>
+                    }
                     { auth?.role === "MANAGER"
                         &&
                         <Button className="buttonWithMargins" onClick={generatePDF}>
@@ -194,8 +228,58 @@ const EmployeeList = () => {
                     </Table>
                 </div>
 
-                <Modal isOpen={modal} toggle={toggleModal}>
-                    <ModalHeader toggle={toggleModal}>Contact Info</ModalHeader>
+                <Modal isOpen={statisticsModal} toggle={toggleStatisticsModal}>
+                    <ModalHeader toggle={toggleStatisticsModal}>Total sum per cashier</ModalHeader>
+                    <ModalBody>
+                        {!showStatistics ?
+                            <div>
+                        <FormGroup>
+                            <Label for="startDate">Start date and time: </Label>
+                            <Input
+                                style={{ display: 'inline-block', width: '200px'}}
+                                type="datetime-local"
+                                name="startDate"
+                                id="startDate"
+                                value={startDate}
+                                required
+                                onChange={handleStartDate}
+                            />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label for="endDate">End date and time: </Label>
+                            <Input
+                                style={{ display: 'inline-block', width: '200px'}}
+                                type="datetime-local"
+                                name="endDate"
+                                id="endDate"
+                                value={endDate}
+                                required
+                                onChange={handleEndDate}
+                            />
+                        </FormGroup>
+
+                        <Button color="secondary" onClick={() => getStatistics(startDate, endDate)}>Find</Button>
+                            </div>
+                            :
+                            <div>
+                                <h1>Results</h1>
+                                {statistics.map(employee => (
+                                <>
+                                    <p>{employee.empl_surname} {employee.empl_name} {employee.empl_patronymic} - {employee.total_sum}</p>
+                                </>
+                                )
+                            )}
+                            </div>
+                        }
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={toggleStatisticsModal}>Close</Button>
+                    </ModalFooter>
+                </Modal>
+
+                <Modal isOpen={contactInfoModal} toggle={toggleContactInfoModal}>
+                    <ModalHeader toggle={toggleContactInfoModal}>Contact Info</ModalHeader>
                     <ModalBody>
                         {contactInfo && (
                             <>
@@ -207,7 +291,7 @@ const EmployeeList = () => {
                         )}
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="secondary" onClick={toggleModal}>Close</Button>
+                        <Button color="secondary" onClick={toggleContactInfoModal}>Close</Button>
                     </ModalFooter>
                 </Modal>
             </Container>

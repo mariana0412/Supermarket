@@ -1,5 +1,6 @@
 package com.supermarket.repository.JdbcRepositories;
 
+import com.supermarket.model.TotalSumPerCashier;
 import com.supermarket.repository.EntityRepositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.supermarket.model.Employee;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -83,4 +85,18 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
             return null;
         }
     }
+
+    @Override
+    public List<TotalSumPerCashier> getCashierStatistics(LocalDateTime startDate, LocalDateTime endDate) {
+        String query =
+                "SELECT employee.id_employee, empl_surname, empl_name, empl_patronymic, COALESCE(SUM(sum_total), 0) AS total_sum " +
+                        "FROM employee " +
+                        "LEFT OUTER JOIN receipt ON receipt.id_employee = employee.id_employee " +
+                        "WHERE empl_role = 'Cashier' " +
+                        "AND print_date IS NULL OR print_date BETWEEN ? AND ? " +
+                        "GROUP BY employee.id_employee, empl_surname, empl_name, empl_patronymic " +
+                        "ORDER BY total_sum DESC";
+        return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(TotalSumPerCashier.class), startDate, endDate);
+    }
+
 }

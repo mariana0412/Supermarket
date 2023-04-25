@@ -1,6 +1,7 @@
 package com.supermarket.controller;
 
 import com.supermarket.model.Employee;
+import com.supermarket.model.TotalSumPerCashier;
 import com.supermarket.repository.EntityRepositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,24 @@ public class EmployeeController {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
             return new ResponseEntity<>(employeeContactInfos, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/employees/statistics")
+    public ResponseEntity<List<TotalSumPerCashier>> getTotalSumPerCashier(
+            @RequestParam(required = false) LocalDateTime startDate,
+            @RequestParam(required = false) LocalDateTime endDate) {
+        List<TotalSumPerCashier> totalSumsPerEmployee;
+        try {
+            totalSumsPerEmployee = new ArrayList<>(employeeRepository.getCashierStatistics(startDate, endDate));
+
+            if (totalSumsPerEmployee.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+            return new ResponseEntity<>(totalSumsPerEmployee, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
