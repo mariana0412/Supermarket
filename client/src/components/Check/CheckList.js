@@ -244,7 +244,6 @@ const CheckList = () => {
                         <Table className="mt-4">
                             <thead>
                             <tr>
-                                <th>Check Number</th>
                                 <th>Cashier</th>
                                 <th>Customer</th>
                                 <th>Print Date</th>

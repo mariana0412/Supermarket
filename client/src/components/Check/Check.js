@@ -8,7 +8,6 @@ const Check = ({ auth, check, cashierName, customerName, remove, showPurchasedPr
 
     return (
         <tr key={check.check_number}>
-            <td>{check.check_number}</td>
             <td>{cashierName}</td>
             <td>{customerName}</td>
             <td>{formattedDate}</td>
