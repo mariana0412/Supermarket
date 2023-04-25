@@ -184,7 +184,7 @@ const CustomerCardList = () => {
 
                     { auth?.role === "MANAGER"
                         &&
-                        <div className='search-container'>
+                        <div className='search-container noPrint'>
                             <Input
                                 style={{width: '200px' }}
                                 type="number"

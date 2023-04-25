@@ -32,6 +32,9 @@ function RegisterPage() {
                 navigate('/login');
             })
             .catch((error) => {
+                if(error.response.status === 400) {
+                    alert("You are already registered");
+                }
                 console.error(error);
             });
     };

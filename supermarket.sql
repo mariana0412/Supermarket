@@ -131,7 +131,8 @@ CREATE TABLE store_product
     id_product INTEGER NOT NULL REFERENCES product ON DELETE NO ACTION ON UPDATE CASCADE,
     selling_price DECIMAL(13,4) NOT NULL CHECK (selling_price >= 0),
     products_number INTEGER NOT NULL CHECK (products_number >= 0),
-    promotional_product BOOLEAN NOT NULL
+    promotional_product BOOLEAN NOT NULL,
+    CONSTRAINT uq_id_product_promotional_product UNIQUE (id_product, promotional_product)
 );
 
 --

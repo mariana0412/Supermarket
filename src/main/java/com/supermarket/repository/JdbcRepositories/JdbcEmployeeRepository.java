@@ -51,7 +51,11 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
 
     @Override
     public void deleteById(String id) {
+        Employee employee = findById(id);
+        String phone = employee.getPhone_number();
+        jdbcTemplate.update("DELETE FROM _user WHERE phone_number=?", phone);
         jdbcTemplate.update("DELETE FROM employee WHERE id_employee=?", id);
+
     }
 
     @Override

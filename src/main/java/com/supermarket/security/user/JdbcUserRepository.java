@@ -26,7 +26,7 @@ public class JdbcUserRepository implements UserRepository {
             else
                 user.setRole(UserRole.CASHIER);
             return user;
-        } catch (IncorrectResultSizeDataAccessException e) {
+        } catch (IncorrectResultSizeDataAccessException e){
             e.printStackTrace();
             return null;
         }
