@@ -29,6 +29,7 @@ public class JdbcUserRepository implements UserRepository {
             return user;
         }
         catch (EmptyResultDataAccessException e){
+            e.printStackTrace();
             return null;
         }
         catch (IncorrectResultSizeDataAccessException e) {
