@@ -126,6 +126,7 @@ const CustomerCardList = () => {
                 const data = await response.json();
                 setCustomersFoundBySurname(data);
                 toggleModalSearchBySurname();
+                setSearchSurname('');
             }
         } catch (error) {
             console.log(error);
