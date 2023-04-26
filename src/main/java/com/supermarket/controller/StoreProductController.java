@@ -121,6 +121,12 @@ public class StoreProductController {
             _storeProduct.setPromotional_product(storeProduct.isPromotional_product());
             try {
                 storeProductRepository.update(_storeProduct);
+                StoreProduct promStoreProduct = storeProductRepository.findPromotional(storeProduct.getId_product());
+                if(promStoreProduct != null) {
+                    double promPriceCoefficient = 0.8;
+                    promStoreProduct.setSelling_price(storeProduct.getSelling_price() * promPriceCoefficient);
+                    storeProductRepository.update(promStoreProduct);
+                }
             } catch (DataIntegrityViolationException e) {
                 e.printStackTrace();
                 return new ResponseEntity<>("Violates corporate integrity constraints.", HttpStatus.CONFLICT);
