@@ -136,3 +136,15 @@ h1 {
   height: 60px; /* or any height you prefer */
   width: 200px; /* or any width you prefer */
 }
+
+.home-header {
+  background-image: url("../../client/public/supermarket.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 540px;
+}
+
+.home-header h1 {
+  font-size: 70px;
+}
+

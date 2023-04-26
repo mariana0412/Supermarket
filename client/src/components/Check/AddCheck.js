@@ -3,6 +3,7 @@ import {Button, Container, Form, FormGroup, Input, Label} from "reactstrap";
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import useLastPath from "../../hooks/useLastPath";
 
 const AddCheck = () => {
     const initialCheck = {
@@ -21,6 +22,7 @@ const AddCheck = () => {
     const [sales, setSales] = useState([{ upc: '', product_number: 0 }]);
     const navigate = useNavigate();
     const {auth} = useAuth();
+    useLastPath();
 
     useEffect(() => {
         fetch(`/api/products`, {

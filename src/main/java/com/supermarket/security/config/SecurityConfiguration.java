@@ -26,21 +26,20 @@ public class SecurityConfiguration {
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated()
-/**
+
                 // add category, product, store product and employee can only manager
                 .requestMatchers(HttpMethod.POST,
                         "/api/categories",
                         "/api/products",
                         "/api/store-products",
                         "/api/employees")
-                .hasRole("ROLE_MANAGER")
+                .hasRole("MANAGER")
 
                 // add check and sale can only cashier
                 .requestMatchers(HttpMethod.POST,
                         "/api/checks",
                         "/api/sales")
-                .hasRole("ROLE_CASHIER")
+                .hasRole("CASHIER")
 
                 // add customer card can both manager and cashier
                 .requestMatchers(HttpMethod.POST, "/api/customer-cards").authenticated()
@@ -51,7 +50,7 @@ public class SecurityConfiguration {
                         "/api/products/**",
                         "/api/store-products/**",
                         "/api/employees/**")
-                .hasRole("ROLE_MANAGER")
+                .hasRole("MANAGER")
 
                 // edit customer card can both manager and cashier
                 .requestMatchers(HttpMethod.PUT, "/api/customer-cards/**").authenticated()
@@ -64,7 +63,7 @@ public class SecurityConfiguration {
                         "/api/employees/**",
                         "/api/customer-cards/**",
                         "/api/checks/**")
-                .hasRole("ROLE_MANAGER")
+                .hasRole("MANAGER")
 
                 // get all or get by id can both manager and cashier
                 .requestMatchers(HttpMethod.GET,
@@ -78,17 +77,19 @@ public class SecurityConfiguration {
                 .authenticated()
 
                 // determine the total number of a certain product sold for a certain time can only manager
-                .requestMatchers(HttpMethod.GET, "/api/products-number/**").hasRole("ROLE_MANAGER")
+                .requestMatchers(HttpMethod.GET, "/api/products-number/**").hasRole("MANAGER")
 
                 // get store product details by UPC can both manager and cashier
                 .requestMatchers(HttpMethod.GET, "/api/store-products-details/**").authenticated()
 
                 // determine the total sum from range of checks can only manager
-                .requestMatchers(HttpMethod.GET, "/api/checks-sum").hasRole("ROLE_MANAGER")
+                .requestMatchers(HttpMethod.GET, "/api/checks-sum").hasRole("MANAGER")
 
                 // get employee's contact info by surname can only manager
-                .requestMatchers(HttpMethod.GET, "/api/employees/contact-info").hasRole("ROLE_MANAGER")
- */
+                .requestMatchers(HttpMethod.GET, "/api/employees/contact-info").hasRole("MANAGER")
+
+                .anyRequest().authenticated()
+
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

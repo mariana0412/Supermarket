@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import {Link, useNavigate, useParams} from 'react-router-dom';
+import useLastPath from "../../hooks/useLastPath";
 
 const StoreProductEdit = () => {
     const initialFormState = {
@@ -14,8 +15,9 @@ const StoreProductEdit = () => {
     };
 
     const [storeProduct, setStoreProduct] = useState(initialFormState);
-    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
+    const navigate = useNavigate();
+    useLastPath();
     const {id} = useParams();
 
     useEffect(() => {
@@ -125,18 +127,6 @@ const StoreProductEdit = () => {
                             value={storeProduct.products_number || ''}
                             onChange={handleChange}
                             autoComplete="products_number"
-                        />
-                    </FormGroup>
-
-                    <FormGroup>
-                        <Label for="promotional_product">Is promotional?</Label>
-                        <Input
-                            type="checkbox"
-                            name="promotional_product"
-                            id="promotional_product"
-                            checked={storeProduct.promotional_product || false}
-                            onChange={handleChange}
-                            autoComplete="promotional_product"
                         />
                     </FormGroup>
 

@@ -5,12 +5,14 @@ import { Link } from 'react-router-dom';
 import useAuth from "../../hooks/useAuth";
 import {useReactToPrint} from 'react-to-print';
 import '../../App.css'
+import useLastPath from "../../hooks/useLastPath";
 
 const CategoryList = () => {
     const [categories, setCategories] = useState([]);
     const [sorted, setSorted] = useState(false);
     const {auth} = useAuth();
     const componentPDF = useRef();
+    useLastPath();
 
     useEffect(() => {
         const url = sorted ? "api/categories?sorted=true" : "api/categories";

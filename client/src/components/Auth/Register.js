@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Container, Form, FormGroup, Label, Input } from 'reactstrap';
+import {Container, Form, FormGroup, Label, Input, Button} from 'reactstrap';
 import AppNavbar from "../AppNavbar";
 import {useNavigate} from "react-router-dom";
 
@@ -33,7 +33,8 @@ function RegisterPage() {
             })
             .catch((error) => {
                 if(error.response.status === 400) {
-                    alert("You are already registered");
+                    alert("You are already registered. Please, just login.");
+                    navigate('/login');
                 }
                 console.error(error);
             });
@@ -78,7 +79,7 @@ function RegisterPage() {
                             required
                         />
                     </FormGroup>
-                    <button type="submit">Register</button>
+                    <Button type="submit" color="primary">Register</Button>
                 </Form>
             </Container>
         </div>
