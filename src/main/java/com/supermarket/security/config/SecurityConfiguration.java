@@ -72,7 +72,7 @@ public class SecurityConfiguration {
                         "/api/store-products", "/api/store-products/**",
                         "/api/employees", "/api/employees/**",
                         "/api/customer-cards", "/api/customer-cards/**",
-                        "/api/checks", "/api/checks/**",
+                        "/api/checks", "/api/checks**",
                         "/api/sales")
                 .authenticated()
 

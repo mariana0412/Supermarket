@@ -11,7 +11,6 @@ import useLastPath from "../../hooks/useLastPath";
 const StoreProductList = () => {
 
     const [storeProducts, setStoreProducts] = useState([]);
-    const [sortedByName, setSortedByName] = useState(false);
     const [products, setProducts] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [sortOption, setSortOption] = useState(null);
@@ -230,15 +229,6 @@ const StoreProductList = () => {
 
                 <div ref={componentPDF}>
                     <h1>Store Products</h1>
-                    { auth.role === "CASHIER"
-                        &&
-                        <Button onClick={() => {
-                            toggleSort('name');
-                            setSortedByName(!sortedByName);
-                        }}>
-                            { sortedByName ? "Unsort" : "Sort by name" }
-                        </Button>
-                    }
 
                     <div className='search-container noPrint'>
                         <Input
@@ -251,19 +241,24 @@ const StoreProductList = () => {
                         <Button color="primary" onClick={() => showStoreProductDetails()}>Search</Button>
                     </div>
 
-                    { auth?.role === "MANAGER"
-                        &&
                         <Dropdown className="noPrint" isOpen={dropdownOpen} toggle={toggleDropdown}>
                             <DropdownToggle caret>Sort</DropdownToggle>
                             <DropdownMenu>
-                                <DropdownItem onClick={() => toggleSort('num')}>all by number</DropdownItem>
+                                { auth?.role === "MANAGER"
+                                    &&
+                                    <DropdownItem onClick={() => toggleSort('num')}>all by number</DropdownItem>
+                                }
+                                { auth?.role === "CASHIER"
+                                    &&
+                                    <DropdownItem onClick={() => toggleSort('name')}>all by name</DropdownItem>
+                                }
                                 <DropdownItem onClick={() => toggleSort('promNum')}>promotional by number</DropdownItem>
                                 <DropdownItem onClick={() => toggleSort('promName')}>promotional by name</DropdownItem>
                                 <DropdownItem onClick={() => toggleSort('notPromNum')}>not promotional by number</DropdownItem>
                                 <DropdownItem onClick={() => toggleSort('notPromName')}>not promotional by name</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
-                    }
+
                     {showEmpty ?
                         <div className="text-center">
                             <p>No results found.</p>
