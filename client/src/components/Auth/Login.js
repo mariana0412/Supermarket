@@ -19,6 +19,9 @@ function LoginPage() {
             const role = decodedToken.role;
             const employeeId = decodedToken.id_employee;
             setAuth({ role, employeeId, token });
+            const lastPath = localStorage.getItem('lastPath');
+            if (lastPath)
+                navigate(lastPath);
         }
     }, []);
 
