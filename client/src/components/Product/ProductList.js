@@ -17,6 +17,7 @@ import '../../App.css';
 import useAuth from "../../hooks/useAuth";
 import SearchByNameModal from "./SearchByNameModal";
 import {useReactToPrint} from "react-to-print";
+import useLastPath from "../../hooks/useLastPath";
 
 const ProductList = () => {
 
@@ -33,6 +34,7 @@ const ProductList = () => {
     const [productsFoundByName, setProductsFoundByName] = useState(null);
     const [showEmpty, setShowEmpty] = useState(false);
     const {auth} = useAuth();
+    useLastPath();
     const componentPDF = useRef();
 
     useEffect(() => {
@@ -69,9 +71,7 @@ const ProductList = () => {
             }
         })
             .then(response => response.json())
-            .then(data => {
-                setCategories(data);
-            });
+            .then(data => setCategories(data));
     }, [selectedCategory]);
 
     const remove = async (id) => {
@@ -132,7 +132,8 @@ const ProductList = () => {
 
     const handleCategoryChange = (event) => setSelectedCategory(event.target.value);
     const handleSearchProductNameChange = (event) => setSearchProductName(event.target.value);
-
+    const handleStartDate = event => setStartDate(event.target.value);
+    const handleEndDate = event => setEndDate(event.target.value);
 
     const toggleModalNumberSold = () => {
         setModalNumberSold(!modalNumberSold);
@@ -144,8 +145,6 @@ const ProductList = () => {
     }
 
     const toggleModalSearchByName = () => setModalSearchByName(!modalSearchByName);
-    const handleStartDate = event => setStartDate(event.target.value);
-    const handleEndDate = event => setEndDate(event.target.value);
 
     const productsNum = async (productId, startDate, endDate) => {
         try {

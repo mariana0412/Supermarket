@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import {Link, useNavigate, useParams} from 'react-router-dom';
+import useLastPath from "../../hooks/useLastPath";
 
 const ProductEdit = () => {
     const initialFormState = {
@@ -16,6 +17,7 @@ const ProductEdit = () => {
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
     const { id } = useParams();
+    useLastPath();
 
     useEffect(() => {
         fetch(`/api/products/${id}`, {
@@ -24,9 +26,7 @@ const ProductEdit = () => {
             }
         })
             .then(response => response.json())
-            .then(data => {
-                setProduct(data);
-            });
+            .then(data => setProduct(data));
 
         fetch(`/api/categories`, {
             headers: {
@@ -34,9 +34,7 @@ const ProductEdit = () => {
             }
         })
             .then(response => response.json())
-            .then(data => {
-                setCategories(data);
-            });
+            .then(data => setCategories(data));
     }, [id]);
 
     const handleChange = (event) => {
