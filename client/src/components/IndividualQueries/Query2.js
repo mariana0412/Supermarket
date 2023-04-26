@@ -6,26 +6,27 @@ import {
 import AppNavbar from '../AppNavbar';
 import '../../App.css'
 
-const DateMaxProduct = () => {
+const Query2 = () => {
     const initialFormState = {
-        print_date: '',
-        max_sells: ''
+        card_number: '',
+        cust_name: '',
+        cust_surname: ''
     };
     const [listElem, setListElem] = useState([]);
-    const { c } = useParams();
 
     useEffect(() => {
-        fetch(`/api/dateMaxProduct/${c}`)
+        fetch(`/api/query2`)
             .then(response => response.json())
             .then(data => {
                 setListElem(data);
             });
-    }, [c]);
+    }, []);
 
     const categoryList = listElem.map(listElem => {
-        return <tr key={listElem.print_date}>
-            <td>{listElem.print_date}</td>
-            <td>{listElem.max_sells}</td>
+        return <tr key={listElem.card_number}>
+            <td>{listElem.card_number}</td>
+            <td>{listElem.cust_name}</td>
+            <td>{listElem.cust_surname}</td>
         </tr>
     });
 
@@ -36,8 +37,9 @@ const DateMaxProduct = () => {
                 <Table className="mt-4">
                     <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Number of sells</th>
+                        <th>Card Number</th>
+                        <th>Customer name</th>
+                        <th>Customer surname</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -48,4 +50,4 @@ const DateMaxProduct = () => {
         </div>
     );
 }
-export default DateMaxProduct;
+export default Query2;

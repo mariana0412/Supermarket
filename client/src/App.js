@@ -20,6 +20,7 @@ import AddCheck from "./components/Check/AddCheck";
 import RequireCashierAuth from "./components/RequireAuthCashier";
 import CashierCabinet from "./components/CashierCabinet";
 import DateMaxProduct from "./components/IndividualQueries/DateMaxProduct";
+import Query2 from "./components/IndividualQueries/Query2";
 
 
 const App = () => {
@@ -32,6 +33,7 @@ const App = () => {
             <Route exact path="/register" element={<Register/>}/>
 
             <Route path='/dateMaxProduct/:c'  element={<DateMaxProduct/>}/>
+            <Route path='/query2' exact={true} element={<Query2/>}/>
 
             <Route element={<RequireAuth/>}>
                 <Route path='/categories' exact={true} element={<CategoryList/>}/>
