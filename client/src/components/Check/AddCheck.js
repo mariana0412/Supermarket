@@ -87,6 +87,12 @@ const AddCheck = () => {
         return correct;
     }
 
+    const duplicatedSales = () => {
+        const upcs = sales.map((sale) => sale.upc);
+        const uniqueUpcs = new Set(upcs);
+        return upcs.length !== uniqueUpcs.size;
+    }
+
     const setCheckNumberToSales = (check_number) => sales.map(sale => sale.check_number = check_number);
     const setSellingPriceToSales = () => {
         sales.map(sale => {
@@ -131,6 +137,10 @@ const AddCheck = () => {
             return;
         }
 
+        if(duplicatedSales()) {
+            alert("Duplicated sales!");
+            return;
+        }
         setSellingPriceToSales();
 
         check.check_number = Date.now().toString().substring(0, 10);
@@ -151,7 +161,6 @@ const AddCheck = () => {
             });
 
             if(checkResponse.ok) {
-
                 const salesPromises = sales.map(async sale => {
                     setCheckNumberToSales(check.check_number);
                     const response = await fetch(`/api/sales`, {
@@ -182,12 +191,6 @@ const AddCheck = () => {
                 alert(await checkResponse.text())
             }
         } catch (error) {
-            await fetch(`/api/checks/${check.check_number}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
-                }
-            });
             console.error(error);
         }
     };
@@ -230,6 +233,7 @@ const AddCheck = () => {
                                     type="number"
                                     name="product_number"
                                     value={sale.product_number}
+                                    max={storeProducts.find(storeProduct => storeProduct.upc === sale.upc)?.products_number}
                                     required
                                     onChange={e => handleInputChange(e, index)}
                                 />
