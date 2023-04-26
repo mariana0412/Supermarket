@@ -6,5 +6,5 @@ import com.supermarket.repository.CrudRepository;
 import java.util.List;
 
 public interface DateMaxRepository extends CrudRepository<DateMaxModel, String> {
-    List<DateMaxModel> getAnswer();
+    List<DateMaxModel> getAnswer(String city);
 }

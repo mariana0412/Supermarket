@@ -19,14 +19,14 @@ public class JdbcDateMaxRepository implements DateMaxRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<DateMaxModel> getAnswer() {
+    public List<DateMaxModel> getAnswer(String city) {
         return jdbcTemplate.query("SELECT print_date, MAX(p_count)  AS max_sells FROM\n" +
                 "(SELECT print_date, COUNT(sp.upc) AS p_count\n" +
                 "FROM receipt r\n" +
                 "INNER JOIN sale s ON s.check_number = r.check_number\n" +
                 "INNER JOIN store_product sp ON sp.upc = s.upc\n" +
                 "INNER JOIN customer_card cc ON cc.card_number = r.card_number\n" +
-                "WHERE city='Lviv'\n" +
+                "WHERE city=?\n" +
                 "GROUP BY print_date) date_count\n" +
                 "GROUP BY print_date", new ResultSetExtractor<List<DateMaxModel>>() {
             @Override
@@ -40,7 +40,7 @@ public class JdbcDateMaxRepository implements DateMaxRepository {
                 }
                 return statsList;
             }
-        });
+        }, city);
     }
 
     @Override

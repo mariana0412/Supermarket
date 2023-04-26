@@ -31,7 +31,7 @@ const App = () => {
             <Route exact path="/login" element={<Login/>}/>
             <Route exact path="/register" element={<Register/>}/>
 
-            <Route path='/dateMaxProduct' exact={true} element={<DateMaxProduct/>}/>
+            <Route path='/dateMaxProduct/:c'  element={<DateMaxProduct/>}/>
 
             <Route element={<RequireAuth/>}>
                 <Route path='/categories' exact={true} element={<CategoryList/>}/>

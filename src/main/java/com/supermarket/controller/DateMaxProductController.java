@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,9 +19,11 @@ public class DateMaxProductController {
     @Autowired
     DateMaxRepository dateMaxRepository;
 
-    @GetMapping("/dateMaxProduct")
-    public ResponseEntity<List<DateMaxModel>> getProductById() {
-        List<DateMaxModel> answer = dateMaxRepository.getAnswer();
+    @GetMapping("/dateMaxProduct/{c}")
+    public ResponseEntity<List<DateMaxModel>> getProductById(
+            @PathVariable("c") String c
+    ) {
+        List<DateMaxModel> answer = dateMaxRepository.getAnswer(c);
 
         if (answer != null)
             return new ResponseEntity<>(answer, HttpStatus.OK);

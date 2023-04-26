@@ -13,16 +13,15 @@ const DateMaxProduct = () => {
         max_sells: ''
     };
     const [listElem, setListElem] = useState([]);
-    const {auth} = useAuth();
-    const componentPDF = useRef();
+    const { c } = useParams();
 
     useEffect(() => {
-        fetch(`/api/dateMaxProduct`)
+        fetch(`/api/dateMaxProduct/${c}`)
             .then(response => response.json())
             .then(data => {
                 setListElem(data);
             });
-    }, []);
+    }, [c]);
 
     const categoryList = listElem.map(listElem => {
         return <tr key={listElem.print_date}>
