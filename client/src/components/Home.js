@@ -14,7 +14,10 @@ const Home = () => {
             <Container className="home-container">
                 <div className="home-button-container">
                     <Button color="secondary" size="lg" className="home-button">
-                        <Link to="/login" className="home-button-text">Login</Link>
+                        <Link to="/login" className="home-button-text"
+                              onClick={() => localStorage.removeItem("lastPath")}>
+                            Login
+                        </Link>
                     </Button>
                     <Button color="secondary" size="lg" className="home-button">
                         <Link to="/register" className="home-button-text">Register</Link>

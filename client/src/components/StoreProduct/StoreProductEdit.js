@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {Button, Container, Form, FormGroup, Input, Label} from 'reactstrap';
 import AppNavbar from '../AppNavbar';
 import {Link, useNavigate, useParams} from 'react-router-dom';
+import useLastPath from "../../hooks/useLastPath";
 
 const StoreProductEdit = () => {
     const initialFormState = {
@@ -14,8 +15,9 @@ const StoreProductEdit = () => {
     };
 
     const [storeProduct, setStoreProduct] = useState(initialFormState);
-    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
+    const navigate = useNavigate();
+    useLastPath();
     const {id} = useParams();
 
     useEffect(() => {

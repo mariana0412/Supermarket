@@ -2,10 +2,12 @@ import React, {useEffect, useState} from "react";
 import useAuth from "../hooks/useAuth";
 import {Container, Table} from "reactstrap";
 import AppNavbar from "./AppNavbar";
+import useLastPath from "../hooks/useLastPath";
 
 const CashierCabinet = () => {
     const [employee, setEmployee] = useState({});
     const {auth} = useAuth();
+    useLastPath();
 
     useEffect(() => {
         console.log(auth?.id_employee);

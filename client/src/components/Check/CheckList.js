@@ -7,6 +7,7 @@ import useAuth from "../../hooks/useAuth";
 import {useReactToPrint} from "react-to-print";
 import {Link} from "react-router-dom";
 import Check from "./Check";
+import useLastPath from "../../hooks/useLastPath";
 
 const CheckList = () => {
 
@@ -21,6 +22,7 @@ const CheckList = () => {
     const [modal, setModal] = useState(false);
     const [purchasedProducts, setPurchasedProducts] = useState(null);
     const {auth} = useAuth();
+    useLastPath();
     const componentPDF = useRef();
 
     useEffect(() => {

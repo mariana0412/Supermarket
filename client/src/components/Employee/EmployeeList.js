@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import '../../App.css';
 import useAuth from "../../hooks/useAuth";
 import {useReactToPrint} from "react-to-print";
+import useLastPath from "../../hooks/useLastPath";
 
 const EmployeeList = () => {
 
@@ -17,6 +18,7 @@ const EmployeeList = () => {
     const [modal, setModal] = useState(false);
     const [sortOption, setSortOption] = useState(null);
     const {auth} = useAuth();
+    useLastPath();
     const componentPDF = useRef();
 
     useEffect(() => {
@@ -68,13 +70,9 @@ const EmployeeList = () => {
             setSortOption(option);
     }
 
-    const handleSearchInputChange = (event) => {
-        setSearchSurname(event.target.value);
-    }
+    const handleSearchInputChange = (event) => setSearchSurname(event.target.value);
+    const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
-    const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
-    }
 
     const toggleModal = () => {
         setModal(!modal);
@@ -104,17 +102,17 @@ const EmployeeList = () => {
 
     const employeeList = employees.map(employee => {
         return <tr key={employee.id_employee}>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.empl_surname}</td>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.empl_name}</td>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.empl_patronymic}</td>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.empl_role}</td>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.salary} ₴</td>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.date_of_birth}</td>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.date_of_start}</td>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.phone_number}</td>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.city}</td>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.street}</td>
-            <td style={{whiteSpace: 'nowrap'}}>{employee.zip_code}</td>
+            <td>{employee.empl_surname}</td>
+            <td>{employee.empl_name}</td>
+            <td>{employee.empl_patronymic}</td>
+            <td>{employee.empl_role}</td>
+            <td>{employee.salary} ₴</td>
+            <td>{employee.date_of_birth}</td>
+            <td>{employee.date_of_start}</td>
+            <td>{employee.phone_number}</td>
+            <td>{employee.city}</td>
+            <td>{employee.street}</td>
+            <td>{employee.zip_code}</td>
             {
                 auth?.role === "MANAGER"
                 &&

@@ -6,6 +6,7 @@ import '../../App.css';
 import { Link } from 'react-router-dom';
 import useAuth from "../../hooks/useAuth";
 import {useReactToPrint} from "react-to-print";
+import useLastPath from "../../hooks/useLastPath";
 
 const StoreProductList = () => {
 
@@ -29,6 +30,7 @@ const StoreProductList = () => {
     const [promStoreProductModalOpen, setPromStoreProductModalOpen] = useState(false);
     const [showEmpty, setShowEmpty] = useState(false);
     const {auth} = useAuth();
+    useLastPath();
     const componentPDF = useRef();
 
     useEffect(() => {
@@ -105,16 +107,16 @@ const StoreProductList = () => {
         }
     }
 
+    const handlePromStoreProductNumberChange = (event) => promStoreProduct.products_number = event.target.value;
+    const handleSearchInputChange = (event) => setSearchUPC(event.target.value);
     const toggleSort = (option) => (sortOption === option) ? setSortOption(null) : setSortOption(option);
     const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-    const handleSearchInputChange = (event) => setSearchUPC(event.target.value);
     const toggleStoreProductDetailsModal = () => {
         setStoreProductDetails(!storeProductDetails);
         if(storeProductDetails)
             setSearchUPC('');
     };
     const togglePromStoreProductModal = () => setPromStoreProductModalOpen(!promStoreProductModalOpen);
-    const handlePromStoreProductNumberChange = (event) => promStoreProduct.products_number = event.target.value;
 
     const showStoreProductDetails = async () => {
         try {

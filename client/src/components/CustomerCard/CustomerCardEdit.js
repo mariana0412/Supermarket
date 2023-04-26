@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap';
 import AppNavbar from '../AppNavbar';
+import useLastPath from "../../hooks/useLastPath";
 
 const CustomerCardEdit = () => {
     const initialFormState = {
@@ -18,6 +19,7 @@ const CustomerCardEdit = () => {
     const [customer, setCustomer] = useState(initialFormState);
     const navigate = useNavigate();
     const { id } = useParams();
+    useLastPath();
 
     useEffect(() => {
         if (id !== 'new') {

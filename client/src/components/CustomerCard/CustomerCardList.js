@@ -6,6 +6,7 @@ import '../../App.css';
 import useAuth from "../../hooks/useAuth";
 import SearchBySurnameModal from "./SearchBySurnameModal";
 import {useReactToPrint} from "react-to-print";
+import useLastPath from "../../hooks/useLastPath";
 
 const CustomerCardList = () => {
 
@@ -18,6 +19,7 @@ const CustomerCardList = () => {
     const [modalSearchBySurname, setModalSearchBySurname] = useState(false);
     const {auth} = useAuth();
     const componentPDF = useRef();
+    useLastPath();
 
     useEffect(() => {
         let url = 'api/customer-cards';
@@ -66,10 +68,10 @@ const CustomerCardList = () => {
                 let updatedCustomerCards = [...customerCards].filter(i => i.card_number !== id);
                 setCustomerCards(updatedCustomerCards);
             } else {
-                alert(data.message); // display error message to user
+                alert(data.message);
             }
         } catch (error) {
-            console.log(error); // log any errors that occur
+            console.log(error);
         }
     }
 
