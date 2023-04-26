@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Button, Collapse, Nav, Navbar, NavbarBrand, NavbarToggler} from 'reactstrap';
+import {Collapse, Nav, Navbar, NavbarBrand, NavbarToggler} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import useAuth from "../hooks/useAuth";
 
@@ -18,29 +18,29 @@ const AppNavbar = () => {
             <Collapse isOpen={isOpen} navbar>
                 <Nav className="justify-content-end" style={{width: "100%"}} navbar>
 
-                    <Button color="link">
-                        <Link to="/employees">Employees</Link>
-                    </Button>
+                    <NavbarBrand tag={Link} to="/employees">
+                        Employees
+                    </NavbarBrand>
 
-                    <Button color="link">
-                        <Link to="/customer-cards">Customer Cards</Link>
-                    </Button>
+                    <NavbarBrand tag={Link} to="/customer-cards">
+                        Customer Cards
+                    </NavbarBrand>
 
-                    <Button color="link">
-                        <Link to="/categories">Categories</Link>
-                    </Button>
+                    <NavbarBrand tag={Link} to="/categories">
+                        Categories
+                    </NavbarBrand>
 
-                    <Button color="link">
-                        <Link to="/products">Products</Link>
-                    </Button>
+                    <NavbarBrand tag={Link} to="/products">
+                        Products
+                    </NavbarBrand>
 
-                    <Button color="link">
-                        <Link to="/store-products">Store Products</Link>
-                    </Button>
+                    <NavbarBrand tag={Link} to="/store-products">
+                        Store Products
+                    </NavbarBrand>
 
-                    <Button color="link">
-                        <Link to="/checks">Checks</Link>
-                    </Button>
+                    <NavbarBrand tag={Link} to="/checks">
+                        Checks
+                    </NavbarBrand>
                 </Nav>
             </Collapse>
         </Navbar>
