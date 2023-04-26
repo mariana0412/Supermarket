@@ -10,8 +10,8 @@ const Home = () => {
     return (
         <div>
             <AppNavbar />
-            <header className="header">
-                <h1>Supermarket Zlagoda</h1>
+            <header className="header home-header">
+                <h1>Supermarket Zlahoda</h1>
             </header>
 
             <Container className="home-container">
