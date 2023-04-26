@@ -10,14 +10,12 @@ const CashierCabinet = () => {
     useLastPath();
 
     useEffect(() => {
-        console.log(auth?.id_employee);
         fetch(`/api/employees/${auth?.employeeId}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("token")}`
             },
         })
             .then(response => {
-                console.log(response);
                 return response.json();
             })
             .then(data => {
