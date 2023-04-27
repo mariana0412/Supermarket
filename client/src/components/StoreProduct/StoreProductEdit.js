@@ -114,6 +114,7 @@ const StoreProductEdit = () => {
                             value={storeProduct.selling_price || ''}
                             onChange={handleChange}
                             autoComplete="selling_price"
+                            disabled={storeProduct.promotional_product === true}
                         />
                     </FormGroup>
 
