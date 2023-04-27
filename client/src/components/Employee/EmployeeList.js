@@ -171,7 +171,7 @@ const EmployeeList = () => {
                     { auth?.role === "MANAGER"
                         &&
                         <Button className="buttonWithMargins" onClick={toggleStatisticsModal}>
-                            Statistics
+                            Cashier Statistics
                         </Button>
                     }
                     { auth?.role === "MANAGER"
